@@ -1,5 +1,5 @@
 
-import vfs_node, vfs_fs
+from . import vfs_node, vfs_fs
 
 class VfsRoot(vfs_node.Node):
     def __init__(self):

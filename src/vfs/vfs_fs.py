@@ -5,7 +5,7 @@ import os
 import stat, time
 import Df, fnmatch
 
-import vfs_node
+from . import vfs_node
 from utils import *
 
 

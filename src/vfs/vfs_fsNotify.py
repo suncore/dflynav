@@ -34,7 +34,7 @@ class Notify():
     def setNotify(self, path, cbfun):
         #print 'setnotify ' + path
         if self.path:
-            self.wm.rm_watch(self.wdd.values())
+            self.wm.rm_watch(list(self.wdd.values()))
         self.path = path
         self.pe.cbfun = cbfun # ugly...
         
@@ -47,7 +47,7 @@ class Notify():
 
     def stop(self):
         if self.path:
-            self.wm.rm_watch(self.wdd.values())
+            self.wm.rm_watch(list(self.wdd.values()))
         self.notifier.stop()
 
     def notifyThread(self):

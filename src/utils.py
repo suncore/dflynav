@@ -46,7 +46,7 @@ def bf_exec(cmd):
         try:
             os.execvp(cmd[0], cmd)
         finally:
-            print 'Could not exec ', cmd
+            print('Could not exec ', cmd)
             os._exit(1)
 
 def bf_popen(cmd, bufsize=-1):
@@ -60,7 +60,7 @@ def bf_popen(cmd, bufsize=-1):
         try:
             os.execvp(cmd[0], cmd)
         finally:
-            print 'Could not exec ', cmd
+            print('Could not exec ', cmd)
             os._exit(1)
     os.close(p2cread)
     os.close(p2cwrite)

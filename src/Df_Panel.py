@@ -11,7 +11,7 @@ class PanelItem(QtGui.QTreeWidgetItem):
         if col == 0:
             ln = self.df_node
             rn = other.df_node
-            if ln.leaf() <> rn.leaf():
+            if ln.leaf() != rn.leaf():
                 if ln.leaf():
                     return False
                 else:
