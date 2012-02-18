@@ -1,7 +1,7 @@
 import os, stat, time
 from PySide.QtCore import *
 from PySide import QtGui
-import _thread
+import thread
 from utils import *
 
 class JobManager():
@@ -16,7 +16,7 @@ class JobManager():
         self.jobsW.header().setResizeMode(0, QtGui.QHeaderView.ResizeToContents)
         self.jobsW.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.jobsW.header().setResizeMode(2, QtGui.QHeaderView.ResizeToContents)
-        _thread.start_new_thread(self.jobTask, (self,))
+        thread.start_new_thread(self.jobTask, (self,))
     
     def addJobs(self, fun, srcList, dst):
         for src in srcList:
