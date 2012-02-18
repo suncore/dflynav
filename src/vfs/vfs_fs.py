@@ -10,7 +10,7 @@ from utils import *
 
 
 def FsPath(n):
-    if n.fsname <> None:
+    if n.fsname != None:
         path = n.fsname
     else:
         path = ''

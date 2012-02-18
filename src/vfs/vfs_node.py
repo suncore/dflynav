@@ -19,13 +19,13 @@ class Node(object):
     
     def path(self):
         n = self
-        if n.name <> None and n.name <> '/':
+        if n.name != None and n.name != '/':
             path = n.name
         else:
             path = ''
         n = n.parent
         while n:
-            if path <> '' and n.name <> '/':
+            if path != '' and n.name != '/':
                 path = n.name + '/' + path
             n = n.parent
         return '/' + path
