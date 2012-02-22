@@ -11,8 +11,8 @@ if __name__ == '__main__':
  d = Df_Dragonfly.DragonFly()
 
  d.fsNotify = [ None, None ]
- d.fsNotify[0] = vfs.vfs_fsNotify.Notify()
- d.fsNotify[1] = vfs.vfs_fsNotify.Notify()
+ d.fsNotify[0] = vfs.Notify()
+ d.fsNotify[1] = vfs.Notify()
 
  d.qtapp = QtGui.QApplication(sys.argv)
  #d.qtapp.setStyle("plastique")
