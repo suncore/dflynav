@@ -1,13 +1,17 @@
 
 # VFS for normal file systems
 
-import os
+import os, platform, shutil
 import stat, time
 import Df, fnmatch
 
 from . import vfs_node
 from utils import *
 
+def path_join(a,b):
+    if a[-1] == '/':
+        return a + b
+    return a + '/' + b
 
 def FsPath(n):
     if n.fsname != None:
@@ -17,7 +21,7 @@ def FsPath(n):
     n = n.parent
     while n and isinstance(n, Fs):
         #print(n.fsname, path)
-        path = os.path.join(n.fsname,path)
+        path = path_join(n.fsname,path)
         n = n.parent
     return path
 
@@ -46,11 +50,10 @@ class Fs(vfs_node.Node):
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
-        # if Linux:
-        cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
-        #cmd = ('/a/proj/dragonfly/src/testcmd', src.fspath, dst.fspath)
-        # if Windows:
-        # TODO
+        if platform.system() == 'Windows':
+            cmd = ('c:/cygwin/bin/cp', '-drx', src.fspath, dst.fspath)
+        else:
+            cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
         cmdString = '$ copy %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 
@@ -129,7 +132,7 @@ class Directory(Fs):
             for f in os.listdir(self.fspath):
             #try:
                 if not f[0] == '.':
-                    st = os.lstat(os.path.join(self.fspath, f))
+                    st = os.lstat(path_join(self.fspath, f))
                     if stat.S_ISDIR(st.st_mode):
                         c.append(Directory(self, f, f))
                     else:

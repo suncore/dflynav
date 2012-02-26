@@ -35,15 +35,25 @@ class JobManager():
                 job.started = True
                 job.updateTime()
                 job.setStatus("Running")
-                o, pid = bf_popen(job.cmd)
-                output = o.readline()
+
+                cmd = Df_Cmd(job.cmd)
+                output = cmd.readline()
                 while output:
+                    # TOOD: Update tooltip while running
                     job.output += output
-                    output = o.readline()
-                o.close()
-                pid, sts = os.waitpid(pid, 0)
-                sts = sts >> 8
-                job.status = sts
+                    output = cmd.readline()
+                job.status = cmd.finish()
+                cmd = None
+                
+#                o, pid = bf_popen(job.cmd)
+#                output = o.readline()
+#                while output:
+#                    job.output += output
+#                    output = o.readline()
+#                o.close()
+#                pid, sts = os.waitpid(pid, 0)
+#                sts = sts >> 8
+
                 job.updateTime()
                 job.output = job.output.rstrip()
                 job.item.setToolTip(0, job.output)
