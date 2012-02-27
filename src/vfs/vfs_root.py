@@ -1,4 +1,5 @@
 
+import platform
 from . import vfs_node, vfs_fs
 
 class VfsRoot(vfs_node.Node):
@@ -12,9 +13,14 @@ class VfsRoot(vfs_node.Node):
 
 class VfsRoot_Files(vfs_node.Node):
     def children(self):
-        return [
-            vfs_fs.Directory(self, 'Local', '/')
-            ] 
+        if platform.system() == 'Windows':
+            return [
+                    vfs_fs.Directory(self, 'C:', 'C:/')
+                    ] 
+        else:
+            return [
+                    vfs_fs.Directory(self, 'Local', '/')
+                    ] 
 
 
 class VfsRoot_Apps(vfs_node.Node):

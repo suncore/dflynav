@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os, stat, time, sys
+from subprocess import *
 
 def iff(test_, then_, else_):
     if test_:
@@ -48,6 +49,18 @@ def bf_exec(cmd):
         finally:
             print('Could not exec ', cmd)
             os._exit(1)
+
+
+class Df_Cmd():
+    def __init__(self, cmd):
+        self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+
+    def readline(self):
+        return self.pob.stdout.readline()
+
+    def finish(self):
+        self.pob.poll()
+        return self.pob.returncode;
 
 def bf_popen(cmd, bufsize=-1):
     p2cread, p2cwrite = os.pipe()
