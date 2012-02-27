@@ -264,6 +264,8 @@
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="dragonfly.qrc"/>
+ </resources>
  <connections/>
 </ui>

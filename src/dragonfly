@@ -1,8 +1,7 @@
 #!/bin/sh
-pyside-uic mainwin.ui  > Df_UiMainwin.py
-cd style
+#cd style
 # styles plastique "default" motif gtk cleanlooks
-python ../Df_Main.py 2>&1 | grep -v "Unable to retrieve Watch object"
+python Df_Main.py 2>&1 | grep -v "Unable to retrieve Watch object"
 #-style cleanlooks 
 #-stylesheet dragonfly.qss
 
