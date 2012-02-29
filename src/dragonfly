@@ -10,3 +10,4 @@ python Df_Main.py 2>&1 | grep -v "Unable to retrieve Watch object"
 #pyside-uic mainwin.ui  > apa.py ; python pysidetest2.py -style qmc2-black-0.10.qss
 
 
+# Hello
