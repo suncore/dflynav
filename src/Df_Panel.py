@@ -33,8 +33,8 @@ class Panel():
         self.actionButtons = actionButtons
         self.panelIdx = index
         #self.fileIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/File.png'))
-        #self.fileIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon)
-        self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
+        self.fileIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon)
+        #self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
         self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
         
     def start(self):
