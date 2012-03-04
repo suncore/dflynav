@@ -113,19 +113,25 @@ class Panel():
         for i in keys:
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
-
+        self.setActionButtons(items)
+    
     def leftMouseButton(self):
         s = self.treeW.selectedItems()
+        self.setActionButtons(s)
+        
+    def setActionButtons(self, s):
         self.actionButtons.clearButtons()
         if s:
-            for i in s[0].df_node.actionButtonCallbacks:
+            bset = set(s[0].df_node.actionButtonCallbacks)
+            for x in s[1:]:
+                bset = bset.intersection(x.df_node.actionButtonCallbacks)
+            for i in bset:
                 name, binary, callback = i
-                if binary and s[0].df_node.binaryOpCompat(self.other.cd):
-                    # binary op
+                if binary and i.df_node.binaryOpCompat(self.other.cd):
                     self.actionButtons.addButton(name, callback)
                 elif not binary:
-                    # unary op
                     self.actionButtons.addButton(name, callback)
+                
 
     def getSelectionAndDestination(self):
         s1 = self.treeW.selectedItems()
