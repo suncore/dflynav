@@ -32,8 +32,10 @@ class Panel():
         self.treeW.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
         self.panelIdx = index
-        self.fileIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/File.png'))
+        #self.fileIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/File.png'))
+        #self.fileIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon)
         self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
+        self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
         
     def start(self):
         self.cd = vfs.vfs_root.VfsRoot()
