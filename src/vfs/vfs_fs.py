@@ -50,10 +50,7 @@ class Fs(vfs_node.Node):
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
-        if platform.system() == 'Windows':
-            cmd = ('c:/cygwin/bin/cp', '-drx', src.fspath, dst.fspath)
-        else:
-            cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
+        cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
         cmdString = '$ copy %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 

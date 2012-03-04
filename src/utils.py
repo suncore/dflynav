@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, stat, time, sys
+import os, stat, time, sys, platform
 from subprocess import *
 
 def iff(test_, then_, else_):
@@ -53,6 +53,11 @@ def bf_exec(cmd):
 
 class Df_Cmd():
     def __init__(self, cmd):
+        if platform.system() == 'Windows':
+            if cmd[0][0] == '/':
+                cmd[0] = 'c:/cygwin' + cmd[0]
+            else:
+                cmd[0] = 'c:/cygwin/bin/' + cmd[0]
         self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
 
     def readline(self):
