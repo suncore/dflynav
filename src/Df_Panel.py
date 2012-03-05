@@ -122,8 +122,13 @@ class Panel():
     def setActionButtons(self, s):
         self.actionButtons.clearButtons()
         if s:
+            oldtype = type(s[0].df_node)
             cblist = s[0].df_node.actionButtonCallbacks
             for x in s[1:]:
+                newtype = type(x.df_node)
+                if oldtype == newtype:
+                    continue
+                oldtype = newtype
                 cblist2 = []
                 for y in x.df_node.actionButtonCallbacks:
                     name, binary, callback = y
