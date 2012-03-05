@@ -74,7 +74,7 @@ class Panel():
 
     def setPath(self, node):
         # TODO clear middle buttons
-        self.actionButtons.clearButtons()
+        #self.actionButtons.clearButtons()
         self.cd = node
         self.cd.startMonitor(self.panelIdx)
         path = node.path()
@@ -104,6 +104,7 @@ class Panel():
             pi.df_node = i
             items.append(pi)
         self.treeW.clear()
+        self.setActionButtons(items)
         self.treeW.insertTopLevelItems(0, items)
         self.treeW.sortItems(0,Qt.AscendingOrder)
         #self.treeW.resizeColumnToContents(1)
@@ -113,7 +114,6 @@ class Panel():
         for i in keys:
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
-        self.setActionButtons(items)
     
     def leftMouseButton(self):
         s = self.treeW.selectedItems()
@@ -122,16 +122,23 @@ class Panel():
     def setActionButtons(self, s):
         self.actionButtons.clearButtons()
         if s:
-            bset = set(s[0].df_node.actionButtonCallbacks)
+            cblist = s[0].df_node.actionButtonCallbacks
             for x in s[1:]:
-                bset = bset.intersection(x.df_node.actionButtonCallbacks)
-            for i in bset:
+                cblist2 = []
+                for y in x.df_node.actionButtonCallbacks:
+                    name, binary, callback = y
+                    for z in cblist:
+                        name2, binary2, callback2 = z
+                        if name == name2:
+                            cblist2.append(y)
+                            break
+                cblist = cblist2
+            for i in cblist:
                 name, binary, callback = i
-                if binary and i.df_node.binaryOpCompat(self.other.cd):
+                if binary and s[0].df_node.binaryOpCompat(self.other.cd):
                     self.actionButtons.addButton(name, callback)
                 elif not binary:
                     self.actionButtons.addButton(name, callback)
-                
 
     def getSelectionAndDestination(self):
         s1 = self.treeW.selectedItems()
