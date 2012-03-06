@@ -94,6 +94,11 @@ class Panel():
             for k,s,v in i.meta:
                 item.append(s)
             pi = PanelItem(item)
+            col = 1
+            for k,s,v in i.meta:
+                if type(1L) == type(v):
+                    pi.setTextAlignment(col, Qt.AlignRight)
+                col += 1
             if i.leaf():
                 #pi.setIcon(0, self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon))
                 pi.setIcon(0, self.fileIcon)
@@ -115,7 +120,7 @@ class Panel():
         for i in keys:
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
-    
+                
     def leftMouseButton(self):
         pass
     

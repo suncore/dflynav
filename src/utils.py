@@ -65,7 +65,7 @@ class Df_Cmd():
         return self.pob.stdout.readline()
 
     def finish(self):
-        self.pob.poll()
+        self.pob.wait()
         return self.pob.returncode;
 
 def bf_popen(cmd, bufsize=-1):

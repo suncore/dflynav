@@ -59,6 +59,7 @@ class JobManager():
                 job.item.setToolTip(0, job.output)
                 job.item.setToolTip(1, job.output)
                 job.item.setToolTip(2, job.output)
+                #print job.output
                 if job.status != 0:
                     job.setStatus("Failed")
                 else:
