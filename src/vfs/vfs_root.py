@@ -14,12 +14,14 @@ class VfsRoot(vfs_node.Node):
 class VfsRoot_Files(vfs_node.Node):
     def children(self):
         if platform.system() == 'Windows':
-            return [
-                    vfs_fs.Directory(self, 'C:', 'C:/')
-                    ] 
+            import win32api
+            drives = win32api.GetLogicalDriveStrings()
+            drives = drives.split('\000')[:-1]
+            drivelist = [ vfs_fs.WinDrive(self, i[0:2], i[0:2]+'/') for i in drives ]
+            return drivelist
         else:
             return [
-                    vfs_fs.Directory(self, 'Local', '/')
+                    vfs_fs.RootDirectory(self, 'Local', '/')
                     ] 
 
 

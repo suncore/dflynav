@@ -31,10 +31,13 @@ class Fs(vfs_node.Node):
         super(Fs, self).__init__(parent, name)
         self.fsname = fsname
         self.fspath = FsPath(self)
-        self.stat = os.lstat(self.fspath)
-        self.meta = [ ('Size', iff(stat.S_ISDIR(self.stat.st_mode), '-', size2str(self.stat.st_size)), iff(stat.S_ISDIR(self.stat.st_mode), 0, self.stat.st_size)), 
+        try:
+            self.stat = os.lstat(self.fspath)
+            self.meta = [ ('Size', iff(stat.S_ISDIR(self.stat.st_mode), '-', size2str(self.stat.st_size)), iff(stat.S_ISDIR(self.stat.st_mode), 0, self.stat.st_size)), 
                       ('Date', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ]
+        except:
+            pass
         self.actionButtonCallbacks = [ 
                      ( 'Copy', True, self.cb_copy ),
                      ( 'Move', True, self.cb_move ),
@@ -126,19 +129,19 @@ class Directory(Fs):
     def children(self):
         if True: #self.children_ == None: # TODO enable updates when contents change
             c = []
-            for f in os.listdir(self.fspath):
-            #try:
-                if not f[0] == '.':
-                    st = os.lstat(path_join(self.fspath, f))
-                    if stat.S_ISDIR(st.st_mode):
-                        c.append(Directory(self, f, f))
-                    else:
-                        if fnmatch.fnmatch(f, "*.zip"):
-                            c.append(PackedFile(self, f, f))
+            try:
+                for f in os.listdir(self.fspath):
+                    if not f[0] == '.':
+                        st = os.lstat(path_join(self.fspath, f))
+                        if stat.S_ISDIR(st.st_mode):
+                            c.append(Directory(self, f, f))
                         else:
-                            c.append(File(self, f, f))
-            #except:
-                #c.append(File(self, f, st))
+                            if fnmatch.fnmatch(f, "*.zip"):
+                                c.append(PackedFile(self, f, f))
+                            else:
+                                c.append(File(self, f, f))
+            except:
+                pass
             self.children_ = c
         return self.children_
 
@@ -153,6 +156,47 @@ class Directory(Fs):
         if self.fsChange:
             self.fsChange = False
             return True
+
+if platform.system() == 'Windows':
+    import ctypes, win32file, win32api
+    class WinDrive(Directory):
+        def __init__(self, parent, name, fsname):
+            super(WinDrive, self).__init__(parent, name, fsname)
+            self.actionButtonCallbacks = []
+            try:
+                free_bytes = ctypes.c_ulonglong(0)
+                total_bytes = ctypes.c_ulonglong(0)
+                ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(self.fspath), None, ctypes.pointer(total_bytes), ctypes.pointer(free_bytes))
+                dt=win32file.GetDriveType(name+'\\')
+                if dt == win32file.DRIVE_UNKNOWN:
+                    dts = ''
+                if dt == win32file.DRIVE_NO_ROOT_DIR:
+                    dts = ''
+                if dt == win32file.DRIVE_REMOVABLE:
+                    dts = 'Removable'
+                if dt == win32file.DRIVE_FIXED:
+                    dts = 'Fixed'
+                if dt == win32file.DRIVE_REMOTE:
+                    dts = 'Network'
+                if dt == win32file.DRIVE_CDROM:
+                    dts = 'CD/DVD'
+                if dt == win32file.DRIVE_RAMDISK:
+                    dts = 'RAM'
+                info = ('','','','','')
+                try:
+                    info = win32api.GetVolumeInformation(name+'\\')
+                except:
+                    pass
+                self.meta = [ ('Label', info[0], info[0]), ('File System', info[4], info[4]), ('Type', dts, dts), ('Free', size2str(free_bytes.value), free_bytes.value), ('Size', size2str(total_bytes.value), total_bytes.value) ]
+            except:
+                pass
+else:
+    class RootDirectory(Directory):
+        def __init__(self, parent, name, fsname):
+            super(RootDirectory, self).__init__(parent, name, fsname)
+            self.actionButtonCallbacks = []
+
+
 
 
 class File(Fs):

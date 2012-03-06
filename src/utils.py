@@ -55,9 +55,10 @@ class Df_Cmd():
     def __init__(self, cmd):
         if platform.system() == 'Windows':
             if cmd[0][0] == '/':
-                cmd[0] = 'c:/cygwin' + cmd[0]
+                cmd2 = 'c:/cygwin' + cmd[0]
             else:
-                cmd[0] = 'c:/cygwin/bin/' + cmd[0]
+                cmd2 = 'c:/cygwin/bin/' + cmd[0]
+            cmd = (cmd2,) + cmd[1:]
         self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
 
     def readline(self):

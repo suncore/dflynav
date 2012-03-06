@@ -43,6 +43,7 @@ class Panel():
         self.setPath(self.cd)        
         #self.treeW.pressed.connect(self.treeW_pressed)
         self.treeW.itemPressed.connect(self.treeW_pressed)
+        self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.upW.clicked.connect(self.upW_clicked)
         self.treeW.setSortingEnabled(True)
         #self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
@@ -116,34 +117,38 @@ class Panel():
             col += 1
     
     def leftMouseButton(self):
+        pass
+    
+    def treeW_selectionChanged(self):
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
         
     def setActionButtons(self, s):
+        if not s:
+            return
         self.actionButtons.clearButtons()
-        if s:
-            oldtype = type(s[0].df_node)
-            cblist = s[0].df_node.actionButtonCallbacks
-            for x in s[1:]:
-                newtype = type(x.df_node)
-                if oldtype == newtype:
-                    continue
-                oldtype = newtype
-                cblist2 = []
-                for y in x.df_node.actionButtonCallbacks:
-                    name, binary, callback = y
-                    for z in cblist:
-                        name2, binary2, callback2 = z
-                        if name == name2:
-                            cblist2.append(y)
-                            break
-                cblist = cblist2
-            for i in cblist:
-                name, binary, callback = i
-                if binary and s[0].df_node.binaryOpCompat(self.other.cd):
-                    self.actionButtons.addButton(name, callback)
-                elif not binary:
-                    self.actionButtons.addButton(name, callback)
+        oldtype = type(s[0].df_node)
+        cblist = s[0].df_node.actionButtonCallbacks
+        for x in s[1:]:
+            newtype = type(x.df_node)
+            if oldtype == newtype:
+                continue
+            oldtype = newtype
+            cblist2 = []
+            for y in x.df_node.actionButtonCallbacks:
+                name, binary, callback = y
+                for z in cblist:
+                    name2, binary2, callback2 = z
+                    if name == name2:
+                        cblist2.append(y)
+                        break
+            cblist = cblist2
+        for i in cblist:
+            name, binary, callback = i
+            if binary and s[0].df_node.binaryOpCompat(self.other.cd):
+                self.actionButtons.addButton(name, callback)
+            elif not binary:
+                self.actionButtons.addButton(name, callback)
 
     def getSelectionAndDestination(self):
         s1 = self.treeW.selectedItems()
