@@ -125,37 +125,57 @@ class Directory(Fs):
     def __init__(self, parent, name, fsname):
         super(Directory, self).__init__(parent, name, fsname)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
-
-    def children(self):
-        if True: #self.children_ == None: # TODO enable updates when contents change
-            c = []
-            try:
-                for f in os.listdir(self.fspath):
-                    if not f[0] == '.':
-                        st = os.lstat(path_join(self.fspath, f))
-                        if stat.S_ISDIR(st.st_mode):
-                            c.append(Directory(self, f, f))
-                        else:
-                            if fnmatch.fnmatch(f, "*.zip"):
-                                c.append(PackedFile(self, f, f))
-                            else:
-                                c.append(File(self, f, f))
-            except:
-                pass
-            self.children_ = c
-        return self.children_
-
-    def startMonitor(self, index):
+        self.stopAsync = False
+        self.children_ = []
         self.fsChange = False
-        Df.d.fsNotify[index].setNotify(self.fspath, self.changeNotify)
+        self.asyncRunning = False
+        self.childrenReady = False
 
-    def changeNotify(self):
-        self.fsChange = True
+    def startGetChildren(self):
+        #print "startgetchildren"
+        self.childrenReady = False
+        self.changed = False
+        Df.d.vfsJobm.addJob(self.getChildrenAsync)
+        
+    def children(self):
+        #print "1 ", self.childrenReady, self.children_
+        return self.children_
+        
+    def childrenStop(self):
+        self.stopAsync = True
+        
+    def getChildrenAsync(self):
+        if self.asyncRunning:
+            return
+        self.asyncRunning = True
+        c = []
+        try:
+            for f in os.listdir(self.fspath):
+                if self.stopAsync:
+                    self.stopAsync = False
+                    return
+                if not f[0] == '.':
+                    st = os.lstat(path_join(self.fspath, f))
+                    if stat.S_ISDIR(st.st_mode):
+                        c.append(Directory(self, f, f))
+                    else:
+                        if fnmatch.fnmatch(f, "*.zip"):
+                            c.append(PackedFile(self, f, f))
+                        else:
+                            c.append(File(self, f, f))
+        except:
+            pass
+        self.children_ = c
+        #print "2", self.children_
+        self.asyncRunning = False
+        self.childrenReady = True
+ 
+    def startMonitor(self, index):
+        Df.d.fsNotify[index].setNotify(self.fspath, self.changeNotify_)
 
-    def changed(self):
-        if self.fsChange:
-            self.fsChange = False
-            return True
+    def changeNotify_(self):
+        #print "change"
+        self.changed = True
 
 if platform.system() == 'Windows':
     import ctypes, win32file, win32api

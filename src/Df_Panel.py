@@ -36,6 +36,7 @@ class Panel():
         self.fileIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon)
         #self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
         self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
+        self.waitingForChildren = False
         
     def start(self):
         self.cd = vfs.vfs_root.VfsRoot()
@@ -74,11 +75,15 @@ class Panel():
                 return
 
     def setPath(self, node):
-        # TODO clear middle buttons
-        #self.actionButtons.clearButtons()
+        self.cd.childrenStop()
         self.cd = node
+        self.cd.startGetChildren()
+        self.waitingForChildren = True
+        self.treeW.clear() #TODO show hourglass
+        
+    def setPath2(self):
         self.cd.startMonitor(self.panelIdx)
-        path = node.path()
+        path = self.cd.path()
         self.pathW.setText(path)
         ch = self.cd.children()
         keys = [ 'Name' ]
@@ -168,6 +173,11 @@ class Panel():
         return s, dest
 
     def periodicRefresh(self):
-        if self.cd.changed() and not self.treeW.selectedItems():
+        if self.cd.changed and not self.treeW.selectedItems():
             self.setPath(self.cd)
+            #print "reacting to change for " + self.cd.name
+        if self.waitingForChildren and self.cd.childrenReady:
+            self.waitingForChildren = False
+            self.setPath2()
+            #print "got children for " + self.cd.name
 

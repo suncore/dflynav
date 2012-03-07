@@ -3,10 +3,12 @@ from PySide.QtCore import *
 from PySide import QtGui
 import thread
 from utils import *
+from Queue import Queue
 
 class JobManager():
     def __init__(self, jobsW):
         self.jobsW = jobsW
+        self.q = Queue()
         self.jobs = []
         self.jobIndex = 0
         self.jobsW.setColumnCount(0)
@@ -25,9 +27,11 @@ class JobManager():
             job.item = QtGui.QTreeWidgetItem( [ '', job.cmdString, "Queued" ] )
             job.updateTime()
             self.jobsW.insertTopLevelItem(0, job.item)
+        self.q.put(1)
 
     def jobTask(self, dummy):
         while True:
+            x = self.q.get(True)
             while self.jobIndex < len(self.jobs):
                 job = self.jobs[self.jobIndex]
                 if job.started:
@@ -65,7 +69,6 @@ class JobManager():
                 else:
                     job.setStatus("Done")
                 self.jobIndex += 1
-            time.sleep(1) # Ugly, fix. TODO
 
 class Job():
     def __init__(self, fun, src, dst):

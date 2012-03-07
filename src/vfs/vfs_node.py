@@ -8,14 +8,22 @@ class Node(object):
         self.name = name
         self.icon = None
         self.meta = [ ]
-        self.children_ = None
+        self.children_ = []
         self.actionButtonCallbacks = []
+        self.childrenReady = True
+        self.changed = False
 
     def leaf(self):
         return False
 
+    def startGetChildren(self):
+        pass
+
     def children(self):
         return self.children_
+
+    def childrenStop(self):
+        pass
     
     def path(self):
         n = self
@@ -35,9 +43,6 @@ class Node(object):
 
     def getSelectionAndDestination(self):
         return Df.d.lp.getSelectionAndDestination()
-
-    def changed(self):
-        return False
 
     def startMonitor(self, index):
         return
