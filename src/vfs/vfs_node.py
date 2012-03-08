@@ -17,7 +17,7 @@ class Node(object):
         return False
 
     def startGetChildren(self):
-        pass
+        self.childrenReady = True
 
     def children(self):
         return self.children_

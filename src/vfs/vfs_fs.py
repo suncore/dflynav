@@ -127,33 +127,31 @@ class Directory(Fs):
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
         self.stopAsync = False
         self.children_ = []
-        self.fsChange = False
         self.asyncRunning = False
         self.childrenReady = False
+        self.changed = False
 
     def startGetChildren(self):
         #print "startgetchildren"
-        self.childrenReady = False
-        self.changed = False
-        Df.d.vfsJobm.addJob(self.getChildrenAsync)
+        if not self.asyncRunning:
+            self.asyncRunning = True
+            self.childrenReady = False
+            Df.d.vfsJobm.addJob(self.getChildrenAsync)
         
     def children(self):
         #print "1 ", self.childrenReady, self.children_
         return self.children_
         
     def childrenStop(self):
-        self.stopAsync = True
+        if self.asyncRunning:
+            self.stopAsync = True
         
     def getChildrenAsync(self):
-        if self.asyncRunning:
-            return
-        self.asyncRunning = True
         c = []
         try:
             for f in os.listdir(self.fspath):
                 if self.stopAsync:
-                    self.stopAsync = False
-                    return
+                    break
                 if not f[0] == '.':
                     st = os.lstat(path_join(self.fspath, f))
                     if stat.S_ISDIR(st.st_mode):
@@ -167,8 +165,9 @@ class Directory(Fs):
             pass
         self.children_ = c
         #print "2", self.children_
-        self.asyncRunning = False
         self.childrenReady = True
+        self.asyncRunning = False
+        self.stopAsync = False
  
     def startMonitor(self, index):
         Df.d.fsNotify[index].setNotify(self.fspath, self.changeNotify_)
