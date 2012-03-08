@@ -23,7 +23,7 @@ class PanelItem(QtGui.QTreeWidgetItem):
             return lv < rv 
 
 class Panel():
-    def __init__(self, treeW, pathW, statusW, upW, actionButtons, index):
+    def __init__(self, treeW, pathW, statusW, upW, actionButtons, index, mirrorW):
         self.treeW = treeW
         self.pathW = pathW
         self.upW = upW
@@ -37,6 +37,7 @@ class Panel():
         #self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
         self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
         self.waitingForChildren = False
+        self.mirrorW = mirrorW
         
     def start(self):
         self.cd = vfs.vfs_root.VfsRoot()
@@ -47,8 +48,12 @@ class Panel():
         self.upW.clicked.connect(self.upW_clicked)
         self.treeW.setSortingEnabled(True)
         #self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
+        self.mirrorW.clicked.connect(self.mirrorW_clicked)
 
     # Signal handlers
+    def mirrorW_clicked(self):
+        self.setPath(self.other.cd)
+    
     def treeW_pressed(self, item):
         self.other.treeW.clearSelection()
         buttons = QtGui.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
@@ -87,6 +92,7 @@ class Panel():
             #print "reacting to change for " + self.cd.name
 
     def setPath(self, node):
+        #print "setpath" + node.path()
         if node != self.cd:
             self.cd.childrenStop()
             self.treeW.clear() #TODO show hourglass

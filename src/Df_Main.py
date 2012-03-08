@@ -25,8 +25,8 @@ if __name__ == '__main__':
     
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     
-    d.lp = Df_Panel.Panel(d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0)
-    d.rp = Df_Panel.Panel(d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1)
+    d.lp = Df_Panel.Panel(d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft)
+    d.rp = Df_Panel.Panel(d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright)
     d.lp.other = d.rp
     d.rp.other = d.lp
     d.rp.start()
