@@ -96,12 +96,15 @@ class Panel():
         if node != self.cd:
             self.cd.childrenStop()
             self.treeW.clear() #TODO show hourglass
+            item = PanelItem([ 'Loading...'])
+            item.df_node = None
+            self.treeW.insertTopLevelItems(0, [item])
         self.cd = node
         self.cd.changed = False
         self.cd.startGetChildren()
         self.waitingForChildren = True
         self.pathW.setText(self.cd.path())
-        
+
     def setPath2(self):
         #self.pathW.setText(self.cd.path())
         self.cd.startMonitor(self.panelIdx)
@@ -157,6 +160,8 @@ class Panel():
         if not s:
             return
         self.actionButtons.clearButtons()
+        if not s[0].df_node:
+            return
         oldtype = type(s[0].df_node)
         cblist = s[0].df_node.actionButtonCallbacks
         for x in s[1:]:
