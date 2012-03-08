@@ -43,7 +43,6 @@ class Notify():
     def notifyThread(self, dummy):
         while 1:
             if self.changeHandle:
-                time.sleep(0.1)
                 try:
                     result = win32event.WaitForSingleObject(self.changeHandle, 1000)
                     if result == win32con.WAIT_OBJECT_0:
