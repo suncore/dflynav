@@ -89,15 +89,15 @@ class Panel():
     def setPath(self, node):
         if node != self.cd:
             self.cd.childrenStop()
+            self.treeW.clear() #TODO show hourglass
         self.cd = node
         self.cd.changed = False
         self.cd.startGetChildren()
         self.waitingForChildren = True
-        self.treeW.clear() #TODO show hourglass
-        #self.pathW.setText(self.cd.path())
+        self.pathW.setText(self.cd.path())
         
     def setPath2(self):
-        self.pathW.setText(self.cd.path())
+        #self.pathW.setText(self.cd.path())
         self.cd.startMonitor(self.panelIdx)
         ch = self.cd.children()
         keys = [ 'Name' ]

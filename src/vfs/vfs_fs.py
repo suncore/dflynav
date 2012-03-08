@@ -177,7 +177,7 @@ class Directory(Fs):
         self.changed = True
 
 if platform.system() == 'Windows':
-    import ctypes, win32file, win32api
+    import ctypes, win32file, win32api, win32wnet
     class WinDrive(Directory):
         def __init__(self, parent, name, fsname):
             super(WinDrive, self).__init__(parent, name, fsname)
@@ -186,7 +186,9 @@ if platform.system() == 'Windows':
                 free_bytes = ctypes.c_ulonglong(0)
                 total_bytes = ctypes.c_ulonglong(0)
                 ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(self.fspath), None, ctypes.pointer(total_bytes), ctypes.pointer(free_bytes))
-                dt=win32file.GetDriveType(name+'\\')
+                drive= name+'\\'
+                dt=win32file.GetDriveType(drive)
+                netlabel = None
                 if dt == win32file.DRIVE_UNKNOWN:
                     dts = ''
                 if dt == win32file.DRIVE_NO_ROOT_DIR:
@@ -197,16 +199,24 @@ if platform.system() == 'Windows':
                     dts = 'Fixed'
                 if dt == win32file.DRIVE_REMOTE:
                     dts = 'Network'
+                    try:
+                        netlabel = win32wnet.WNetGetUniversalName(drive)
+                    except:
+                        pass
                 if dt == win32file.DRIVE_CDROM:
                     dts = 'CD/DVD'
                 if dt == win32file.DRIVE_RAMDISK:
                     dts = 'RAM'
                 info = ('','','','','')
                 try:
-                    info = win32api.GetVolumeInformation(name+'\\')
+                    info = win32api.GetVolumeInformation(drive)
                 except:
                     pass
-                self.meta = [ ('Label', info[0], info[0]), ('File System', info[4], info[4]), ('Type', dts, dts), ('Free', size2str(free_bytes.value), free_bytes.value), ('Size', size2str(total_bytes.value), total_bytes.value) ]
+                if netlabel:
+                    label = netlabel
+                else:
+                    label = info[0]
+                self.meta = [ ('Label', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
             except:
                 pass
 else:
