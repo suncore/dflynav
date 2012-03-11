@@ -20,8 +20,10 @@ if __name__ == '__main__':
     #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
     d.g = Df_Gui.Gui()
     d.g.mw = Df_Gui.MainWindow()
+    d.g.dia = Df_Gui.Dialog()
     #d.g.mw.showMaximized()
     d.g.mw.show()
+    #d.g.dia.show()
     
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     
