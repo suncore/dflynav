@@ -23,7 +23,7 @@ class PanelItem(QtGui.QTreeWidgetItem):
             return lv < rv 
 
 class Panel():
-    def __init__(self, treeW, pathW, statusW, upW, actionButtons, index):
+    def __init__(self, treeW, pathW, statusW, upW, actionButtons, index, mirrorW):
         self.treeW = treeW
         self.pathW = pathW
         self.upW = upW
@@ -36,19 +36,24 @@ class Panel():
         self.fileIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon)
         #self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
         self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
+        self.waitingForChildren = False
+        self.mirrorW = mirrorW
         
     def start(self):
         self.cd = vfs.vfs_root.VfsRoot()
-        self.cd.startMonitor(self.panelIdx)
-        self.setPath(self.cd)        
+        self.setPath(self.cd)
         #self.treeW.pressed.connect(self.treeW_pressed)
         self.treeW.itemPressed.connect(self.treeW_pressed)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.upW.clicked.connect(self.upW_clicked)
         self.treeW.setSortingEnabled(True)
         #self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
+        self.mirrorW.clicked.connect(self.mirrorW_clicked)
 
     # Signal handlers
+    def mirrorW_clicked(self):
+        self.setPath(self.other.cd)
+    
     def treeW_pressed(self, item):
         self.other.treeW.clearSelection()
         buttons = QtGui.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
@@ -73,13 +78,36 @@ class Panel():
                 #print 'setPathByString(', path, '): cannot find ', i
                 return
 
+    def periodicRefresh(self):
+        if self.waitingForChildren:
+            if self.cd.childrenReady:
+                self.waitingForChildren = False
+                self.cd.childrenReady = False
+                self.setPath2()
+                #print "got children for " + self.cd.name
+        else:
+            if self.cd.changed and not self.treeW.selectedItems():
+                self.cd.changed = False
+                self.setPath(self.cd)
+            #print "reacting to change for " + self.cd.name
+
     def setPath(self, node):
-        # TODO clear middle buttons
-        #self.actionButtons.clearButtons()
+        #print "setpath" + node.path()
+        if node != self.cd:
+            self.cd.childrenStop()
+            self.treeW.clear() #TODO show hourglass
+            item = PanelItem([ 'Loading...'])
+            item.df_node = None
+            self.treeW.insertTopLevelItems(0, [item])
         self.cd = node
+        self.cd.changed = False
+        self.cd.startGetChildren()
+        self.waitingForChildren = True
+        self.pathW.setText(self.cd.path())
+
+    def setPath2(self):
+        #self.pathW.setText(self.cd.path())
         self.cd.startMonitor(self.panelIdx)
-        path = node.path()
-        self.pathW.setText(path)
         ch = self.cd.children()
         keys = [ 'Name' ]
         self.treeW.setColumnCount(0)
@@ -132,6 +160,8 @@ class Panel():
         if not s:
             return
         self.actionButtons.clearButtons()
+        if not s[0].df_node:
+            return
         oldtype = type(s[0].df_node)
         cblist = s[0].df_node.actionButtonCallbacks
         for x in s[1:]:
@@ -167,7 +197,4 @@ class Panel():
         s = [x.df_node for x in s1+s2]
         return s, dest
 
-    def periodicRefresh(self):
-        if self.cd.changed() and not self.treeW.selectedItems():
-            self.setPath(self.cd)
 

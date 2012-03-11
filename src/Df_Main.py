@@ -27,8 +27,8 @@ if __name__ == '__main__':
     
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     
-    d.lp = Df_Panel.Panel(d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0)
-    d.rp = Df_Panel.Panel(d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1)
+    d.lp = Df_Panel.Panel(d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft)
+    d.rp = Df_Panel.Panel(d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright)
     d.lp.other = d.rp
     d.rp.other = d.lp
     d.rp.start()
@@ -48,19 +48,20 @@ if __name__ == '__main__':
     d.g.mw.splitter.setStretchFactor(1,0)
     
     d.jobm = Df_Job.JobManager(d.g.mw.jobs)
+    d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
     Df.d = d
     
-    d.lp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
-    d.rp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
+    #d.lp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
+    #d.rp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
     
-    def oneSecTimer():
+    def periodicTimer():
         Df.d.lp.periodicRefresh()
         Df.d.rp.periodicRefresh()
    
     d.timer = QtCore.QTimer()
-    d.timer.timeout.connect(oneSecTimer)
-    d.timer.start(1000)
+    d.timer.timeout.connect(periodicTimer)
+    d.timer.start(100)
     #os.putenv('nodosfilewarning','1')
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()

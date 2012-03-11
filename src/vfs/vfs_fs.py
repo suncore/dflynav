@@ -63,7 +63,12 @@ class Fs(vfs_node.Node):
         return (cmd, cmdString)
 
     def ops_rename(self, src, dst):
-        pass
+        newpath = Df_Dialog.Dialog("Enter new name", src.fspath)
+        if newpath = None or newpath == src.fspath:
+            return
+        cmd = ('/bin/mv', src.fspath, newpath)
+        cmdString = '$ rename %s %s' % (toutf8(src.fspath), toutf8(newpath))
+        return (cmd, cmdString)
 
     def ops_delete(self, src, dst):
         cmd = ('/bin/rm', '-rf', src.fspath)
@@ -125,40 +130,59 @@ class Directory(Fs):
     def __init__(self, parent, name, fsname):
         super(Directory, self).__init__(parent, name, fsname)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
+        self.stopAsync = False
+        self.children_ = []
+        self.asyncRunning = False
+        self.childrenReady = False
+        self.changed = False
 
+    def startGetChildren(self):
+        #print "startgetchildren"
+        if not self.asyncRunning:
+            self.asyncRunning = True
+            self.childrenReady = False
+            Df.d.vfsJobm.addJob(self.getChildrenAsync)
+        
     def children(self):
-        if True: #self.children_ == None: # TODO enable updates when contents change
-            c = []
-            try:
-                for f in os.listdir(self.fspath):
-                    if not f[0] == '.':
-                        st = os.lstat(path_join(self.fspath, f))
-                        if stat.S_ISDIR(st.st_mode):
-                            c.append(Directory(self, f, f))
-                        else:
-                            if fnmatch.fnmatch(f, "*.zip"):
-                                c.append(PackedFile(self, f, f))
-                            else:
-                                c.append(File(self, f, f))
-            except:
-                pass
-            self.children_ = c
+        #print "1 ", self.childrenReady, self.children_
         return self.children_
-
+        
+    def childrenStop(self):
+        if self.asyncRunning:
+            self.stopAsync = True
+        
+    def getChildrenAsync(self):
+        c = []
+        try:
+            for f in os.listdir(self.fspath):
+                if self.stopAsync:
+                    break
+                if not f[0] == '.':
+                    st = os.lstat(path_join(self.fspath, f))
+                    if stat.S_ISDIR(st.st_mode):
+                        c.append(Directory(self, f, f))
+                    else:
+                        if fnmatch.fnmatch(f, "*.zip"):
+                            c.append(PackedFile(self, f, f))
+                        else:
+                            c.append(File(self, f, f))
+        except:
+            pass
+        self.children_ = c
+        #print "2", self.children_
+        self.childrenReady = True
+        self.asyncRunning = False
+        self.stopAsync = False
+ 
     def startMonitor(self, index):
-        self.fsChange = False
-        Df.d.fsNotify[index].setNotify(self.fspath, self.changeNotify)
+        Df.d.fsNotify[index].setNotify(self.fspath, self.changeNotify_)
 
-    def changeNotify(self):
-        self.fsChange = True
-
-    def changed(self):
-        if self.fsChange:
-            self.fsChange = False
-            return True
+    def changeNotify_(self):
+        #print "change"
+        self.changed = True
 
 if platform.system() == 'Windows':
-    import ctypes, win32file, win32api
+    import ctypes, win32file, win32api, win32wnet
     class WinDrive(Directory):
         def __init__(self, parent, name, fsname):
             super(WinDrive, self).__init__(parent, name, fsname)
@@ -167,7 +191,9 @@ if platform.system() == 'Windows':
                 free_bytes = ctypes.c_ulonglong(0)
                 total_bytes = ctypes.c_ulonglong(0)
                 ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(self.fspath), None, ctypes.pointer(total_bytes), ctypes.pointer(free_bytes))
-                dt=win32file.GetDriveType(name+'\\')
+                drive= name+'\\'
+                dt=win32file.GetDriveType(drive)
+                netlabel = None
                 if dt == win32file.DRIVE_UNKNOWN:
                     dts = ''
                 if dt == win32file.DRIVE_NO_ROOT_DIR:
@@ -178,16 +204,24 @@ if platform.system() == 'Windows':
                     dts = 'Fixed'
                 if dt == win32file.DRIVE_REMOTE:
                     dts = 'Network'
+                    try:
+                        netlabel = win32wnet.WNetGetUniversalName(drive)
+                    except:
+                        pass
                 if dt == win32file.DRIVE_CDROM:
                     dts = 'CD/DVD'
                 if dt == win32file.DRIVE_RAMDISK:
                     dts = 'RAM'
                 info = ('','','','','')
                 try:
-                    info = win32api.GetVolumeInformation(name+'\\')
+                    info = win32api.GetVolumeInformation(drive)
                 except:
                     pass
-                self.meta = [ ('Label', info[0], info[0]), ('File System', info[4], info[4]), ('Type', dts, dts), ('Free', size2str(free_bytes.value), free_bytes.value), ('Size', size2str(total_bytes.value), total_bytes.value) ]
+                if netlabel:
+                    label = netlabel
+                else:
+                    label = info[0]
+                self.meta = [ ('Label', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
             except:
                 pass
 else:
