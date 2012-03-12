@@ -3,7 +3,7 @@
 import sys
 #, os
 from PySide import QtCore, QtGui
-import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons
+import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs
 
 if __name__ == '__main__':
@@ -23,7 +23,6 @@ if __name__ == '__main__':
     d.g.dia = Df_Gui.Dialog()
     #d.g.mw.showMaximized()
     d.g.mw.show()
-    #d.g.dia.show()
     
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     
@@ -63,7 +62,9 @@ if __name__ == '__main__':
     d.timer.timeout.connect(periodicTimer)
     d.timer.start(100)
     #os.putenv('nodosfilewarning','1')
+    
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
+    
     sys.exit(r)

@@ -64,7 +64,7 @@ class Fs(vfs_node.Node):
 
     def ops_rename(self, src, dst):
         newpath = Df_Dialog.Dialog("Enter new name", src.fspath)
-        if newpath = None or newpath == src.fspath:
+        if newpath == None or newpath == src.fspath:
             return
         cmd = ('/bin/mv', src.fspath, newpath)
         cmdString = '$ rename %s %s' % (toutf8(src.fspath), toutf8(newpath))
