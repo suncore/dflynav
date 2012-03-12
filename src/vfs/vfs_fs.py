@@ -3,7 +3,7 @@
 
 import os, platform, shutil
 import stat, time
-import Df, fnmatch
+import Df, fnmatch, Df_Dialog
 
 from . import vfs_node
 from utils import *
@@ -62,10 +62,7 @@ class Fs(vfs_node.Node):
         cmdString = '$ move %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 
-    def ops_rename(self, src, dst):
-        newpath = Df_Dialog.Dialog("Enter new name", src.fspath)
-        if newpath == None or newpath == src.fspath:
-            return
+    def ops_rename(self, src, newpath):
         cmd = ('/bin/mv', src.fspath, newpath)
         cmdString = '$ rename %s %s' % (toutf8(src.fspath), toutf8(newpath))
         return (cmd, cmdString)
@@ -103,7 +100,13 @@ class Fs(vfs_node.Node):
 
     def cb_rename(self):
         srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_rename, srcList, dst)
+        for src in srcList:
+            newpath = Df_Dialog.Dialog("Rename", "Enter new name", src.fspath)
+            if newpath == None:
+                return
+            if newpath == src.fspath:
+                continue
+            Df.d.jobm.addJobs(srcList[0].ops_rename, [ src ], newpath)
 
     def cb_delete(self):
         srcList, dst = self.getSelectionAndDestination()
