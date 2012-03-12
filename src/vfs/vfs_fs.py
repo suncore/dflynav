@@ -50,21 +50,29 @@ class Fs(vfs_node.Node):
 
     def binaryOpCompat(self, obj):
         return isinstance(obj, Fs)
+    
+    def mkdir(self, dir):
+        Df.d.jobm.addJobs(self.ops_mkdir, [ dir ], None)
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
         cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
-        cmdString = '$ copy %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ copy %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 
     def ops_move(self, src, dst):
         cmd = ('/bin/mv', src.fspath, dst.fspath)
-        cmdString = '$ move %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ move %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 
     def ops_rename(self, src, newpath):
         cmd = ('/bin/mv', src.fspath, newpath)
-        cmdString = '$ rename %s %s' % (toutf8(src.fspath), toutf8(newpath))
+        cmdString = '$ rename %s to %s' % (toutf8(src.fspath), toutf8(newpath))
+        return (cmd, cmdString)
+
+    def ops_mkdir(self, dir, dummy):
+        cmd = ('/bin/mkdir', path_join(self.fspath, dir))
+        cmdString = '$ mkdir %s' % (toutf8(path_join(self.fspath, dir)))
         return (cmd, cmdString)
 
     def ops_delete(self, src, dst):
@@ -74,7 +82,7 @@ class Fs(vfs_node.Node):
  
     def ops_link(self, src, dst):
         cmd = ('/bin/ln', '-s', src.fspath, dst.fspath)
-        cmdString = '$ link %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ link %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 
     def ops_pack(self, src, dst):
@@ -84,7 +92,7 @@ class Fs(vfs_node.Node):
 
     def ops_unpack(self, src, dst):
         cmd = ('unzip', '-o', '-qq', '-d', dst.fspath, src.fspath)
-        cmdString = '$ unpack %s %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ unpack %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
         return (cmd, cmdString)
 
     def ops_compare(self, src, dst):
@@ -101,12 +109,14 @@ class Fs(vfs_node.Node):
     def cb_rename(self):
         srcList, dst = self.getSelectionAndDestination()
         for src in srcList:
-            newpath = Df_Dialog.Dialog("Rename", "Enter new name", src.fspath)
+            newpath = Df_Dialog.Dialog("Rename", "Enter new name                                                                                                                                       ", 
+                                       src.name)
             if newpath == None:
                 return
             if newpath == src.fspath:
                 continue
-            Df.d.jobm.addJobs(srcList[0].ops_rename, [ src ], newpath)
+            Df.d.jobm.addJobs(srcList[0].ops_rename, [ src ], 
+                              path_join(src.parent.fspath, newpath))
 
     def cb_delete(self):
         srcList, dst = self.getSelectionAndDestination()
@@ -224,7 +234,7 @@ if platform.system() == 'Windows':
                     label = netlabel
                 else:
                     label = info[0]
-                self.meta = [ ('Label', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
+                self.meta = [ ('Description', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
             except:
                 pass
 else:

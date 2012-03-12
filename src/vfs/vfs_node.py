@@ -46,3 +46,7 @@ class Node(object):
 
     def startMonitor(self, index):
         return
+    
+    def mkdir(self):
+        pass
+    

@@ -49,6 +49,12 @@ class Panel():
         self.treeW.setSortingEnabled(True)
         #self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.mirrorW.clicked.connect(self.mirrorW_clicked)
+        self.pathW.returnPressed.connect(self.pathW_returnPressed)
+
+    def pathW_returnPressed(self):
+        text = self.pathW.text()
+        text = text.split('/')[-1:][0]
+        self.cd.mkdir(text)
 
     # Signal handlers
     def mirrorW_clicked(self):
