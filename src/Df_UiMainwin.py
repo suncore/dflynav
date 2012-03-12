@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwin.ui'
 #
-# Created: Sun Mar 11 11:02:25 2012
+# Created: Mon Mar 12 20:10:47 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -152,6 +152,7 @@ class Ui_MainWindow(object):
         self.right.addWidget(self.right_path, 5, 0, 1, 1)
         self.mainHoriz.addLayout(self.right)
         self.jobs = QtGui.QTreeWidget(self.splitter)
+        self.jobs.setMinimumSize(QtCore.QSize(0, 35))
         self.jobs.setRootIsDecorated(False)
         self.jobs.setObjectName("jobs")
         self.jobs.headerItem().setText(0, "1")
