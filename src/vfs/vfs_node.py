@@ -25,6 +25,12 @@ class Node(object):
     def childrenStop(self):
         pass
     
+    def childByName(self, name):
+        for c in self.children():
+            if name == c.name:
+                return c
+        return None
+    
     def path(self):
         n = self
         if n.name != None and n.name != '/':

@@ -1,5 +1,5 @@
 
-import vfs
+import vfs, Df_Dialog
 from PySide.QtCore import *
 from PySide import QtGui
 
@@ -41,7 +41,7 @@ class Panel():
         
     def start(self):
         self.cd = vfs.vfs_root.VfsRoot()
-        self.setPath(self.cd)
+        self.refreshCd()
         #self.treeW.pressed.connect(self.treeW_pressed)
         self.treeW.itemPressed.connect(self.treeW_pressed)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
@@ -53,8 +53,24 @@ class Panel():
 
     def pathW_returnPressed(self):
         text = self.pathW.text()
-        text = text.split('/')[-1:][0]
-        self.cd.mkdir(text)
+        text = text.rstrip('/ ')
+        c = self.setPathByString(text, False)
+        if not c:
+            text = Df_Dialog.Dialog("Create directory?", "Could not find this directory. Do you want to create it?                                                                                                                              ", 
+                                       text)
+            if text:
+                head = text.split('/')[:-1]
+                head = '/'.join(head)
+                tail = text.split('/')[-1:][0]
+                c = self.setPathByString(head, False)
+                if not c:
+                    print "errororr"
+                    Df_Dialog.Message("Could not find parent directory", 'Could not find the parent directory\n"' + head + '"\nto create\n"' + tail + '"\nin.')
+                    self.refreshCd()
+                    return
+                c.mkdir(tail)
+            else:
+                self.refreshCd()
 
     # Signal handlers
     def mirrorW_clicked(self):
@@ -74,15 +90,24 @@ class Panel():
         if self.cd.parent:
             self.setPath(self.cd.parent)
 
-    def setPathByString(self, path):
+    def setPathByString(self, path, bestEffort = True):
+        c = self.cd
+        while c.parent:
+            c = c.parent
         for i in path.rsplit('/')[1:]:
-            for c in self.cd.children():
-                if i == c.name:
-                    self.setPath(c)
+            parent = c
+            c = parent.childByName(i)
+            if not c:
+                if bestEffort:
+                    c = parent
                     break
-            else:
-                #print 'setPathByString(', path, '): cannot find ', i
-                return
+                else:
+                    return None
+        self.setPath(c)
+        return c
+
+    def refreshCd(self):
+        self.setPath(self.cd)
 
     def periodicRefresh(self):
         if self.waitingForChildren:
@@ -94,13 +119,14 @@ class Panel():
         else:
             if self.cd.changed and not self.treeW.selectedItems():
                 self.cd.changed = False
-                self.setPath(self.cd)
+                self.refreshCd()
             #print "reacting to change for " + self.cd.name
 
     def setPath(self, node):
         #print "setpath" + node.path()
         if node != self.cd:
             self.cd.childrenStop()
+            self.treeW.clearSelection()
             self.treeW.clear() #TODO show hourglass
             item = PanelItem([ 'Loading...'])
             item.df_node = None
@@ -110,6 +136,7 @@ class Panel():
         self.cd.startGetChildren()
         self.waitingForChildren = True
         self.pathW.setText(self.cd.path())
+        self.setStatus(0,0)
 
     def setPath2(self):
         #self.pathW.setText(self.cd.path())
@@ -123,6 +150,7 @@ class Panel():
         self.treeW.setHeaderLabels(keys)
         self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
         items = []
+        self.nrItems = 0
         for i in ch:
             item  = [ i.name ]
             for k,s,v in i.meta:
@@ -143,6 +171,8 @@ class Panel():
             #pi.setData(QtCore.Qt.UserRole, pixmap)
             pi.df_node = i
             items.append(pi)
+            self.nrItems += 1
+        self.treeW.clearSelection()
         self.treeW.clear()
         self.setActionButtons(items)
         self.treeW.insertTopLevelItems(0, items)
@@ -154,6 +184,7 @@ class Panel():
         for i in keys:
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
+        self.setStatus(0,self.nrItems)
                 
     def leftMouseButton(self):
         pass
@@ -161,6 +192,7 @@ class Panel():
     def treeW_selectionChanged(self):
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
+        self.setStatus(len(s),self.nrItems)
         
     def setActionButtons(self, s):
         if not s:
@@ -203,4 +235,8 @@ class Panel():
         s = [x.df_node for x in s1+s2]
         return s, dest
 
-
+    def setStatus(self, selectedItems, totalItems, selectedSize = None, freeFileSystemSize = None):
+        if freeFileSystemSize:
+            self.statusW.setText("%d/%d = %s  Free: %s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize)))
+        else:
+            self.statusW.setText("%d/%d" % (selectedItems, totalItems))

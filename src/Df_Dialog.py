@@ -7,3 +7,6 @@ def Dialog(title, instruction, prefill):
     if ok and result != '':
         return result
     return None
+
+def Message(title, text):
+    QtGui.QMessageBox.warning(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton)

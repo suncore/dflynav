@@ -5,6 +5,7 @@ import sys
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs
+import platform
 
 def refresh():
     d.lp.setPath(d.lp.cd)
@@ -54,9 +55,12 @@ if __name__ == '__main__':
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
     Df.d = d
-    
-    #d.lp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
-    #d.rp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
+    if platform.system() == 'Windows':
+        d.lp.setPathByString("/Files/C:/Users/ervhch/Downloads")
+        d.rp.setPathByString("/Files/C:/Users/ervhch/Downloads")
+    else:
+        d.lp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
+        d.rp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
     
     def periodicTimer():
         Df.d.lp.periodicRefresh()

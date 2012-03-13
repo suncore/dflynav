@@ -159,6 +159,24 @@ class Directory(Fs):
     def children(self):
         #print "1 ", self.childrenReady, self.children_
         return self.children_
+
+    def buildChild(self, f):
+        st = os.lstat(path_join(self.fspath, f))
+        if stat.S_ISDIR(st.st_mode):
+            c = Directory(self, f, f)
+        else:
+            if fnmatch.fnmatch(f, "*.zip"):
+                c = PackedFile(self, f, f)
+            else:
+                c = File(self, f, f)
+        return c
+    
+    def childByName(self, name):
+        try:
+            c = self.buildChild(name)
+        except:
+            c = None
+        return c
         
     def childrenStop(self):
         if self.asyncRunning:
@@ -171,14 +189,7 @@ class Directory(Fs):
                 if self.stopAsync:
                     break
                 if not f[0] == '.':
-                    st = os.lstat(path_join(self.fspath, f))
-                    if stat.S_ISDIR(st.st_mode):
-                        c.append(Directory(self, f, f))
-                    else:
-                        if fnmatch.fnmatch(f, "*.zip"):
-                            c.append(PackedFile(self, f, f))
-                        else:
-                            c.append(File(self, f, f))
+                    c.append(self.buildChild(f))
         except:
             pass
         self.children_ = c
