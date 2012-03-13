@@ -35,7 +35,8 @@ class Fs(vfs_node.Node):
         self.fspath = FsPath(self)
         try:
             self.stat = os.lstat(self.fspath)
-            self.meta = [ ('Size', iff(stat.S_ISDIR(self.stat.st_mode), '-', size2str(self.stat.st_size)), iff(stat.S_ISDIR(self.stat.st_mode), 0L, self.stat.st_size)), 
+            self.size = iff(stat.S_ISDIR(self.stat.st_mode), 0L, self.stat.st_size)
+            self.meta = [ ('Size', iff(stat.S_ISDIR(self.stat.st_mode), '-', size2str(self.stat.st_size)), self.size), 
                       ('Date', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ]
         except:

@@ -12,6 +12,7 @@ class Node(object):
         self.actionButtonCallbacks = []
         self.childrenReady = True
         self.changed = False
+        self.size = 0
 
     def leaf(self):
         return False

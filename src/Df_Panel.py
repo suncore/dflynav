@@ -184,7 +184,7 @@ class Panel():
         for i in keys:
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
-        self.setStatus(0,self.nrItems, 0, self.cd.fsFree())
+        self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
                 
     def leftMouseButton(self):
         pass
@@ -192,7 +192,10 @@ class Panel():
     def treeW_selectionChanged(self):
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
-        self.setStatus(len(s), self.nrItems, 0, self.cd.fsFree())
+        sum = 0
+        for i in s:
+            sum += i.df_node.size
+        self.setStatus(len(s), self.nrItems, sum, self.cd.fsFree())
         
     def setActionButtons(self, s):
         if not s:
@@ -237,6 +240,6 @@ class Panel():
 
     def setStatus(self, selectedItems, totalItems, selectedSize = None, freeFileSystemSize = None):
         if freeFileSystemSize:
-            self.statusW.setText("%d/%d = %s  Free: %s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize)))
+            self.statusW.setText("%d/%d = %s   Free: %s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize)))
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
