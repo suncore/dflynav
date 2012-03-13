@@ -6,6 +6,10 @@ from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs
 
+def refresh():
+    d.lp.setPath(d.lp.cd)
+    d.rp.setPath(d.rp.cd)
+
 if __name__ == '__main__':
 
     # d is the only global variable, the base object that contains the entier application state
@@ -62,6 +66,8 @@ if __name__ == '__main__':
     d.timer.timeout.connect(periodicTimer)
     d.timer.start(100)
     #os.putenv('nodosfilewarning','1')
+    
+    d.g.mw.refresh.clicked.connect(refresh)
     
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()

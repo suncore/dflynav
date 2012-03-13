@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwin.ui'
 #
-# Created: Mon Mar 12 20:10:47 2012
+# Created: Mon Mar 12 21:49:11 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -75,6 +75,9 @@ class Ui_MainWindow(object):
         self.configure = QtGui.QPushButton(self.layoutWidget)
         self.configure.setObjectName("configure")
         self.verticalLayout_4.addWidget(self.configure)
+        self.refresh = QtGui.QPushButton(self.layoutWidget)
+        self.refresh.setObjectName("refresh")
+        self.verticalLayout_4.addWidget(self.refresh)
         self.help = QtGui.QPushButton(self.layoutWidget)
         self.help.setObjectName("help")
         self.verticalLayout_4.addWidget(self.help)
@@ -168,6 +171,7 @@ class Ui_MainWindow(object):
         self.left_bookmarks.setText(QtGui.QApplication.translate("MainWindow", "Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.left_status.setText(QtGui.QApplication.translate("MainWindow", "status", None, QtGui.QApplication.UnicodeUTF8))
         self.configure.setText(QtGui.QApplication.translate("MainWindow", "Configure", None, QtGui.QApplication.UnicodeUTF8))
+        self.refresh.setText(QtGui.QApplication.translate("MainWindow", "Refresh", None, QtGui.QApplication.UnicodeUTF8))
         self.help.setText(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.right_status.setText(QtGui.QApplication.translate("MainWindow", "status", None, QtGui.QApplication.UnicodeUTF8))
         self.right_history.setText(QtGui.QApplication.translate("MainWindow", "History", None, QtGui.QApplication.UnicodeUTF8))

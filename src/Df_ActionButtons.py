@@ -1,4 +1,6 @@
 
+# Actionbuttons are those buttons in the middle column that are dynamic, changing with selection
+
 from PySide.QtCore import *
 from PySide import QtGui
 

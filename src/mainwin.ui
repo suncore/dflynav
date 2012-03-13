@@ -106,6 +106,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="refresh">
+              <property name="text">
+               <string>Refresh</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="help">
               <property name="text">
                <string>Help</string>
