@@ -57,7 +57,7 @@ if __name__ == '__main__':
     Df.d = d
     if platform.system() == 'Windows':
         d.lp.setPathByString("/Files/C:/Users/ervhch/Downloads")
-        d.rp.setPathByString("/Files/C:/Users/ervhch/Downloads")
+        d.rp.setPathByString("/Files/C:/Users/hch/Downloads")
     else:
         d.lp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
         d.rp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")

@@ -56,3 +56,5 @@ class Node(object):
     def mkdir(self):
         pass
     
+    def fsFree(self):
+        return None

@@ -2,6 +2,7 @@
 import vfs, Df_Dialog
 from PySide.QtCore import *
 from PySide import QtGui
+from utils import *
 
 
 class PanelItem(QtGui.QTreeWidgetItem):
@@ -158,7 +159,7 @@ class Panel():
             col = 1
             for k,s,v in i.meta:
                 if type(1L) == type(v):
-                    pi.setTextAlignment(col, Qt.AlignRight)
+                    pi.setTextAlignment(col, Qt.AlignCenter | Qt.AlignRight)
                 col += 1
             if i.leaf():
                 #pi.setIcon(0, self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon))
@@ -183,7 +184,7 @@ class Panel():
         for i in keys:
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
-        self.setStatus(0,self.nrItems)
+        self.setStatus(0,self.nrItems, 0, self.cd.fsFree())
                 
     def leftMouseButton(self):
         pass
@@ -191,7 +192,7 @@ class Panel():
     def treeW_selectionChanged(self):
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
-        self.setStatus(len(s),self.nrItems)
+        self.setStatus(len(s), self.nrItems, 0, self.cd.fsFree())
         
     def setActionButtons(self, s):
         if not s:

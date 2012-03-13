@@ -4,6 +4,8 @@
 import os, platform, shutil
 import stat, time
 import Df, fnmatch, Df_Dialog
+if platform.system() == 'Windows':
+    import ctypes, win32file, win32api, win32wnet
 
 from . import vfs_node
 from utils import *
@@ -53,6 +55,20 @@ class Fs(vfs_node.Node):
     
     def mkdir(self, dir):
         Df.d.jobm.addJobs(self.ops_mkdir, [ dir ], None)
+        
+    def fsFree(self):
+        #try:
+            if platform.system() == 'Windows':
+                free_bytes = ctypes.c_ulonglong(0)
+                total_bytes = ctypes.c_ulonglong(0)
+                ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(self.fspath), None, ctypes.pointer(total_bytes), ctypes.pointer(free_bytes))
+                return free_bytes.value
+            else:
+                stat = os.statvfs(self.fspath)
+                return stat.f_bavail * stat.f_bsize
+        #except:
+            #return None
+
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
@@ -206,7 +222,6 @@ class Directory(Fs):
         self.changed = True
 
 if platform.system() == 'Windows':
-    import ctypes, win32file, win32api, win32wnet
     class WinDrive(Directory):
         def __init__(self, parent, name, fsname):
             super(WinDrive, self).__init__(parent, name, fsname)
