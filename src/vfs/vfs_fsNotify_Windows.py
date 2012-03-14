@@ -34,19 +34,20 @@ class Notify():
 
     def stop(self):
         if self.changeHandle:
+            hdl = self.changeHandle
+            self.changeHandle = None
             try:
-                win32file.FindCloseChangeNotification(self.changeHandle)
+                win32file.FindCloseChangeNotification(hdl)
             except:
                 pass
-            self.changeHandle = None
 
     def notifyThread(self, dummy):
         while 1:
             if self.changeHandle:
                 try:
                     result = win32event.WaitForSingleObject(self.changeHandle, 1000)
-                    if result == win32con.WAIT_OBJECT_0:
-                        if self.cbfun and ((time.time() - self.startTime) > 0.1):
+                    if result == win32con.WAIT_OBJECT_0 and self.changeHandle:
+                        if self.cbfun: # and ((time.time() - self.startTime) > 0.1):
                             self.startTime = time.time()
                             self.cbfun()
                         win32file.FindNextChangeNotification(self.changeHandle)
