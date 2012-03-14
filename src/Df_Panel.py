@@ -3,7 +3,7 @@ import vfs, Df_Dialog
 from PySide.QtCore import *
 from PySide import QtGui
 from utils import *
-
+import Df
 
 class PanelItem(QtGui.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
@@ -24,7 +24,8 @@ class PanelItem(QtGui.QTreeWidgetItem):
             return lv < rv 
 
 class Panel():
-    def __init__(self, treeW, pathW, statusW, upW, actionButtons, index, mirrorW):
+    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW):
+        self.mainW = mainW
         self.treeW = treeW
         self.pathW = pathW
         self.upW = upW
@@ -39,10 +40,15 @@ class Panel():
         self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
         self.waitingForChildren = False
         self.mirrorW = mirrorW
+        self.historyW = historyW
+        self.bookmarksW = bookmarksW
+        self.historyMenu = QtGui.QMenu(self.mainW)
+        self.cd = vfs.vfs_root.VfsRoot()
+        self.historyW.setMenu(self.historyMenu)
         
     def start(self):
-        self.cd = vfs.vfs_root.VfsRoot()
         self.refreshCd()
+        self.updateHistoryMenuBoth()
         #self.treeW.pressed.connect(self.treeW_pressed)
         self.treeW.itemPressed.connect(self.treeW_pressed)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
@@ -51,7 +57,8 @@ class Panel():
         #self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.mirrorW.clicked.connect(self.mirrorW_clicked)
         self.pathW.returnPressed.connect(self.pathW_returnPressed)
-
+        
+    # Signal handlers ----------------------------------------------------------------------------------
     def pathW_returnPressed(self):
         text = self.pathW.text()
         text = text.rstrip('/ ')
@@ -72,7 +79,6 @@ class Panel():
             else:
                 self.refreshCd()
 
-    # Signal handlers
     def mirrorW_clicked(self):
         self.setPath(self.other.cd)
     
@@ -117,13 +123,15 @@ class Panel():
                 self.setPath2()
                 #print "got children for " + self.cd.name
         else:
-            if self.cd.changed and not self.treeW.selectedItems():
-                self.cd.changed = False
-                self.refreshCd()
+            if self.cd.changed:
+                if not self.treeW.selectedItems():
+                    self.cd.changed = False
+                    self.refreshCd()
             #print "reacting to change for " + self.cd.name
 
     def setPath(self, node):
         #print "setpath" + node.path()
+        changed = False
         if node != self.cd:
             self.cd.childrenStop()
             self.treeW.clearSelection()
@@ -131,12 +139,16 @@ class Panel():
             item = PanelItem([ 'Loading...'])
             item.df_node = None
             self.treeW.insertTopLevelItems(0, [item])
+            changed = True
         self.cd = node
         self.cd.changed = False
         self.cd.startGetChildren()
         self.waitingForChildren = True
         self.pathW.setText(self.cd.path())
         self.setStatus(0,0)
+        if changed:
+            self.updateHistoryMenuBoth()
+
 
     def setPath2(self):
         #self.pathW.setText(self.cd.path())
@@ -243,3 +255,31 @@ class Panel():
             self.statusW.setText("%d/%d = %s   Free: %s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize)))
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
+
+    def historyMenu_triggered(self, path):
+        self.setPathByString(path, True)
+    
+    def updateHistoryMenuBoth(self):
+        self.updateHistoryMenu(True)
+        self.other.updateHistoryMenu(False)
+
+    def updateHistoryMenu(self, rebuildHistory = True):
+        path = self.cd.path()
+        h = Df.d.history
+        if rebuildHistory:
+            for i in range(0,len(h)):
+                if h[i] == path:
+                    h = [path] + h[:i] + h[i+1:]
+                    break
+            else:
+                h.insert(0, path)
+            Df.d.history = h[:30]
+        self.historyMenu.clear()
+        for path in h:
+            actions = []
+            action = QtGui.QAction(path, self.mainW)
+            receiver = lambda path=path: self.historyMenu_triggered(path)
+            action.triggered.connect(receiver)
+            actions.append(action)
+            self.historyMenu.addActions(actions)
+

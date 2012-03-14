@@ -16,6 +16,7 @@ if __name__ == '__main__':
 
     # d is the only global variable, the base object that contains the entier application state
     d = Df_Dragonfly.DragonFly()
+    Df.d = d
     
     d.fsNotify = [ None, None ]
     d.fsNotify[0] = vfs.Notify()
@@ -32,8 +33,10 @@ if __name__ == '__main__':
     
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     
-    d.lp = Df_Panel.Panel(d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft)
-    d.rp = Df_Panel.Panel(d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright)
+    d.history = []
+    d.bookmarks = [ "/Files/C:/Users/hch/Downloads" ]
+    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks)
+    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks)
     d.lp.other = d.rp
     d.rp.other = d.lp
     d.rp.start()
@@ -55,7 +58,6 @@ if __name__ == '__main__':
     d.jobm = Df_Job.JobManager(d.g.mw.jobs)
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
-    Df.d = d
     if platform.system() == 'Windows':
         d.lp.setPathByString("/Files/C:/Users/ervhch/Downloads")
         d.rp.setPathByString("/Files/C:/Users/hch/Downloads")
@@ -74,15 +76,6 @@ if __name__ == '__main__':
     
     d.g.mw.refresh.clicked.connect(refresh)
 
-    self = d.g.mw
-    popMenu = QtGui.QMenu(self)
-    popMenu.addAction(QtGui.QAction('test0', self))
-    popMenu.addAction(QtGui.QAction('test1', self))
-    popMenu.addSeparator()
-    popMenu.addAction(QtGui.QAction('test2', self))        
-    d.g.mw.left_history.setMenu(popMenu)
-
-    
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
