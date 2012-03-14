@@ -73,6 +73,15 @@ if __name__ == '__main__':
     #os.putenv('nodosfilewarning','1')
     
     d.g.mw.refresh.clicked.connect(refresh)
+
+    self = d.g.mw
+    popMenu = QtGui.QMenu(self)
+    popMenu.addAction(QtGui.QAction('test0', self))
+    popMenu.addAction(QtGui.QAction('test1', self))
+    popMenu.addSeparator()
+    popMenu.addAction(QtGui.QAction('test2', self))        
+    d.g.mw.left_history.setMenu(popMenu)
+
     
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
