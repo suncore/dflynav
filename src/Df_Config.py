@@ -13,6 +13,8 @@ class Config():
 #        Df.d.g.mw.resize(size)
 #        Df.d.g.mw.move(pos)
         Df.d.bookmarks = self.settings.value("bookmarks", [ ])
+        if type(Df.d.bookmarks) != type([]):
+            Df.d.bookmarks = [ Df.d.bookmarks ]
         
     def Save(self):
         # save d.bookmarks as part of config file
