@@ -43,12 +43,15 @@ class Panel():
         self.historyW = historyW
         self.bookmarksW = bookmarksW
         self.historyMenu = QtGui.QMenu(self.mainW)
+        self.bookmarksMenu = QtGui.QMenu(self.mainW)
         self.cd = vfs.vfs_root.VfsRoot()
         self.historyW.setMenu(self.historyMenu)
+        self.bookmarksW.setMenu(self.bookmarksMenu)
         
     def start(self):
         self.refreshCd()
         self.updateHistoryMenuBoth()
+        self.updateBookmarksMenuBoth()
         #self.treeW.pressed.connect(self.treeW_pressed)
         self.treeW.itemPressed.connect(self.treeW_pressed)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
@@ -256,9 +259,9 @@ class Panel():
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
 
-    def historyMenu_triggered(self, path):
+    def menuGotoPath(self, path):
         self.setPathByString(path, True)
-    
+
     def updateHistoryMenuBoth(self):
         self.updateHistoryMenu(True)
         self.other.updateHistoryMenu(False)
@@ -275,11 +278,44 @@ class Panel():
                 h.insert(0, path)
             Df.d.history = h[:30]
         self.historyMenu.clear()
+        actions = []
         for path in h:
-            actions = []
             action = QtGui.QAction(path, self.mainW)
-            receiver = lambda path=path: self.historyMenu_triggered(path)
+            receiver = lambda path=path: self.menuGotoPath(path)
             action.triggered.connect(receiver)
             actions.append(action)
-            self.historyMenu.addActions(actions)
+        self.historyMenu.addActions(actions)
+
+    def updateBookmarksMenuBoth(self):
+        self.updateBookmarksMenu()
+        self.other.updateBookmarksMenu()
+
+    def addBookmark(self):
+        path = self.cd.path()
+        h = Df.d.bookmarks
+        for i in range(0,len(h)):
+            if h[i] == path:
+                h = [path] + h[:i] + h[i+1:]
+                break
+        else:
+            h.append(path)
+        Df.d.bookmarks = h
+        Df.d.config.Save()
+        self.updateBookmarksMenuBoth()
+        
+    def updateBookmarksMenu(self):
+        self.bookmarksMenu.clear()
+        actions = []
+        action = QtGui.QAction('Add bookmark', self.mainW)
+        action.triggered.connect(self.addBookmark)
+        actions.append(action)
+        action = QtGui.QAction('', self.mainW)
+        action.setSeparator(True)
+        actions.append(action)
+        for path in Df.d.bookmarks:
+            action = QtGui.QAction(path, self.mainW)
+            receiver = lambda path=path: self.menuGotoPath(path)
+            action.triggered.connect(receiver)
+            actions.append(action)
+        self.bookmarksMenu.addActions(actions)
 

@@ -6,7 +6,7 @@ import sys
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs
-import platform
+import platform, Df_Config
 
 def refresh():
     d.lp.setPath(d.lp.cd)
@@ -17,6 +17,7 @@ if __name__ == '__main__':
     # d is the only global variable, the base object that contains the entier application state
     d = Df_Dragonfly.DragonFly()
     Df.d = d
+    d.config = Df_Config.Config()
     
     d.fsNotify = [ None, None ]
     d.fsNotify[0] = vfs.Notify()
@@ -34,11 +35,12 @@ if __name__ == '__main__':
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     
     d.history = []
-    d.bookmarks = [ "/Files/C:/Users/hch/Downloads" ]
+    d.bookmarks = [ ]
     d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks)
     d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks)
     d.lp.other = d.rp
     d.rp.other = d.lp
+    d.config.Load()
     d.rp.start()
     d.lp.start()
     
@@ -76,10 +78,11 @@ if __name__ == '__main__':
     
     d.g.mw.refresh.clicked.connect(refresh)
 
+
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
-    
+    d.config.Save()
     sys.exit(r)
 
 
