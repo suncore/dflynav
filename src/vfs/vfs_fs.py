@@ -264,6 +264,7 @@ if platform.system() == 'Windows':
                 self.meta = [ ('Description', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
             except:
                 pass
+
 else:
     class RootDirectory(Directory):
         def __init__(self, parent, name, fsname):

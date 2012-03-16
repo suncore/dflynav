@@ -40,12 +40,8 @@ if __name__ == '__main__':
     d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks)
     d.lp.other = d.rp
     d.rp.other = d.lp
-    d.config.Load()
     d.rp.start()
     d.lp.start()
-    
-    #d.sl = Df_StatusList.StatusList(d.g.mw.statusbar)
-    #d.sl.setText('Welcome to Dragonfly Navigator 1.0')
     
     d.g.mw.left_up.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowUp))
     d.g.mw.right_up.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowUp))
@@ -60,13 +56,6 @@ if __name__ == '__main__':
     d.jobm = Df_Job.JobManager(d.g.mw.jobs)
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
-    if platform.system() == 'Windows':
-        d.lp.setPathByString("/Files/C:/Users/ervhch/Downloads")
-        d.rp.setPathByString("/Files/C:/Users/hch/Downloads")
-    else:
-        d.lp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
-        d.rp.setPathByString("/Files/Local/a/proj/dragonfly/src/test")
-    
     def periodicTimer():
         Df.d.lp.periodicRefresh()
         Df.d.rp.periodicRefresh()
@@ -78,6 +67,7 @@ if __name__ == '__main__':
     
     d.g.mw.refresh.clicked.connect(refresh)
 
+    d.config.Load()
 
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
@@ -106,7 +96,7 @@ if __name__ == '__main__':
 #        self.button.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 #        self.button.customContextMenuRequested.connect(self.on_context_menu)
 #
-#        self.connect(self.button, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), self.on_context_menu)
+#        #self.connect(self.button, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), self.on_context_menu)
 #
 #        # create context menu
 #        self.popMenu = QtGui.QMenu(self)

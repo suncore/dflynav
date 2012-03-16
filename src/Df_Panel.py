@@ -47,6 +47,11 @@ class Panel():
         self.cd = vfs.vfs_root.VfsRoot()
         self.historyW.setMenu(self.historyMenu)
         self.bookmarksW.setMenu(self.bookmarksMenu)
+        self.bookmarksMenu.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.bookmarksMenu.customContextMenuRequested.connect(self.bookmarksContextMenuPopup)
+        self.bookmarksContextMenu = QtGui.QMenu(self.mainW)
+        self.bookmarksContextMenu.addAction(QtGui.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
+        self.bookmarksMenuHoverPath = None
         
     def start(self):
         self.refreshCd()
@@ -316,6 +321,26 @@ class Panel():
             action = QtGui.QAction(path, self.mainW)
             receiver = lambda path=path: self.menuGotoPath(path)
             action.triggered.connect(receiver)
+            hover = lambda path=path: self.bookmarksMenuHoverPathSet(path)
+            action.hovered.connect(hover)
             actions.append(action)
         self.bookmarksMenu.addActions(actions)
 
+    def bookmarksContextMenuPopup(self, point):
+        self.bookmarksContextMenu.exec_(self.bookmarksMenu.mapToGlobal(point))        
+
+    def bookmarksMenuHoverPathSet(self, path):
+        self.bookmarksMenuHoverPath = path
+        
+    def bookmarksContextMenuDelete(self):
+        if self.bookmarksMenuHoverPath != None:
+            path = self.bookmarksMenuHoverPath
+            h = Df.d.bookmarks
+            for i in range(0,len(h)):
+                if h[i] == path:
+                    h = h[:i] + h[i+1:]
+                    break
+            Df.d.bookmarks = h
+            self.updateBookmarksMenuBoth()
+            
+            
