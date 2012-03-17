@@ -24,7 +24,7 @@ class PanelItem(QtGui.QTreeWidgetItem):
             return lv < rv 
 
 class Panel():
-    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW):
+    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW):
         self.mainW = mainW
         self.treeW = treeW
         self.pathW = pathW
@@ -52,6 +52,8 @@ class Panel():
         self.bookmarksContextMenu = QtGui.QMenu(self.mainW)
         self.bookmarksContextMenu.addAction(QtGui.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
         self.bookmarksMenuHoverPath = None
+        self.backHistory = ['/']
+        self.backW = backW
         
     def start(self):
         self.refreshCd()
@@ -61,6 +63,7 @@ class Panel():
         self.treeW.itemPressed.connect(self.treeW_pressed)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.upW.clicked.connect(self.upW_clicked)
+        self.backW.clicked.connect(self.backW_clicked)
         self.treeW.setSortingEnabled(True)
         #self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.mirrorW.clicked.connect(self.mirrorW_clicked)
@@ -104,7 +107,13 @@ class Panel():
         if self.cd.parent:
             self.setPath(self.cd.parent)
 
-    def setPathByString(self, path, bestEffort = True):
+    def backW_clicked(self):
+        while self.backHistory[0] == self.cd.path() and len(self.backHistory) > 1:
+            self.backHistory = self.backHistory[1:]
+        path = self.backHistory[0]
+        self.setPathByString(path, True, False)
+
+    def setPathByString(self, path, bestEffort = True, addToBackHistory = True):
         c = self.cd
         while c.parent:
             c = c.parent
@@ -117,7 +126,7 @@ class Panel():
                     break
                 else:
                     return None
-        self.setPath(c)
+        self.setPath(c, addToBackHistory)
         return c
 
     def refreshCd(self):
@@ -129,18 +138,16 @@ class Panel():
                 self.waitingForChildren = False
                 self.cd.childrenReady = False
                 self.setPath2()
-                #print "got children for " + self.cd.name
         else:
             if self.cd.changed:
                 if not self.treeW.selectedItems():
                     self.cd.changed = False
                     self.refreshCd()
-            #print "reacting to change for " + self.cd.name
 
-    def setPath(self, node):
-        #print "setpath" + node.path()
+    def setPath(self, node, addToBackHistory = True):
         changed = False
         if node != self.cd:
+            self.updateHistoryMenuBoth()
             self.cd.childrenStop()
             self.treeW.clearSelection()
             self.treeW.clear() #TODO show hourglass
@@ -148,14 +155,15 @@ class Panel():
             item.df_node = None
             self.treeW.insertTopLevelItems(0, [item])
             changed = True
+            if addToBackHistory:
+                self.backHistory.insert(0,node.path())
+                self.backHistory = self.backHistory[0:100]
         self.cd = node
         self.cd.changed = False
         self.cd.startGetChildren()
         self.waitingForChildren = True
         self.pathW.setText(self.cd.path())
         self.setStatus(0,0)
-        if changed:
-            self.updateHistoryMenuBoth()
 
 
     def setPath2(self):
@@ -264,7 +272,7 @@ class Panel():
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
 
-    def menuGotoPath(self, path):
+    def gotoPath(self, path):
         self.setPathByString(path, True)
 
     def updateHistoryMenuBoth(self):
@@ -286,7 +294,7 @@ class Panel():
         actions = []
         for path in h:
             action = QtGui.QAction(path, self.mainW)
-            receiver = lambda path=path: self.menuGotoPath(path)
+            receiver = lambda path=path: self.gotoPath(path)
             action.triggered.connect(receiver)
             actions.append(action)
         self.historyMenu.addActions(actions)
@@ -319,7 +327,7 @@ class Panel():
         actions.append(action)
         for path in Df.d.bookmarks:
             action = QtGui.QAction(path, self.mainW)
-            receiver = lambda path=path: self.menuGotoPath(path)
+            receiver = lambda path=path: self.gotoPath(path)
             action.triggered.connect(receiver)
             hover = lambda path=path: self.bookmarksMenuHoverPathSet(path)
             action.hovered.connect(hover)

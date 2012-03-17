@@ -188,12 +188,10 @@ class Directory(Fs):
         return c
     
     def childByName(self, name):
-        try:
-            stats = self.statFile(name)
-            c = self.buildChild(name, stats)
-        except:
-            c = None
-        return c
+        (st, attrib) = self.statFile(path_join(self.fspath, name))
+        if st == None:
+            return None
+        return self.buildChild(name, (st, attrib))
         
     def childrenStop(self):
         if self.asyncRunning:

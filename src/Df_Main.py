@@ -36,8 +36,8 @@ if __name__ == '__main__':
     
     d.history = []
     d.bookmarks = [ ]
-    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks)
-    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks)
+    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back)
+    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back)
     d.lp.other = d.rp
     d.rp.other = d.lp
     d.rp.start()
@@ -48,6 +48,8 @@ if __name__ == '__main__':
     d.g.mw.toright.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowForward))
     d.g.mw.toleft.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowBack))
     #d.g.mw.help.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_DialogHelpButton))
+    d.g.mw.left_back.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowBack))
+    d.g.mw.right_back.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowBack))
     
     d.g.mw.splitter.setSizes([8000,1])
     d.g.mw.splitter.setStretchFactor(0,1)

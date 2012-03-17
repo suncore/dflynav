@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwin.ui'
 #
-# Created: Wed Mar 14 15:51:08 2012
+# Created: Sat Mar 17 12:19:34 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.0
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(650, 544)
+        MainWindow.resize(748, 544)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -29,6 +29,10 @@ class Ui_MainWindow(object):
         self.left.setObjectName("left")
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.left_back = QtGui.QPushButton(self.layoutWidget)
+        self.left_back.setText("")
+        self.left_back.setObjectName("left_back")
+        self.horizontalLayout.addWidget(self.left_back)
         self.left_up = QtGui.QPushButton(self.layoutWidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -119,6 +123,10 @@ class Ui_MainWindow(object):
         self.right.addWidget(self.right_status, 2, 0, 1, 2)
         self.horizontalLayout_4 = QtGui.QHBoxLayout()
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.right_back = QtGui.QPushButton(self.layoutWidget)
+        self.right_back.setText("")
+        self.right_back.setObjectName("right_back")
+        self.horizontalLayout_4.addWidget(self.right_back)
         self.right_up = QtGui.QPushButton(self.layoutWidget)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
