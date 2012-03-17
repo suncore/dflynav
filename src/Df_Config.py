@@ -18,10 +18,10 @@ class Config():
         Df.d.lp.updateBookmarksMenu()
         Df.d.rp.updateBookmarksMenu()
 
-        self.startdir_left = self.settings.value("startdir_left",'/')        
-        self.startdir_right = self.settings.value("startdir_right",'/')        
-        Df.d.lp.setPathByString(self.startdir_left)
-        Df.d.rp.setPathByString(self.startdir_right)
+#        self.startdir_left = self.settings.value("startdir_left",'/')        
+#        self.startdir_right = self.settings.value("startdir_right",'/')        
+#        Df.d.lp.setPathByString(self.startdir_left)
+#        Df.d.rp.setPathByString(self.startdir_right)
 
     def Save(self):
         # save d.bookmarks as part of config file

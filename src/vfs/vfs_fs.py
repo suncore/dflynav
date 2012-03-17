@@ -5,8 +5,7 @@ import os, platform, shutil
 import stat, time
 import Df, fnmatch, Df_Dialog
 if platform.system() == 'Windows':
-    import ctypes, win32file, win32api, win32wnet
-
+    import ctypes, win32file, win32api, win32wnet, win32con
 from . import vfs_node
 from utils import *
 
@@ -29,18 +28,18 @@ def FsPath(n):
 
 
 class Fs(vfs_node.Node):
-    def __init__(self, parent, name, fsname):
+    def __init__(self, parent, name, fsname, stats=None):
         super(Fs, self).__init__(parent, name)
         self.fsname = fsname
         self.fspath = FsPath(self)
-        try:
-            self.stat = os.lstat(self.fspath)
+        if stats == None:
+            stats = self.statFile(self.fspath)
+        (self.stat, self.attrib) = stats
+        if self.stat != None:
             self.size = iff(stat.S_ISDIR(self.stat.st_mode), 0L, self.stat.st_size)
             self.meta = [ ('Size', iff(stat.S_ISDIR(self.stat.st_mode), '-', size2str(self.stat.st_size)), self.size), 
                       ('Date', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ]
-        except:
-            pass
         self.actionButtonCallbacks = [ 
                      ( 'Copy', True, self.cb_copy ),
                      ( 'Move', True, self.cb_move ),
@@ -157,8 +156,8 @@ class Fs(vfs_node.Node):
 
 
 class Directory(Fs):
-    def __init__(self, parent, name, fsname):
-        super(Directory, self).__init__(parent, name, fsname)
+    def __init__(self, parent, name, fsname, stats=None):
+        super(Directory, self).__init__(parent, name, fsname, stats)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
         self.stopAsync = False
         self.children_ = []
@@ -177,20 +176,21 @@ class Directory(Fs):
         #print "1 ", self.childrenReady, self.children_
         return self.children_
 
-    def buildChild(self, f):
-        st = os.lstat(path_join(self.fspath, f))
+    def buildChild(self, f, stats):
+        (st,attrib) = stats
         if stat.S_ISDIR(st.st_mode):
-            c = Directory(self, f, f)
+            c = Directory(self, f, f, stats)
         else:
             if fnmatch.fnmatch(f, "*.zip"):
-                c = PackedFile(self, f, f)
+                c = PackedFile(self, f, f, stats)
             else:
-                c = File(self, f, f)
+                c = File(self, f, f, stats)
         return c
     
     def childByName(self, name):
         try:
-            c = self.buildChild(name)
+            stats = self.statFile(name)
+            c = self.buildChild(name, stats)
         except:
             c = None
         return c
@@ -198,6 +198,20 @@ class Directory(Fs):
     def childrenStop(self):
         if self.asyncRunning:
             self.stopAsync = True
+    
+    def statFile(self, path):
+        st = None
+        try:
+            st = os.lstat(path)
+        except:
+            pass
+        attrib = 0
+        try:
+            if platform.system() == 'Windows':
+                attrib = win32api.GetFileAttributes(path)
+        except:
+            pass
+        return (st, attrib)
         
     def getChildrenAsync(self):
         c = []
@@ -205,8 +219,16 @@ class Directory(Fs):
             for f in os.listdir(self.fspath):
                 if self.stopAsync:
                     break
-                if not f[0] == '.':
-                    c.append(self.buildChild(f))
+                stats = self.statFile(path_join(self.fspath, f))
+                hide = f[0] == '.'
+                if platform.system() == 'Windows':
+                    (st, attrib) = stats
+                    # todo configurable settings
+                    #Df.d.config.win32_show_hidden
+                    hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
+                    hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
+                if not hide:
+                    c.append(self.buildChild(f, stats))
         except:
             pass
         self.children_ = c
@@ -279,6 +301,6 @@ class File(Fs):
         return True
 
 class PackedFile(File):
-    def __init__(self, parent, name, fsname):
-        super(PackedFile, self).__init__(parent, name, fsname)
+    def __init__(self, parent, name, fsname, stats=None):
+        super(PackedFile, self).__init__(parent, name, fsname, stats)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))

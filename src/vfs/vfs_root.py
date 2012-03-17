@@ -8,7 +8,7 @@ class VfsRoot(vfs_node.Node):
     def children(self):
         if platform.system() == 'Windows':
             return [
-                vfs_fs.WinHome(self, 'Home', 'C:/Users/hch'),
+                VfsRoot_WinHome(self, 'Home', 'C:/Users/hch'),
                 VfsRoot_WinDrives(self, 'Drives'),
                 VfsRoot_Apps(self, 'Applications')
                 ] 
@@ -17,6 +17,12 @@ class VfsRoot(vfs_node.Node):
                 VfsRoot_Files(self, 'Files'),
                 VfsRoot_Apps(self, 'Applications')
                 ] 
+
+
+class VfsRoot_WinHome(vfs_fs.Directory):
+    def __init__(self, parent, name, fsname):
+        super(VfsRoot_WinHome, self).__init__(parent, name, fsname)
+        self.meta = []
 
 class VfsRoot_WinDrives(vfs_node.Node):
     def children(self):
