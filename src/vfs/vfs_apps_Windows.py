@@ -16,6 +16,7 @@ class InstalledDirectory(vfs_node.Node):
     def children(self):
         c = []
         aReg = ConnectRegistry(None,HKEY_LOCAL_MACHINE)
+        oldname = ''
         for mode in ( KEY_WOW64_64KEY, KEY_WOW64_32KEY ):
             aKey = OpenKey(aReg, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall", 0, KEY_READ | mode)
             (subkeys, values, time) = QueryInfoKey(aKey)
@@ -30,7 +31,8 @@ class InstalledDirectory(vfs_node.Node):
                             (k[n], regtype)=QueryValueEx(asubkey, n)
                         except:
                             pass
-                    if k["DisplayName"] != '':
+                    if k["DisplayName"] != '' and oldname != k["DisplayName"]:
+                        oldname = k["DisplayName"]
                         c.append(InstalledApplication(self,k["DisplayName"],k))
                 except:
                     pass
