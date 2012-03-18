@@ -1,6 +1,6 @@
 
 import platform
-from . import vfs_node, vfs_fs
+from . import vfs_node, vfs_fs, vfs_apps_Windows
 
 class VfsRoot(vfs_node.Node):
     def __init__(self):
@@ -10,7 +10,7 @@ class VfsRoot(vfs_node.Node):
             return [
                 VfsRoot_WinHome(self, 'Home', 'C:/Users/hch'),
                 VfsRoot_WinDrives(self, 'Drives'),
-                VfsRoot_Apps(self, 'Applications')
+                VfsRoot_Apps_Windows(self, 'Applications')
                 ] 
         else:
             return [
@@ -43,6 +43,13 @@ class VfsRoot_Apps(vfs_node.Node):
     def children(self):
         return [
             vfs_fs.Directory(self, 'Apps', '/')
+            ] 
+
+ 
+class VfsRoot_Apps_Windows(vfs_node.Node):
+    def children(self):
+        return [
+            vfs_apps_Windows.InstalledDirectory(self, 'Installed')
             ] 
 
  
