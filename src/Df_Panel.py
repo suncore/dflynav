@@ -4,6 +4,7 @@ from PySide.QtCore import *
 from PySide import QtGui
 from utils import *
 import Df
+import os, subprocess, platform
 
 class PanelItem(QtGui.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
@@ -61,6 +62,7 @@ class Panel():
         self.updateBookmarksMenuBoth()
         #self.treeW.pressed.connect(self.treeW_pressed)
         self.treeW.itemPressed.connect(self.treeW_pressed)
+        self.treeW.itemDoubleClicked.connect(self.treeW_doubleClicked)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         self.upW.clicked.connect(self.upW_clicked)
         self.backW.clicked.connect(self.backW_clicked)
@@ -94,14 +96,23 @@ class Panel():
         self.setPath(self.other.cd)
     
     def treeW_pressed(self, item):
-        self.other.treeW.clearSelection()
         buttons = QtGui.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
         if buttons == Qt.RightButton:
-            node = item.df_node
-            if not node.leaf():
-                self.setPath(node)
+            self.openItem(item)
+
+    def treeW_doubleClicked(self, item):
+        self.openItem(item)
+
+    def openItem(self, item):
+        self.other.treeW.clearSelection()
+        node = item.df_node
+        if node.leaf():
+            if platform.system() == 'Windows':
+                os.startfile(node.fspath)
+            else:
+                subprocess.call(["xdg-open", node.fspath])
         else:
-            self.leftMouseButton()
+            self.setPath(node)
 
     def upW_clicked(self):
         if self.cd.parent:
@@ -213,10 +224,7 @@ class Panel():
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
-                
-    def leftMouseButton(self):
-        pass
-    
+                    
     def treeW_selectionChanged(self):
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
