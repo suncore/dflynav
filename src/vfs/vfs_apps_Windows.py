@@ -25,15 +25,19 @@ class InstalledDirectory(vfs_node.Node):
                     asubkey_name=EnumKey(aKey,i)
                     asubkey=OpenKey(aKey,asubkey_name)
                     k = {}
-                    for n in ( "DisplayName", "DisplayIcon", "DisplayVersion", "Publisher", "UninstallString" ):
+                    for n in ( "DisplayName", "DisplayIcon", "DisplayVersion", "Publisher", "UninstallString", "InstallDate" ):
                         k[n] = ''
                         try:
                             (k[n], regtype)=QueryValueEx(asubkey, n)
                         except:
                             pass
                     if k["DisplayName"] != '' and oldname != k["DisplayName"]:
-                        oldname = k["DisplayName"]
-                        c.append(InstalledApplication(self,k["DisplayName"],k))
+                        for x in c:
+                            if k["DisplayName"] == x.name:
+                                break
+                        else:
+                            oldname = k["DisplayName"]
+                            c.append(InstalledApplication(self,k["DisplayName"],k))
                 except:
                     pass
         return c
@@ -41,5 +45,7 @@ class InstalledDirectory(vfs_node.Node):
 class InstalledApplication(vfs_node.Node):
     def __init__(self, parent, name, k):
         super(InstalledApplication, self).__init__(parent, name)
-        self.meta = [ ('Version',k['DisplayVersion'],k['DisplayVersion']), ('Publisher',k['Publisher'],k['Publisher']) ]
+        self.meta = [ ('Version',k['DisplayVersion'],k['DisplayVersion']), ('Publisher',k['Publisher'],k['Publisher']), ('Install Date',k['InstallDate'],k['InstallDate']) ]
     
+    def leaf(self):
+        return True
