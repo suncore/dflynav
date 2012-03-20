@@ -1,5 +1,5 @@
 
-import platform
+import platform, os
 from . import vfs_node, vfs_fs, vfs_apps_Windows
 
 class VfsRoot(vfs_node.Node):
@@ -7,8 +7,10 @@ class VfsRoot(vfs_node.Node):
         super(VfsRoot, self).__init__(None, '/')
     def children(self):
         if platform.system() == 'Windows':
+            homepath = os.path.expanduser('~')
+            homepath = '/'.join(homepath.split('\\'))
             return [
-                VfsRoot_WinHome(self, 'Home', 'C:/Users/hch'),
+                VfsRoot_WinHome(self, 'Home', homepath),
                 VfsRoot_WinDrives(self, 'Drives'),
                 VfsRoot_Apps_Windows(self, 'Applications')
                 ] 

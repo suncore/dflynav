@@ -1,5 +1,4 @@
 
-
 # Builder/main module
 
     
@@ -123,3 +122,48 @@ if __name__ == '__main__':
 #    main()
 #    
     
+
+#
+#import sys
+#import win32ui
+#import win32gui
+#from PySide import QtCore
+#from PySide import QtGui
+#
+#class testWindow(QtGui.QMainWindow):
+#    def __init__(self):
+#        super(testWindow, self).__init__()
+#        self.setGeometry(180.0, 130.0, 280.0, 400.0)
+#        file = QtGui.QFileDialog.getOpenFileNames(self)
+#        self.setMouseTracking(True)
+#
+#        large, small = win32gui.ExtractIconEx('C:/Program Files (x86)/Exact Audio Copy/eac.exe', 0)
+#        win32gui.DestroyIcon(small[0])
+#
+#        self.pixmap = QtGui.QPixmap.fromWinHBITMAP(self.bitmapFromHIcon(large[0]), 2)
+#    def bitmapFromHIcon(self, hIcon):
+#        hdc = win32ui.CreateDCFromHandle(win32gui.GetDC(0))
+#        hbmp = win32ui.CreateBitmap()
+#        hbmp.CreateCompatibleBitmap(hdc, 32, 32)
+#        hdc = hdc.CreateCompatibleDC()
+#        hdc.SelectObject(hbmp)
+#        hdc.DrawIcon((0, 0), hIcon)
+#        hdc.DeleteDC()
+#        return hbmp.GetHandle()
+#    def paintEvent(self, event):
+#        painter = QtGui.QPainter()
+#        painter.begin(self)
+#        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+#        painter.setPen(QtCore.Qt.NoPen)
+#        painter.setBrush(QtGui.QBrush(QtGui.QColor(255.0, 255.0, 255.0, 255.0), QtCore.Qt.SolidPattern))
+#        painter.drawRect(QtCore.QRect(0.0, 0.0, 280.0, 400.0))
+#        painter.drawPixmap(QtCore.QRect(0.0, 0.0, 32.0, 32.0), self.pixmap)
+#        painter.end()
+#
+#if __name__ == "__main__":
+#    app = QtGui.QApplication(sys.argv)
+#    mainWindow = testWindow()
+#    mainWindow.show()
+#    app.exec_()
+#    
+#sys.exit(0)
