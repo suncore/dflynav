@@ -52,6 +52,7 @@ class VfsRoot_Apps_Windows(vfs_node.Node):
     def children(self):
         return [
             vfs_apps_Windows.InstalledDirectory(self, 'Installed')
+            #vfs_apps_Windows.InstalledDirectory(C:\Users\ervhch\AppData\Roaming\Microsoft\Windows\Start Menu
             ] 
 
  
