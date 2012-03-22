@@ -41,6 +41,7 @@ class Fs(vfs_node.Node):
                       ('Date', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ]
         self.actionButtonCallbacks = [ 
+                     ( 'Open With...', False, self.cb_openwith ),
                      ( 'Copy', True, self.cb_copy ),
                      ( 'Move', True, self.cb_move ),
                      ( 'Rename', False, self.cb_rename ),
@@ -153,7 +154,10 @@ class Fs(vfs_node.Node):
     def cb_compare(self):
         srcList, dst = self.getSelectionAndDestination()
         Df.d.jobm.addJobs(srcList[0].ops_compare, srcList, dst)
-
+        
+    def cb_openwith(self):
+        srcList, dst = self.getSelectionAndDestination()
+        
 
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None):
