@@ -9,9 +9,15 @@ import sys
 from _winreg import *
 
 
-class InstalledDirectory(vfs_node.Node):
+class Apps(vfs_node.Node):
+    def children(self):
+        return [
+            UninstallDirectory(self, 'Uninstall')
+            ] 
+
+class UninstallDirectory(vfs_node.Node):
     def __init__(self, parent, name):
-        super(InstalledDirectory, self).__init__(parent, name)
+        super(UninstallDirectory, self).__init__(parent, name)
 
     def children(self):
         c = []
@@ -37,15 +43,28 @@ class InstalledDirectory(vfs_node.Node):
                                 break
                         else:
                             oldname = k["DisplayName"]
-                            c.append(InstalledApplication(self,k["DisplayName"],k))
+                            c.append(UninstallApplication(self,k["DisplayName"],k))
                 except:
                     pass
         return c
 
-class InstalledApplication(vfs_node.Node):
+class UninstallApplication(vfs_node.Node):
     def __init__(self, parent, name, k):
-        super(InstalledApplication, self).__init__(parent, name)
+        super(UninstallApplication, self).__init__(parent, name)
         self.meta = [ ('Version',k['DisplayVersion'],k['DisplayVersion']), ('Publisher',k['Publisher'],k['Publisher']), ('Install Date',k['InstallDate'],k['InstallDate']) ]
     
     def leaf(self):
         return True
+    
+class Installed(vfs_node.Node):    
+    def __init__(self, parent, name, k):
+        super(UninstallApplication, self).__init__(parent, name)
+
+            
+            startmenupath = os.getenv("appdata")
+            startmenupath = '/'.join(startmenupath.split('\\'))
+            startmenupath = startmenupath + "/Microsoft/Windows/Start Menu/Programs"
+            smp2 = os.getenv("programdata")
+            smp2 = '/'.join(smp2.split('\\'))
+            smp2 = smp2 + "/Microsoft/Windows/Start Menu/Programs"
+

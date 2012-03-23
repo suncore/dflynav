@@ -9,17 +9,14 @@ class VfsRoot(vfs_node.Node):
         if platform.system() == 'Windows':
             homepath = os.path.expanduser('~')
             homepath = '/'.join(homepath.split('\\'))
-            #startmenupath = homepath + "/AppData/Roaming/Microsoft/Windows/Start Menu/Programs"
             return [
                 VfsRoot_WinTopFolder(self, 'Home', homepath),
                 VfsRoot_WinDrives(self, 'Drives'),
-                #VfsRoot_Apps_Windows(self, 'Applications')
-                #VfsRoot_WinTopFolder(self, 'Applications', startmenupath),
+                vfs_apps_Windows.Apps(self, 'Applications')
                 ] 
         else:
             return [
                 VfsRoot_Files(self, 'Files'),
-                VfsRoot_Apps(self, 'Applications')
                 ] 
 
 
@@ -42,18 +39,3 @@ class VfsRoot_Files(vfs_node.Node):
                 vfs_fs.RootDirectory(self, 'Local', '/')
                 ] 
 
-
-class VfsRoot_Apps(vfs_node.Node):
-    def children(self):
-        return [
-            vfs_fs.Directory(self, 'Apps', '/')
-            ] 
-
- 
-class VfsRoot_Apps_Windows(vfs_node.Node):
-    def children(self):
-        return [
-            vfs_apps_Windows.InstalledDirectory(self, 'Installed')
-            ] 
-
- 
