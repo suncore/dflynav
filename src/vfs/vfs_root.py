@@ -12,7 +12,7 @@ class VfsRoot(vfs_node.Node):
             return [
                 VfsRoot_WinTopFolder(self, 'Home', homepath),
                 VfsRoot_WinDrives(self, 'Drives'),
-                vfs_apps_Windows.Apps(self, 'Applications')
+                #vfs_apps_Windows.Apps(self, 'Applications')
                 ] 
         else:
             return [
