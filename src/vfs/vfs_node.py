@@ -16,6 +16,9 @@ class Node(object):
 
     def leaf(self):
         return False
+    
+    def open(self):
+        pass
 
     def startGetChildren(self):
         self.childrenReady = True

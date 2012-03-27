@@ -107,10 +107,7 @@ class Panel():
         self.other.treeW.clearSelection()
         node = item.df_node
         if node.leaf():
-            if platform.system() == 'Windows':
-                os.startfile(node.fspath)
-            else:
-                subprocess.call(["xdg-open", node.fspath])
+            node.open()
         else:
             self.setPath(node)
 

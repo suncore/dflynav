@@ -8,6 +8,7 @@ if platform.system() == 'Windows':
     import ctypes, win32file, win32api, win32wnet, win32con
 from . import vfs_node
 from utils import *
+import subprocess
 
 def path_join(a,b):
     if a[-1] == '/':
@@ -41,7 +42,6 @@ class Fs(vfs_node.Node):
                       ('Date', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ]
         self.actionButtonCallbacks = [ 
-                     ( 'Open With...', False, self.cb_openwith ),
                      ( 'Copy', True, self.cb_copy ),
                      ( 'Move', True, self.cb_move ),
                      ( 'Rename', False, self.cb_rename ),
@@ -70,6 +70,14 @@ class Fs(vfs_node.Node):
         #except:
             #return None
 
+    def open(self):
+        if platform.system() == 'Windows':
+            try:
+                os.startfile(self.fspath)
+            except:
+                pass
+        else:
+            subprocess.call(["xdg-open", node.fspath]) # TODO should run completely async
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
@@ -157,7 +165,10 @@ class Fs(vfs_node.Node):
         
     def cb_openwith(self):
         srcList, dst = self.getSelectionAndDestination()
-        
+        #Rundll32.exe shell32.dll, OpenAs_RunDLL C:\test.jpg
+        p = srcList[0].fspath
+        p = '\\'.join(p.split('/'))
+        subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) 
 
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None):
@@ -299,6 +310,10 @@ else:
 
 
 class File(Fs):
+    def __init__(self, parent, name, fsname, stats=None):
+        super(File, self).__init__(parent, name, fsname, stats)
+        self.actionButtonCallbacks.append(( 'Open With...', False, self.cb_openwith ))
+
     def leaf(self):
         return True
 
