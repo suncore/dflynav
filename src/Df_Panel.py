@@ -24,6 +24,7 @@ class PanelItem(QtGui.QTreeWidgetItem):
             (rk, rs, rv) = other.df_node.meta[col-1]
             return lv < rv 
 
+
 class Panel():
     def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW):
         self.mainW = mainW
