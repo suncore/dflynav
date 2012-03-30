@@ -71,13 +71,13 @@ class Fs(vfs_node.Node):
             #return None
 
     def open(self):
-        if platform.system() == 'Windows':
-            try:
+        try:
+            if platform.system() == 'Windows':
                 os.startfile(self.fspath)
-            except:
-                pass
-        else:
-            subprocess.call(["xdg-open", node.fspath]) # TODO should run completely async
+            else:
+                subprocess.call(["xdg-open", self.fspath]) # TODO should run completely async
+        except:
+            pass
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
@@ -166,9 +166,12 @@ class Fs(vfs_node.Node):
     def cb_openwith(self):
         srcList, dst = self.getSelectionAndDestination()
         #Rundll32.exe shell32.dll, OpenAs_RunDLL C:\test.jpg
-        p = srcList[0].fspath
-        p = '\\'.join(p.split('/'))
-        subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) 
+        if platform.system() == 'Windows': 
+            p = srcList[0].fspath
+            p = '\\'.join(p.split('/'))
+            subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) 
+        else:
+            subprocess.call(["df_openwith", p]) 
 
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None):

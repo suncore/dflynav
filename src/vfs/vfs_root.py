@@ -1,6 +1,9 @@
 
 import platform, os
-from . import vfs_node, vfs_fs, vfs_apps_Windows
+from . import vfs_node, vfs_fs
+if platform.system() == 'Windows':
+    from . import vfs_apps_Windows
+    
 
 class VfsRoot(vfs_node.Node):
     def __init__(self):
