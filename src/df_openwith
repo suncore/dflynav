@@ -60,7 +60,6 @@ if __name__ == '__main__':
     app.exec_ ()
 
 
-
 sys.exit(0)
 
 import os.path
