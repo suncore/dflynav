@@ -59,6 +59,7 @@ if __name__ == '__main__':
     mainWindow.close()
     app.exec_ ()
 
+
 sys.exit(0)
 
 import os.path
