@@ -1,0 +1,375 @@
+#!/usr/bin/env python
+
+import sys
+
+from PyKDE4.kdecore import *
+from PyKDE4.kdeui import *
+from PyKDE4.kio import KIO
+from PyQt4.QtGui import QLabel
+import PyKDE4
+
+
+runner = True
+        
+helpText = ""        
+
+
+
+class MainWindow (KMainWindow):
+    def __init__ (self):
+        KMainWindow.__init__ (self)
+
+        self.resize (100, 100)
+        label = QLabel ("", self)
+        label.setGeometry (10, 10, 200, 20)
+
+#--------------- main ------------------
+if __name__ == '__main__':
+
+    appName     = "KApplication"
+    catalog     = ""
+    programName = ki18n ("KApplication")
+    version     = "1.0"
+    description = ki18n ("KApplication/KMainWindow/KAboutData example")
+    license     = KAboutData.License_GPL
+    copyright   = ki18n ("(c) 2007 Jim Bublitz")
+    text        = ki18n ("none")
+    homePage    = "www.riverbankcomputing.com"
+    bugEmail    = "jbublitz@nwinternet.com"
+    
+    aboutData   = KAboutData (appName, catalog, programName, version, description,
+                                license, copyright, text, homePage, bugEmail)
+
+    options = KCmdLineOptions()
+    options.add('+file')
+  
+    KCmdLineArgs.init (sys.argv, aboutData)
+    KCmdLineArgs.addCmdLineOptions(options)
+  
+    #args = kdecore.KCmdLineArgs.parsedArgs()
+    #count = args.count()
+    #files = []
+  
+        
+    #print sys.argv
+    app = KApplication ()
+    mainWindow = MainWindow ()
+    mainWindow.show ()
+    PyKDE4.kio.KRun.displayOpenWithDialog(KUrl.List(PyKDE4.kdecore.KUrl(sys.argv[1])), mainWindow)
+    mainWindow.close()
+    app.exec_ ()
+
+sys.exit(0)
+
+import os.path
+import subprocess
+import sys
+import os
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import (QDialog, QLabel, QCheckBox, QRadioButton,
+                         QTreeWidget, QTreeWidgetItem, QMessageBox,
+                         QVBoxLayout, QFileDialog, QDialogButtonBox,
+                         QProgressBar, QGroupBox, QLineEdit)
+from PyQt4 import uic
+from gettext import gettext
+from PyKDE4.kdecore import (ki18n, KAboutData, KCmdLineArgs,
+                            KLocalizedString)
+from PyKDE4.kdeui import (KApplication, KNotification, KMessageBox, KIcon,
+                          KStandardGuiItem)
+
+
+class MainUserInterface(apport.ui.UserInterface):
+    '''The main user interface presented to the user'''
+
+    def __init__(self):
+        krun.displayOpenWithDialog("hej")
+        apport.ui.UserInterface.__init__(self)
+
+        sys.exit(self.run_argv())
+
+    #
+    # ui_* implementation of abstract UserInterface classes
+    #
+
+    def ui_present_crash(self, desktop_entry):
+        # adapt dialog heading and label appropriately
+        if desktop_entry:
+            name = desktop_entry.getName()
+            heading = _('Sorry, %s closed unexpectedly') % name
+        elif self.report.has_key('ExecutablePath'):
+            name = os.path.basename(self.report['ExecutablePath'])
+            heading = _('Sorry, the program "%s" closed unexpectedly.') % name
+        else:
+            name = self.cur_package
+            heading = _('Sorry, %s closed unexpectedly.') % name
+
+        dialog = ErrorDialog(name, heading,
+                _('If you were not doing anything confidential (entering '
+                  'passwords or other private information), you can help '
+                  'to improve the application by reporting the problem.'),
+                _('&Ignore future crashes of this program version'))
+
+        reportbutton = dialog.addbutton(_('&Report Problem...'))
+
+        if desktop_entry and self.report.has_key('ExecutablePath') and \
+                os.path.dirname(self.report['ExecutablePath']) in \
+                os.environ['PATH'].split(':') and subprocess.call(['pgrep',
+                    '-x', os.path.basename(self.report['ExecutablePath']),
+                    '-u', str(os.getuid())], stdout=subprocess.PIPE) != 0:
+            restartbutton = dialog.addbutton(_('Restart &Program'))
+
+        # show crash notification dialog
+        response = dialog.exec_()
+        blacklist = dialog.checked()
+
+        if response == QDialog.Rejected:
+            return {'action': 'cancel', 'blacklist': blacklist}
+        if dialog.actionbutton == reportbutton:
+            return {'action': 'report', 'blacklist': blacklist}
+        if dialog.actionbutton == restartbutton:
+            return {'action': 'restart', 'blacklist': blacklist}
+        # Fallback
+        return {'action': 'cancel', 'blacklist': blacklist}
+
+    def ui_present_package_error(self):
+        name = self.report['Package']
+        dialog = ErrorDialog(name,
+                _('Sorry, the package "%s" failed to install or upgrade.') %
+                  name,
+                _('You can help the developers to fix the package by '
+                  'reporting the problem.'))
+
+        reportbutton = dialog.addbutton(_('&Report Problem...'))
+
+        response = dialog.exec_()
+
+        if response == QDialog.Rejected:
+            return 'cancel'
+        if dialog.actionbutton == reportbutton:
+            return 'report'
+        # Fallback
+        return 'cancel'
+
+    def ui_present_kernel_error(self):
+        message = _('Your system encountered a serious kernel problem.')
+        annotate = ''
+        if self.report.has_key('Annotation'):
+            annotate = self.report['Annotation'] + '\n\n'
+        annotate += _('You can help the developers to fix the problem by '
+                      'reporting it.')
+
+        dialog = ErrorDialog(_('Kernel problem'), message, annotate)
+
+        reportbutton = dialog.addbutton(_('&Report Problem...'))
+
+        response = dialog.exec_()
+
+        if response == QDialog.Rejected:
+            return 'cancel'
+        if dialog.actionbutton == reportbutton:
+            return 'report'
+        # Fallback
+        return 'cancel'
+
+    def ui_present_report_details(self, is_update):
+        if is_update:
+            dialog = ReportDialog(self.report.get('Package',
+                _('Generic error')).split()[0],
+                _('Send this data to the developers?'), '')
+            dialog.showtree(True)
+        else:
+            dialog = ReportDialog(self.report.get('Package',
+                _('Generic error')).split()[0],
+                _('Send problem report to the developers?'),
+                _('After the problem report has been sent, please fill out '
+                  'the form in the automatically opened web browser.'))
+
+        sendbutton = dialog.addbutton(_('&Send'))
+        sendbutton.setDefault(True)
+
+        # report contents
+        details = dialog.findChild(QTreeWidget, 'details')
+        for key in sorted(self.report):
+            keyitem = QTreeWidgetItem([key])
+            details.addTopLevelItem(keyitem)
+
+            # string value
+            if not hasattr(self.report[key], 'gzipvalue') and \
+               hasattr(self.report[key], 'isspace') and \
+               not self.report._is_binary(self.report[key]):
+                lines = self.report[key].splitlines()
+                for line in lines:
+                    QTreeWidgetItem(keyitem, [line])
+                if len(lines) < 4:
+                    keyitem.setExpanded(True)
+            else:
+                QTreeWidgetItem(keyitem, [_('(binary data)')])
+
+        details.header().hide()
+
+        # complete/reduce radio buttons
+        if self.report.has_key('CoreDump') and \
+                self.report.has_useful_stacktrace():
+            dialog.findChild(QRadioButton, 'complete').setText(
+                _('Complete report (recommended; %s)') %
+                  self.format_filesize(self.get_complete_size()))
+            dialog.findChild(QRadioButton, 'reduced').setText(
+                _('Reduced report (slow Internet connection; %s)') %
+                  self.format_filesize(self.get_reduced_size()))
+        else:
+            dialog.findChild(QGroupBox, 'options').hide()
+
+        response = dialog.exec_()
+
+        if response == QDialog.Rejected:
+            return 'cancel'
+        # Fallback
+        if dialog.actionbutton != sendbutton:
+            return 'cancel'
+        if dialog.findChild(QRadioButton, 'reduced').isChecked():
+            return 'reduced'
+        if dialog.findChild(QRadioButton, 'complete').isChecked():
+            return 'full'
+        # Fallback
+        return 'cancel'
+
+    def ui_info_message(self, title, text):
+        KMessageBox.information(None, _(text), _(title))
+
+    def ui_error_message(self, title, text):
+        KMessageBox.information(None, _(text), _(title))
+
+    def ui_start_info_collection_progress(self):
+        self.progress = ProgressDialog(
+                _('Collecting Problem Information'),
+                _('Collecting problem information'),
+                _('The collected information can be sent to the developers '
+                  'to improve the application. This might take a few '
+                  'minutes.'))
+        self.progress.set()
+        self.progress.show()
+
+    def ui_pulse_info_collection_progress(self):
+        self.progress.set()
+        KApplication.processEvents()
+
+    def ui_stop_info_collection_progress(self):
+        self.progress.hide()
+
+    def ui_start_upload_progress(self):
+        self.progress = ProgressDialog(
+                _('Uploading Problem Information'),
+                _('Uploading problem information'),
+                _('The collected information is being sent to the bug '
+                  'tracking system. This might take a few minutes.'))
+        self.progress.show()
+
+    def ui_set_upload_progress(self, progress):
+        if progress:
+            self.progress.set(progress)
+        else:
+            self.progress.set()
+        KApplication.processEvents()
+
+    def ui_stop_upload_progress(self):
+        self.progress.hide()
+
+    def ui_question_yesno(self, text):
+        response = KMessageBox.questionYesNoCancel(None, _(text), QString(),
+                KStandardGuiItem.yes(), KStandardGuiItem.no(),
+                KStandardGuiItem.cancel())
+        if response == KMessageBox.Yes:
+            return True
+        if response == KMessageBox.No:
+            return False
+        return None
+
+    def ui_question_choice(self, text, options, multiple):
+        ''' Show a question with predefined choices.
+
+        @options is a list of strings to present.
+        @multiple - if True, choices should be QCheckBoxes, if False then
+        should be QRadioButtons.
+
+        Return list of selected option indexes, or None if the user cancelled.
+        If multiple is False, the list will always have one element.
+        '''
+        dialog = ChoicesDialog(_('Apport'), text)
+
+        b = None
+        for option in options:
+            if multiple:
+                b = QCheckBox(option)
+            else:
+                b = QRadioButton(option)
+            dialog.vbox_choices.insertWidget(0, b)
+
+        response = dialog.exec_()
+
+        if response == QDialog.Rejected:
+            return 'cancel'
+
+        response = [c for c in range(0, dialog.vbox_choices.count()) if \
+                dialog.vbox_choices.itemAt(c).widget().isChecked()]
+
+        return response
+
+    def ui_question_file(self, text):
+        ''' Show a file selector dialog.
+
+        Return path if the user selected a file, or None if cancelled.
+        '''
+        response = QFileDialog.getOpenFileName(None, unicode(text, 'UTF-8'))
+        if response.length() == 0:
+            return None
+        return str(response)
+
+
+    def ui_question_userpass(self, text):
+        '''Show a Username/Password dialog.
+
+        Return a tuple (user, pass) or None if cancelled.
+        '''
+        dialog = UserPassDialog(_('Apport'), text)
+        response = dialog.exec_()
+
+        if response == QDialog.Rejected:
+            return None
+
+        username = str(dialog.findChild(QLineEdit, 'e_username').text())
+        password = str(dialog.findChild(QLineEdit, 'e_password').text())
+
+        if len(username) == 0 or len(password) == 0:
+            return None
+        return (username, password)
+
+
+if __name__ == '__main__':
+    if not os.environ.get('DISPLAY'):
+        apport.fatal('This program needs a running X session. Please see "man apport-cli" for a command line version of Apport.')
+
+    appName = 'apport-kde'
+    catalog = 'apport'
+    programName = ki18n('Apport KDE')
+    version = '1.0'
+    description = ki18n('KDE 4 frontend for the apport crash report system')
+    license = KAboutData.License_GPL
+    copyright = ki18n('2009 Canonical Ltd.')
+    text = KLocalizedString()
+    homePage = 'https://wiki.ubuntu.com/AutomatedProblemReports'
+    bugEmail = 'kubuntu-devel@lists.ubuntu.com'
+
+    aboutData = KAboutData(appName, catalog, programName, version, description,
+                           license, copyright, text, homePage, bugEmail)
+
+    aboutData.addAuthor(ki18n('Richard A. Johnson'), ki18n('Author'))
+    aboutData.addAuthor(ki18n('Michael Hofmann'), ki18n('Original Qt4 Author'))
+
+    KCmdLineArgs.init([''], aboutData)
+
+    app = KApplication()
+    app.setWindowIcon(KIcon('apport'))
+
+    UserInterface = MainUserInterface()
+    app.exec_()

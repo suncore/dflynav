@@ -166,12 +166,12 @@ class Fs(vfs_node.Node):
     def cb_openwith(self):
         srcList, dst = self.getSelectionAndDestination()
         #Rundll32.exe shell32.dll, OpenAs_RunDLL C:\test.jpg
+        p = srcList[0].fspath
         if platform.system() == 'Windows': 
-            p = srcList[0].fspath
             p = '\\'.join(p.split('/'))
             subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) 
         else:
-            subprocess.call(["df_openwith", p]) 
+            subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) 
 
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None):
