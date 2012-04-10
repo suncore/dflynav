@@ -52,14 +52,14 @@ def bf_exec(cmd):
 
 
 class Df_Cmd():
-    def __init__(self, cmd):
+    def __init__(self, cmd, dst):
         if platform.system() == 'Windows':
             if cmd[0][0] == '/':
                 cmd2 = 'c:/cygwin' + cmd[0]
             else:
                 cmd2 = 'c:/cygwin/bin/' + cmd[0]
             cmd = (cmd2,) + cmd[1:]
-        self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=dst)
 
     def readline(self):
         return self.pob.stdout.readline()
@@ -98,3 +98,18 @@ def time2str(t):
 
 def timenow():
     return time.localtime(time.time())
+
+def fsPathExt(path):
+        p = path.lower()
+        p = p.split('.')
+        if len(p) <= 1:
+            return ''
+        if len(p) >= 3 and p[-2] == 'tar':
+            if p[-1] == 'gz':
+                return 'tar.gz'
+            if p[-1] == 'bz2':
+                return 'tar.bz2'
+        ext = p[-1]
+        if len(ext) > 4:
+            ext = ''
+        return ext

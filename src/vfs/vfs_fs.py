@@ -10,6 +10,23 @@ from . import vfs_node
 from utils import *
 import subprocess
 
+unpackCmds = [
+    [ ('tar', 'xzf'),
+      ['tar.gz', 'tgz'] ],
+    [ ('tar', 'xjf'),
+      ['tar.bz2'] ],
+    [ ('unzip', '-oqq'),
+      ['zip'] ],
+    [ ('gzip', '-d'),
+      ['gz'] ],
+    [ ('bzip2', '-d'),
+      ['bz2'] ],
+    [ ('7za', 'x'),
+      ['7z'] ],
+    [ ('rar', 'x', '-o+'),
+      ['rar', '001' ] ]
+    ]
+
 def path_join(a,b):
     if a[-1] == '/':
         return a + b
@@ -36,10 +53,17 @@ class Fs(vfs_node.Node):
         if stats == None:
             stats = self.statFile(self.fspath)
         (self.stat, self.attrib) = stats
+        ext = fsPathExt(self.fspath)
         if self.stat != None:
-            self.size = iff(stat.S_ISDIR(self.stat.st_mode), 0L, self.stat.st_size)
-            self.meta = [ ('Size', iff(stat.S_ISDIR(self.stat.st_mode), '-', size2str(self.stat.st_size)), self.size), 
-                      ('Date', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
+            self.size = self.stat.st_size
+            sizestr = size2str(self.stat.st_size)
+            if stat.S_ISDIR(self.stat.st_mode):
+                ext = ''
+                self.size = 0L
+                sizestr = '-'
+            self.meta = [ ('Size', sizestr, self.size), 
+                      ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
+                      ('Type', ext, ext),
                       ]
         self.actionButtonCallbacks = [ 
                      ( 'Copy', True, self.cb_copy ),
@@ -116,9 +140,14 @@ class Fs(vfs_node.Node):
         return (cmd, cmdString)
 
     def ops_unpack(self, src, dst):
-        cmd = ('unzip', '-o', '-qq', '-d', dst.fspath, src.fspath)
-        cmdString = '$ unpack %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
-        return (cmd, cmdString)
+        ext = fsPathExt(src.fspath)
+        for i in unpackCmds:
+            cmd, exts = i
+            for e in exts:
+                if ext == e:
+                    cmd = cmd + (src.fspath,)
+                    cmdString = '$ unpack %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+                    return (cmd, cmdString)
 
     def ops_compare(self, src, dst):
         pass
@@ -197,13 +226,14 @@ class Directory(Fs):
     def buildChild(self, f, stats):
         (st,attrib) = stats
         if stat.S_ISDIR(st.st_mode):
-            c = Directory(self, f, f, stats)
-        else:
-            if fnmatch.fnmatch(f, "*.zip"):
-                c = PackedFile(self, f, f, stats)
-            else:
-                c = File(self, f, f, stats)
-        return c
+            return Directory(self, f, f, stats)
+        ext = fsPathExt(f)
+        for i in unpackCmds:
+            cmd, exts = i
+            for e in exts:
+                if ext == e:
+                    return PackedFile(self, f, f, stats)
+        return File(self, f, f, stats)
     
     def childByName(self, name):
         (st, attrib) = self.statFile(path_join(self.fspath, name))
@@ -315,7 +345,10 @@ else:
 class File(Fs):
     def __init__(self, parent, name, fsname, stats=None):
         super(File, self).__init__(parent, name, fsname, stats)
-        self.actionButtonCallbacks.append(( 'Open With...', False, self.cb_openwith ))
+        self.actionButtonCallbacks.append(( 'Open...', False, self.cb_openwith ))
+
+    def icon(self):
+        return Df.d.iconFactory.getFileIcon(self.fspath)
 
     def leaf(self):
         return True

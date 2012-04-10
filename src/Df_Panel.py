@@ -5,6 +5,7 @@ from PySide import QtGui
 from utils import *
 import Df
 import os, subprocess, platform
+from PIL import Image
 
 class PanelItem(QtGui.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
@@ -18,14 +19,14 @@ class PanelItem(QtGui.QTreeWidgetItem):
                     return False
                 else:
                     return True
-            return ln.name < rn.name 
+            return ln.name_low < rn.name_low
         else:
             (lk, ls, lv) = self.df_node.meta[col-1]
             (rk, rs, rv) = other.df_node.meta[col-1]
             return lv < rv 
 
 
-class Panel():
+class Panel(object):
     def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW):
         self.mainW = mainW
         self.treeW = treeW
@@ -36,10 +37,7 @@ class Panel():
         self.treeW.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
         self.panelIdx = index
-        #self.fileIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/File.png'))
-        self.fileIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon)
-        #self.folderIcon = QtGui.QIcon(QtGui.QPixmap(':/icons/Folder.png'))
-        self.folderIcon = self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon)
+
         self.waitingForChildren = False
         self.mirrorW = mirrorW
         self.historyW = historyW
@@ -198,14 +196,7 @@ class Panel():
                 if type(1L) == type(v):
                     pi.setTextAlignment(col, Qt.AlignCenter | Qt.AlignRight)
                 col += 1
-            if i.leaf():
-                #pi.setIcon(0, self.treeW.style().standardIcon(QtGui.QStyle.SP_FileIcon))
-                pi.setIcon(0, self.fileIcon)
-            else:
-                #pi.setIcon(0, self.treeW.style().standardIcon(QtGui.QStyle.SP_DirIcon))
-                pi.setIcon(0, self.folderIcon)
-            #pi.setIcon(0, QtGui.QIcon(QtGui.QPixmap(':/images/textpointer.png')))
-            #pi.setData(QtCore.Qt.UserRole, pixmap)
+            pi.setIcon(0, i.icon())
             pi.df_node = i
             items.append(pi)
             self.nrItems += 1

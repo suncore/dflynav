@@ -7,7 +7,7 @@ import sys
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs
-import platform, Df_Config
+import platform, Df_Config, Df_Icon
 
 def refresh():
     d.lp.setPath(d.lp.cd)
@@ -25,6 +25,7 @@ if __name__ == '__main__':
     d.fsNotify[1] = vfs.Notify()
     
     d.qtapp = QtGui.QApplication(sys.argv)
+    d.iconFactory = Df_Icon.IconFactory()
     #d.qtapp.setStyle("plastique")
     #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
     d.g = Df_Gui.Gui()

@@ -6,13 +6,16 @@ class Node(object):
     def __init__(self, parent, name):
         self.parent = parent
         self.name = name
-        self.icon = None
+        self.name_low = name.lower()
         self.meta = [ ]
         self.children_ = []
         self.actionButtonCallbacks = []
         self.childrenReady = True
         self.changed = False
         self.size = 0
+
+    def icon(self):
+        return Df.d.iconFactory.getFolderIcon()
 
     def leaf(self):
         return False

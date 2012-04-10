@@ -40,7 +40,7 @@ class JobManager():
                 job.updateTime()
                 job.setStatus("Running")
 
-                cmd = Df_Cmd(job.cmd)
+                cmd = Df_Cmd(job.cmd, job.dst.fspath)
                 output = cmd.readline()
                 while output:
                     # TOOD: Update tooltip while running
