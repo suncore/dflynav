@@ -76,7 +76,7 @@ class IconFactory(object):
 		im = self.allLettersIm.crop((x-hs,yi-hs,x+hs,yi+hs))
 		im = im.resize((letterSize, letterSize))
 		h = hashlib.md5(ext).hexdigest()
-		h = int(h[0:4], 16)
+		h = int(h[28:32], 16)
 		coff = h/65536.0
 		bgim = colorize(self.bgim, coff*360.0)
 		offs = (self.bgim.size[0]-letterSize)/2
