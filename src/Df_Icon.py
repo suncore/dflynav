@@ -16,6 +16,8 @@ def shift_hue(arr, hout):
     h, s, v = rgb_to_hsv(r, g, b)
     h = h + hout
     r, g, b = hsv_to_rgb(h, s, v)
+    #g = g * 0.99
+    #r = r * 0.99
     arr = np.dstack((r, g, b, a))
     return arr
 
