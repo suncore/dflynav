@@ -48,6 +48,10 @@ class IconFactory(object):
 		self.folderImageData, self.folderIcon = ImageToIcon(im)
 		im = Image.open('src/icons/File.png')
 		self.fileImageData, self.fileIcon = ImageToIcon(im)
+        self.bgims = []
+        self.bgimnum = 8
+        for i in range(1,self.bgimnum+1):
+            self.bgim.append(Image.open('src/icons/b' + str(i) + '.png'))
 		self.icons = {}
 
 	def getFolderIcon(self):
@@ -80,7 +84,8 @@ class IconFactory(object):
 		h = hashlib.md5(ext).hexdigest()
 		h = int(h[28:32], 16)
 		coff = h/65536.0
-		bgim = colorize(self.bgim, coff*360.0)
+		#bgim = colorize(self.bgim, coff*360.0)
+        bgim = self.bgims[int(coff*(self.bgimnum+.999))].copy()
 		offs = (self.bgim.size[0]-letterSize)/2
 		bgim.paste(im, (offs,offs), im)
 		#im = Image.composite(im, bgim, im)
