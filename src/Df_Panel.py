@@ -215,6 +215,7 @@ class Panel(object):
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
                     
     def treeW_selectionChanged(self):
+        self.other.treeW.clearSelection()
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
         sum = 0
