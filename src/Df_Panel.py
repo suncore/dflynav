@@ -54,6 +54,7 @@ class Panel(object):
         self.bookmarksMenuHoverPath = None
         self.backHistory = ['/']
         self.backW = backW
+        self.treeW_noClear = False
         
     def start(self):
         self.refreshCd()
@@ -213,9 +214,15 @@ class Panel(object):
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
+                 
+    def treeW_clearSelection(self):
+        if not self.treeW_noClear:
+            self.treeW.clearSelection()
                     
     def treeW_selectionChanged(self):
-        self.other.treeW.clearSelection()
+        self.treeW_noClear = True
+        self.other.treeW_clearSelection()
+        self.treeW_noClear = False
         s = self.treeW.selectedItems()
         self.setActionButtons(s)
         sum = 0
