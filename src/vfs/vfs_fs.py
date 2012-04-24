@@ -48,10 +48,14 @@ def FsPath(n):
 class Fs(vfs_node.Node):
     def __init__(self, parent, name, fsname, stats=None):
         super(Fs, self).__init__(parent, name)
-        self.fsname = fsname
+        self.fsname = fsname.decode('utf-8','replace')
+        self.fsnameOrig = fsname
         self.fspath = FsPath(self)
         if stats == None:
-            stats = self.statFile(self.fspath)
+            if not isinstance(parent, Fs):
+                stats = self.statFile(self.fsnameOrig, self.fsnameOrig)
+            else:   
+                stats = self.statFile(parent.fspath, self.fsnameOrig)
         (self.stat, self.attrib) = stats
         ext = fsPathExt(self.fspath)
         if self.stat != None:
@@ -82,7 +86,7 @@ class Fs(vfs_node.Node):
         Df.d.jobm.addJobs(self.ops_mkdir, [ dir ], None)
         
     def fsFree(self):
-        #try:
+        try:
             if platform.system() == 'Windows':
                 free_bytes = ctypes.c_ulonglong(0)
                 total_bytes = ctypes.c_ulonglong(0)
@@ -91,52 +95,53 @@ class Fs(vfs_node.Node):
             else:
                 stat = os.statvfs(self.fspath)
                 return stat.f_bavail * stat.f_bsize
-        #except:
-            #return None
+        except:
+            return None
 
     def open(self):
         try:
             if platform.system() == 'Windows':
                 os.startfile(self.fspath)
             else:
-                subprocess.call(["xdg-open", self.fspath]) # TODO should run completely async
+                os.chdir(self.parent.fspath)
+                subprocess.call(["xdg-open", self.fsnameOrig]) # TODO should run completely async
         except:
             pass
 
     # -------------------------------------------------------------------------------
     def ops_copy(self, src, dst):
         cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
-        cmdString = '$ copy %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ copy %s to %s' % (src.fspath, dst.fspath)
         return (cmd, cmdString)
 
     def ops_move(self, src, dst):
         cmd = ('/bin/mv', src.fspath, dst.fspath)
-        cmdString = '$ move %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ move %s to %s' % (src.fspath, dst.fspath)
         return (cmd, cmdString)
 
     def ops_rename(self, src, newpath):
-        cmd = ('/bin/mv', src.fspath, newpath)
-        cmdString = '$ rename %s to %s' % (toutf8(src.fspath), toutf8(newpath))
+        cmd = ('/bin/mv', src.fspath, newpath) #TODO
+        cmdString = '$ rename %s to %s' % (src.fspath, newpath)
         return (cmd, cmdString)
 
     def ops_mkdir(self, dir, dummy):
         cmd = ('/bin/mkdir', path_join(self.fspath, dir))
-        cmdString = '$ mkdir %s' % (toutf8(path_join(self.fspath, dir)))
+        cmdString = '$ mkdir %s' % ((path_join(self.fspath, dir)))
         return (cmd, cmdString)
 
     def ops_delete(self, src, dst):
         cmd = ('/bin/rm', '-rf', src.fspath)
-        cmdString = '$ delete %s' % (toutf8(src.fspath))
+        cmdString = '$ delete %s' % src.fspath
         return (cmd, cmdString)
  
     def ops_link(self, src, dst):
         cmd = ('/bin/ln', '-s', src.fspath, dst.fspath)
-        cmdString = '$ link %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+        cmdString = '$ link %s to %s' % (src.fspath, dst.fspath)
         return (cmd, cmdString)
 
     def ops_pack(self, src, dst):
         cmd = ('zip', '-r', src.fspath + '.zip', src.fspath)
-        cmdString = '$ pack %s' % (toutf8(src.fspath))
+        cmdString = '$ pack %s' % src.fspath
         return (cmd, cmdString)
 
     def ops_unpack(self, src, dst):
@@ -146,7 +151,7 @@ class Fs(vfs_node.Node):
             for e in exts:
                 if ext == e:
                     cmd = cmd + (src.fspath,)
-                    cmdString = '$ unpack %s to %s' % (toutf8(src.fspath), toutf8(dst.fspath))
+                    cmdString = '$ unpack %s to %s' % (src.fspath, dst.fspath)
                     return (cmd, cmdString)
 
     def ops_compare(self, src, dst):
@@ -223,49 +228,54 @@ class Directory(Fs):
         #print "1 ", self.childrenReady, self.children_
         return self.children_
 
-    def buildChild(self, f, stats):
+    def buildChild(self, f, fn, stats):
         (st,attrib) = stats
-        if stat.S_ISDIR(st.st_mode):
-            return Directory(self, f, f, stats)
+        if st and stat.S_ISDIR(st.st_mode):
+            return Directory(self, f, fn, stats)
         ext = fsPathExt(f)
         for i in unpackCmds:
             cmd, exts = i
             for e in exts:
                 if ext == e:
-                    return PackedFile(self, f, f, stats)
-        return File(self, f, f, stats)
+                    return PackedFile(self, f, fn, stats)
+        return File(self, f, fn, stats)
     
     def childByName(self, name):
-        (st, attrib) = self.statFile(path_join(self.fspath, name))
+        (st, attrib) = self.statFile(self.fspath, name)
         if st == None:
             return None
-        return self.buildChild(name, (st, attrib))
+        return self.buildChild(name, name, (st, attrib))
         
     def childrenStop(self):
         if self.asyncRunning:
             self.stopAsync = True
     
-    def statFile(self, path):
+    def statFile(self, path, child):
         st = None
         try:
-            st = os.lstat(path)
+            os.chdir(path)
+            st = os.lstat(child)
         except:
             pass
         attrib = 0
         try:
             if platform.system() == 'Windows':
-                attrib = win32api.GetFileAttributes(path)
+                attrib = win32api.GetFileAttributes(path_join(path, child))
         except:
             pass
         return (st, attrib)
         
     def getChildrenAsync(self):
         c = []
+        #if True:
         try:
-            for f in os.listdir(self.fspath):
+            for fn in os.listdir(self.fspath):
+                f = fn.decode('utf-8','replace')
+                #f = str(fn)
                 if self.stopAsync:
                     break
-                stats = self.statFile(path_join(self.fspath, f))
+                stats = self.statFile(self.fspath, fn)
+                #stats = self.statFile(os.path.join(self.fspath, f))
                 hide = f[0] == '.'
                 if platform.system() == 'Windows':
                     (st, attrib) = stats
@@ -273,8 +283,8 @@ class Directory(Fs):
                     #Df.d.config.win32_show_hidden
                     hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
                     hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
-                if not hide:
-                    c.append(self.buildChild(f, stats))
+                if not hide or Df.d.config.showHidden:
+                    c.append(self.buildChild(f, fn, stats))
         except:
             pass
         self.children_ = c

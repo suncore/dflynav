@@ -1,5 +1,6 @@
 #!/bin/sh
 pyside-uic mainwin.ui  > Df_UiMainwin.py
 pyside-uic dialog.ui  > Df_UiDialog.py
+pyside-uic config.ui  > Df_UiConfig.py
 pyside-rcc dragonfly.qrc  > dragonfly_rc.py
 

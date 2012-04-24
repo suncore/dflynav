@@ -318,7 +318,7 @@ class Panel(object):
         else:
             h.append(path)
         Df.d.bookmarks = h
-        Df.d.config.Save()
+        Df.d.config.save()
         self.updateBookmarksMenuBoth()
         
     def updateBookmarksMenu(self):

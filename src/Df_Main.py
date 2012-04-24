@@ -6,12 +6,8 @@ import sys
 #, os
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
-import Df, Df_Job, vfs
+import Df, Df_Job, vfs, Df_GlobalButtons
 import platform, Df_Config, Df_Icon
-
-def refresh():
-    d.lp.setPath(d.lp.cd)
-    d.rp.setPath(d.rp.cd)
 
 if __name__ == '__main__':
 
@@ -30,11 +26,14 @@ if __name__ == '__main__':
     #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
     d.g = Df_Gui.Gui()
     d.g.mw = Df_Gui.MainWindow()
-    d.g.dia = Df_Gui.Dialog()
+    #d.g.dia = Df_Gui.Dialog()
+    d.g.config = Df_Gui.Config()
+    #d.g.config.show()
     #d.g.mw.showMaximized()
     d.g.mw.show()
     
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
+    d.gb = Df_GlobalButtons.GlobalButtons(d.g.mw, d.g.config)
     
     d.history = []
     d.bookmarks = [ ]
@@ -69,14 +68,13 @@ if __name__ == '__main__':
     d.timer.start(100)
     #os.putenv('nodosfilewarning','1')
     
-    d.g.mw.refresh.clicked.connect(refresh)
 
-    d.config.Load()
+    d.config.load(d.g.config)
 
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
-    d.config.Save()
+    d.config.save()
     sys.exit(r)
 
 
