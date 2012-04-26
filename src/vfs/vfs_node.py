@@ -65,3 +65,7 @@ class Node(object):
     
     def fsFree(self):
         return None
+    
+    def hover(self, enter):
+        pass
+

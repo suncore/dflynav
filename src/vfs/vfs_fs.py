@@ -27,6 +27,8 @@ unpackCmds = [
       ['rar', '001' ] ]
     ]
 
+pictureTypes = [ 'jpg', 'png', 'gif', 'tif' ]
+
 def path_join(a,b):
     if a[-1] == '/':
         return a + b
@@ -238,6 +240,9 @@ class Directory(Fs):
             for e in exts:
                 if ext == e:
                     return PackedFile(self, f, fn, stats)
+        for e in pictureTypes:
+            if ext == e:
+                return PictureFile(self, f, fn, stats)
         return File(self, f, fn, stats)
     
     def childByName(self, name):
@@ -367,3 +372,12 @@ class PackedFile(File):
     def __init__(self, parent, name, fsname, stats=None):
         super(PackedFile, self).__init__(parent, name, fsname, stats)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
+
+class PictureFile(File):
+    def __init__(self, parent, name, fsname, stats=None):
+        super(PictureFile, self).__init__(parent, name, fsname, stats)
+        self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
+        
+    def hover(self, enter):
+        print "Hover ", enter
+
