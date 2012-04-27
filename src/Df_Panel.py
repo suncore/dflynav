@@ -64,8 +64,10 @@ class Panel(object):
         self.treeW.itemPressed.connect(self.treeW_pressed)
         self.treeW.itemDoubleClicked.connect(self.treeW_doubleClicked)
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
-        self.treeW.itemActivated.connect(self.treeW_activated)
-        self.treeW.itemEntered.connect(self.treeW_entered)
+        #self.treeW.itemActivated.connect(self.treeW_activated)
+        self.treeW.setMouseTracking(True)
+        self.treeW_mouseMoveEventOrig = self.treeW.mouseMoveEvent
+        self.treeW.mouseMoveEvent = self.treeW_mouseMoveEvent
         self.upW.clicked.connect(self.upW_clicked)
         self.backW.clicked.connect(self.backW_clicked)
         self.treeW.setSortingEnabled(True)
@@ -105,15 +107,19 @@ class Panel(object):
     def treeW_doubleClicked(self, item):
         self.openItem(item)
 
-    def treeW_activated(self, item):
-        i = self.treeW.itemAt(item.treeWidget().mapFromGlobal(QtGui.QCursor.pos()))
-        print "Item activated", item, i
+#    def treeW_activated(self, item):
+#        i = self.treeW.itemAt(item.treeWidget().mapFromGlobal(QtGui.QCursor.pos()))
+#        print "Item activated", item, i
+#        if i:
+#            print i.df_node.fspath
+            
+    def treeW_mouseMoveEvent(self, e):
+        i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(e.globalPos()))
+        #i = self.treeW.itemAt(self.treeW.mapFromGlobal(QtGui.QCursor.pos()))
+        print "mouse move event", i
         if i:
             print i.df_node.fspath
-
-    def treeW_entered(self, item):
-        print "Item entered", item
-
+        self.treeW_mouseMoveEventOrig(e)
 
     def openItem(self, item):
         self.other.treeW.clearSelection()
