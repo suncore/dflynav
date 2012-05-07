@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'mainwin.ui'
 #
-# Created: Sun Apr 22 21:05:13 2012
-#      by: pyside-uic 0.2.13 running on PySide 1.1.0
+# Created: Thu May  3 13:33:31 2012
+#      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(748, 544)
+        MainWindow.resize(748, 568)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -63,14 +63,26 @@ class Ui_MainWindow(object):
         self.left_status.setAlignment(QtCore.Qt.AlignCenter)
         self.left_status.setObjectName("left_status")
         self.left.addWidget(self.left_status, 2, 0, 1, 2)
+        self.left_path = QtGui.QLineEdit(self.layoutWidget)
+        self.left_path.setObjectName("left_path")
+        self.left.addWidget(self.left_path, 5, 0, 1, 1)
+        self.left_preview_container = QtGui.QWidget(self.layoutWidget)
+        self.left_preview_container.setObjectName("left_preview_container")
+        self.gridLayout_2 = QtGui.QGridLayout(self.left_preview_container)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.left_preview_gv = QtGui.QGraphicsView(self.left_preview_container)
+        self.left_preview_gv.setObjectName("left_preview_gv")
+        self.gridLayout_2.addWidget(self.left_preview_gv, 0, 0, 1, 1)
+        self.left_preview_text = QtGui.QLabel(self.left_preview_container)
+        self.left_preview_text.setObjectName("left_preview_text")
+        self.gridLayout_2.addWidget(self.left_preview_text, 1, 0, 1, 1)
+        self.left.addWidget(self.left_preview_container, 7, 0, 1, 1)
         self.left_tree = QtGui.QTreeWidget(self.layoutWidget)
         self.left_tree.setRootIsDecorated(False)
         self.left_tree.setObjectName("left_tree")
         self.left_tree.headerItem().setText(0, "1")
-        self.left.addWidget(self.left_tree, 6, 0, 1, 1)
-        self.left_path = QtGui.QLineEdit(self.layoutWidget)
-        self.left_path.setObjectName("left_path")
-        self.left.addWidget(self.left_path, 5, 0, 1, 1)
+        self.left.addWidget(self.left_tree, 9, 0, 1, 1)
         self.mainHoriz.addLayout(self.left)
         self.center = QtGui.QVBoxLayout()
         self.center.setObjectName("center")
@@ -157,10 +169,22 @@ class Ui_MainWindow(object):
         self.right_tree.setRootIsDecorated(False)
         self.right_tree.setObjectName("right_tree")
         self.right_tree.headerItem().setText(0, "1")
-        self.right.addWidget(self.right_tree, 6, 0, 1, 1)
+        self.right.addWidget(self.right_tree, 7, 0, 1, 1)
         self.right_path = QtGui.QLineEdit(self.layoutWidget)
         self.right_path.setObjectName("right_path")
         self.right.addWidget(self.right_path, 5, 0, 1, 1)
+        self.right_preview_container = QtGui.QWidget(self.layoutWidget)
+        self.right_preview_container.setObjectName("right_preview_container")
+        self.gridLayout_3 = QtGui.QGridLayout(self.right_preview_container)
+        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.right_preview_gv = QtGui.QGraphicsView(self.right_preview_container)
+        self.right_preview_gv.setObjectName("right_preview_gv")
+        self.gridLayout_3.addWidget(self.right_preview_gv, 0, 0, 1, 1)
+        self.right_preview_text = QtGui.QLabel(self.right_preview_container)
+        self.right_preview_text.setObjectName("right_preview_text")
+        self.gridLayout_3.addWidget(self.right_preview_text, 1, 0, 1, 1)
+        self.right.addWidget(self.right_preview_container, 6, 0, 1, 1)
         self.mainHoriz.addLayout(self.right)
         self.jobs = QtGui.QTreeWidget(self.splitter)
         self.jobs.setMinimumSize(QtCore.QSize(0, 35))
@@ -178,11 +202,13 @@ class Ui_MainWindow(object):
         self.left_history.setText(QtGui.QApplication.translate("MainWindow", "History", None, QtGui.QApplication.UnicodeUTF8))
         self.left_bookmarks.setText(QtGui.QApplication.translate("MainWindow", "Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
         self.left_status.setText(QtGui.QApplication.translate("MainWindow", "status", None, QtGui.QApplication.UnicodeUTF8))
+        self.left_preview_text.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
         self.configure.setText(QtGui.QApplication.translate("MainWindow", "Configure", None, QtGui.QApplication.UnicodeUTF8))
         self.refresh.setText(QtGui.QApplication.translate("MainWindow", "Refresh", None, QtGui.QApplication.UnicodeUTF8))
         self.help.setText(QtGui.QApplication.translate("MainWindow", "Help", None, QtGui.QApplication.UnicodeUTF8))
         self.right_status.setText(QtGui.QApplication.translate("MainWindow", "status", None, QtGui.QApplication.UnicodeUTF8))
         self.right_history.setText(QtGui.QApplication.translate("MainWindow", "History", None, QtGui.QApplication.UnicodeUTF8))
         self.right_bookmarks.setText(QtGui.QApplication.translate("MainWindow", "Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
+        self.right_preview_text.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
 
 import dragonfly_rc

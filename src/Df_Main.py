@@ -6,8 +6,8 @@ import sys
 #, os
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
-import Df, Df_Job, vfs, Df_GlobalButtons
-import platform, Df_Config, Df_Icon
+import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin
+import platform, Df_Config, Df_Icon, Df_Preview
 
 if __name__ == '__main__':
 
@@ -28,10 +28,14 @@ if __name__ == '__main__':
     d.g.mw = Df_Gui.MainWindow()
     #d.g.dia = Df_Gui.Dialog()
     d.g.config = Df_Gui.Config()
+    #d.g.preview = Df_Gui.Preview()
     #d.g.config.show()
     #d.g.mw.showMaximized()
     d.g.mw.show()
     
+    d.preview = Df_Preview.Preview(d.g.mw.left_preview_container, d.g.mw.right_preview_container, d.g.mw.left_preview_gv, d.g.mw.right_preview_gv, d.g.mw.left_preview_text, d.g.mw.right_preview_text, d.g.mw.left_tree, d.g.mw.right_tree)
+    d.g.mw.right_preview_container.hide()
+    d.g.mw.left_preview_container.hide()
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     d.gb = Df_GlobalButtons.GlobalButtons(d.g.mw, d.g.config)
     
@@ -41,6 +45,7 @@ if __name__ == '__main__':
     d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back)
     d.lp.other = d.rp
     d.rp.other = d.lp
+    #d.mainw = Df_Mainwin.Mainwin(d.g.mw, d.lp, d.rp)
     d.rp.start()
     d.lp.start()
     

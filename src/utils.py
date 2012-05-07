@@ -2,6 +2,33 @@
 
 import os, stat, time, sys, platform
 from subprocess import *
+from PIL import Image
+from PIL.ExifTags import TAGS
+from PySide.QtCore import *
+from PySide import QtGui
+
+
+def JpegToPixmap(fn):
+    im = Image.open(fn)
+    exif = Exif(im)
+    if 'Orientation' in exif:
+        if exif['Orientation'] == 6:
+            im = im.rotate(-90)
+        elif exif['Orientation'] == 3:
+            im = im.rotate(180)
+        elif exif['Orientation'] == 8:
+            im = im.rotate(90)
+    data = im.convert('RGBA').tostring('raw', 'BGRA')
+    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+    return (data, QtGui.QPixmap(image))
+
+def Exif(i):
+    ret = {}
+    info = i._getexif()
+    for tag, value in info.items():
+        decoded = TAGS.get(tag, tag)
+        ret[decoded] = value
+    return ret        
 
 def iff(test_, then_, else_):
     if test_:

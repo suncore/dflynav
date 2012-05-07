@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>748</width>
-    <height>544</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,7 +84,26 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="0">
+          <item row="5" column="0">
+           <widget class="QLineEdit" name="left_path"/>
+          </item>
+          <item row="7" column="0">
+           <widget class="QWidget" name="left_preview_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QGraphicsView" name="left_preview_gv"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="left_preview_text">
+               <property name="text">
+                <string>TextLabel</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="9" column="0">
            <widget class="QTreeWidget" name="left_tree">
             <property name="rootIsDecorated">
              <bool>false</bool>
@@ -95,9 +114,6 @@
              </property>
             </column>
            </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLineEdit" name="left_path"/>
           </item>
          </layout>
         </item>
@@ -251,7 +267,7 @@
             </item>
            </layout>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QTreeWidget" name="right_tree">
             <property name="rootIsDecorated">
              <bool>false</bool>
@@ -265,6 +281,22 @@
           </item>
           <item row="5" column="0">
            <widget class="QLineEdit" name="right_path"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QWidget" name="right_preview_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <item row="0" column="0">
+              <widget class="QGraphicsView" name="right_preview_gv"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="right_preview_text">
+               <property name="text">
+                <string>TextLabel</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
           </item>
          </layout>
         </item>

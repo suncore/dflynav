@@ -55,6 +55,8 @@ class Panel(object):
         self.backHistory = ['/']
         self.backW = backW
         self.treeW_noClear = False
+        self.hoverItem = None
+        self.hovering = False
         
     def start(self):
         self.refreshCd()
@@ -66,6 +68,12 @@ class Panel(object):
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         #self.treeW.itemActivated.connect(self.treeW_activated)
         self.treeW.setMouseTracking(True)
+#        self.treeW_leaveEventOrig = self.treeW.leaveEvent
+#        self.treeW.leaveEvent = self.treeW_leaveEvent
+        self.treeW_keyPressEventOrig = self.treeW.keyPressEvent
+        self.treeW.keyPressEvent = self.treeW_keyPressEvent
+        self.treeW_keyReleaseEventOrig = self.treeW.keyReleaseEvent
+        self.treeW.keyReleaseEvent = self.treeW_keyReleaseEvent
         self.treeW_mouseMoveEventOrig = self.treeW.mouseMoveEvent
         self.treeW.mouseMoveEvent = self.treeW_mouseMoveEvent
         self.upW.clicked.connect(self.upW_clicked)
@@ -113,13 +121,41 @@ class Panel(object):
 #        if i:
 #            print i.df_node.fspath
             
+#    def treeW_leaveEvent(self, e):
+#        Df.d.preview.hide()
+#        self.hovering = False
+#        self.treeW_leaveEventOrig(e)
+            
+    def treeW_keyPressEvent(self, e):
+        if e.key() == Qt.Key_Control:
+            self.hovering = True
+            self.quickView()
+        self.treeW_keyPressEventOrig(e)
+            
+            
+    def treeW_keyReleaseEvent(self, e):
+        if e.key() == Qt.Key_Control:
+            Df.d.preview.hide()
+            self.hovering = False
+            self.hoverItem = None
+        self.treeW_keyReleaseEventOrig(e)
+            
+
     def treeW_mouseMoveEvent(self, e):
-        i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(e.globalPos()))
-        #i = self.treeW.itemAt(self.treeW.mapFromGlobal(QtGui.QCursor.pos()))
-        print "mouse move event", i
-        if i:
-            print i.df_node.fspath
+        self.treeW.setFocus()
+        if self.hovering:
+            self.quickView()
         self.treeW_mouseMoveEventOrig(e)
+
+    def quickView(self):
+        pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
+        i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
+        if i and i is not self.hoverItem:
+            qv = i.df_node.quickView()
+            if qv:
+                (data,pixmap) = qv
+                Df.d.preview.show(self.panelIdx, pixmap, i.df_node.fspath)
+            self.hoverItem = i
 
     def openItem(self, item):
         self.other.treeW.clearSelection()

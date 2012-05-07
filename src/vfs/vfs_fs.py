@@ -377,6 +377,9 @@ class PictureFile(File):
     def __init__(self, parent, name, fsname, stats=None):
         super(PictureFile, self).__init__(parent, name, fsname, stats)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
+
+    def quickView(self):
+        return JpegToPixmap(self.fspath)
         
     def hover(self, enter):
         print "Hover ", enter
