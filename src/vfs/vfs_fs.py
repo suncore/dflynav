@@ -243,6 +243,8 @@ class Directory(Fs):
         for e in pictureTypes:
             if ext == e:
                 return PictureFile(self, f, fn, stats)
+        if ext == 'lnk':
+            self.lnk(f)
         return File(self, f, fn, stats)
     
     def childByName(self, name):
@@ -269,6 +271,15 @@ class Directory(Fs):
         except:
             pass
         return (st, attrib)
+
+
+    def lnk(self,f):                
+        import sys
+        import win32com.client 
+        
+        shell = win32com.client.Dispatch("WScript.Shell")
+        shortcut = shell.CreateShortCut(f)
+        print(shortcut.Targetpath)
         
     def getChildrenAsync(self):
         c = []
