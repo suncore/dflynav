@@ -13,6 +13,7 @@ class Node(object):
         self.childrenReady = True
         self.changed = False
         self.size = 0
+        self.linkTarget = None
 
     def icon(self):
         return Df.d.iconFactory.getFolderIcon()

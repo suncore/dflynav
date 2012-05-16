@@ -163,6 +163,8 @@ class Panel(object):
         if node.leaf():
             node.open()
         else:
+            if node.linkTarget:
+                self.setPathByString(node.linkTarget)
             self.setPath(node)
 
     def upW_clicked(self):
