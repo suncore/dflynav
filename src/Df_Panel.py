@@ -165,6 +165,7 @@ class Panel(object):
         else:
             if node.linkTarget:
                 self.setPathByString(node.linkTarget)
+                return
             self.setPath(node)
 
     def upW_clicked(self):

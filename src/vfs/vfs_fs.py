@@ -6,6 +6,8 @@ import stat, time
 import Df, fnmatch, Df_Dialog
 if platform.system() == 'Windows':
     import ctypes, win32file, win32api, win32wnet, win32con
+    import sys
+    import win32com.client 
 from . import vfs_node
 from utils import *
 import subprocess
@@ -50,14 +52,13 @@ def FsPath(n):
 class Fs(vfs_node.Node):
     def __init__(self, parent, name, fsname, stats=None):
         super(Fs, self).__init__(parent, name)
-        self.fsname = fsname.decode('utf-8','replace')
-        self.fsnameOrig = fsname
+        self.fsname = fsname
         self.fspath = FsPath(self)
         if stats == None:
             if not isinstance(parent, Fs):
-                stats = self.statFile(self.fsnameOrig, self.fsnameOrig)
+                stats = self.statFile(self.fsname)
             else:   
-                stats = self.statFile(parent.fspath, self.fsnameOrig)
+                stats = self.statFile(path_join(parent.fspath, self.fsname))
         (self.stat, self.attrib) = stats
         ext = fsPathExt(self.fspath)
         if self.stat != None:
@@ -106,7 +107,7 @@ class Fs(vfs_node.Node):
                 os.startfile(self.fspath)
             else:
                 os.chdir(self.parent.fspath)
-                subprocess.call(["xdg-open", self.fsnameOrig]) # TODO should run completely async
+                subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
         except:
             pass
 
@@ -204,7 +205,7 @@ class Fs(vfs_node.Node):
         #Rundll32.exe shell32.dll, OpenAs_RunDLL C:\test.jpg
         p = srcList[0].fspath
         if platform.system() == 'Windows': 
-            p = '\\'.join(p.split('/'))
+            p = genericPathToWindows(p)
             subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) 
         else:
             subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) 
@@ -230,67 +231,77 @@ class Directory(Fs):
         #print "1 ", self.childrenReady, self.children_
         return self.children_
 
-    def buildChild(self, f, fn, stats):
+    def buildChild(self, f, stats):
         (st,attrib) = stats
-        if st and stat.S_ISDIR(st.st_mode):
-            return Directory(self, f, fn, stats)
         ext = fsPathExt(f)
+        if platform.system() == 'Windows':
+            if ext == 'lnk':
+                linkTarget = self.getLinkTarget(path_join(self.fspath, f))
+                #print linkTarget
+                linkTargetStat = self.statFile(linkTarget)
+                (linkTargetSt, linkTargetAttrib) = linkTargetStat
+                if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
+                    d = Directory(self, f, f, stats)
+                    d.linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
+                    #print d.linkTarget
+                    return d
+        if st and stat.S_ISDIR(st.st_mode):
+            return Directory(self, f, f, stats)
         for i in unpackCmds:
             cmd, exts = i
             for e in exts:
                 if ext == e:
-                    return PackedFile(self, f, fn, stats)
+                    return PackedFile(self, f, f, stats)
         for e in pictureTypes:
             if ext == e:
-                return PictureFile(self, f, fn, stats)
-        if ext == 'lnk':
-            self.lnk(f)
-        return File(self, f, fn, stats)
+                return PictureFile(self, f, f, stats)
+        return File(self, f, f, stats)
     
     def childByName(self, name):
-        (st, attrib) = self.statFile(self.fspath, name)
+        (st, attrib) = self.statFile(path_join(self.fspath, name))
         if st == None:
             return None
-        return self.buildChild(name, name, (st, attrib))
+        return self.buildChild(name, (st, attrib))
         
     def childrenStop(self):
         if self.asyncRunning:
             self.stopAsync = True
     
-    def statFile(self, path, child):
+    def statFile(self, path):
         st = None
         try:
-            os.chdir(path)
-            st = os.lstat(child)
+            st = os.lstat(path)
         except:
             pass
         attrib = 0
         try:
             if platform.system() == 'Windows':
-                attrib = win32api.GetFileAttributes(path_join(path, child))
+                attrib = win32api.GetFileAttributes(path)
         except:
             pass
         return (st, attrib)
 
 
-    def lnk(self,f):                
-        import sys
-        import win32com.client 
-        
-        shell = win32com.client.Dispatch("WScript.Shell")
-        shortcut = shell.CreateShortCut(f)
-        print(shortcut.Targetpath)
-        
-    def getChildrenAsync(self):
-        c = []
+    def getLinkTarget(self,f):                
         #if True:
         try:
-            for fn in os.listdir(self.fspath):
-                f = fn.decode('utf-8','replace')
-                #f = str(fn)
+            shell = win32com.client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortCut(genericPathToWindows(f))
+            return shortcut.Targetpath
+        except:
+            pass
+        return None
+    
+    def getChildrenAsync(self):
+        c = []
+        if True:
+        #try:
+            for f in os.listdir(self.fspath):
                 if self.stopAsync:
                     break
-                stats = self.statFile(self.fspath, fn)
+                f = f.decode('utf-8','replace')
+                #f = str(fn)
+                stats = self.statFile(path_join(self.fspath, f))
                 #stats = self.statFile(os.path.join(self.fspath, f))
                 hide = f[0] == '.'
                 if platform.system() == 'Windows':
@@ -300,9 +311,9 @@ class Directory(Fs):
                     hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
                     hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
                 if not hide or Df.d.config.showHidden:
-                    c.append(self.buildChild(f, fn, stats))
-        except:
-            pass
+                    c.append(self.buildChild(f, stats))
+        #except:
+        #    pass
         self.children_ = c
         #print "2", self.children_
         self.childrenReady = True

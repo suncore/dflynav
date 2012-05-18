@@ -140,3 +140,11 @@ def fsPathExt(path):
         if len(ext) > 4:
             ext = ''
         return ext
+
+def genericPathToWindows(p):
+    p = '\\'.join(p.split('/'))
+    return p
+
+def windowsPathToGeneric(p):
+    p = '/'.join(p.split('\\'))
+    return p
