@@ -50,10 +50,11 @@ def FsPath(n):
 
 
 class Fs(vfs_node.Node):
-    def __init__(self, parent, name, fsname, stats=None):
+    def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(Fs, self).__init__(parent, name)
         self.fsname = fsname
         self.fspath = FsPath(self)
+        self.linkTarget = linkTarget
         if stats == None:
             if not isinstance(parent, Fs):
                 stats = self.statFile(self.fsname)
@@ -61,13 +62,11 @@ class Fs(vfs_node.Node):
                 stats = self.statFile(path_join(parent.fspath, self.fsname))
         (self.stat, self.attrib) = stats
         ext = fsPathExt(self.fspath)
+        if linkTarget:
+            ext = 'link'
         if self.stat != None:
             self.size = self.stat.st_size
             sizestr = size2str(self.stat.st_size)
-            if stat.S_ISDIR(self.stat.st_mode):
-                ext = ''
-                self.size = 0L
-                sizestr = '-'
             self.meta = [ ('Size', sizestr, self.size), 
                       ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ('Type', ext, ext),
@@ -211,8 +210,16 @@ class Fs(vfs_node.Node):
             subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) 
 
 class Directory(Fs):
-    def __init__(self, parent, name, fsname, stats=None):
-        super(Directory, self).__init__(parent, name, fsname, stats)
+    def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
+        super(Directory, self).__init__(parent, name, fsname, stats, linkTarget)
+        if self.stat != None:
+            type = ''
+            if linkTarget:
+                type = 'link'
+            self.meta = [ ('Size', '-', 0L), 
+                      ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
+                      ('Type', type, type),
+                      ]
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
         self.stopAsync = False
         self.children_ = []
@@ -241,10 +248,16 @@ class Directory(Fs):
                 linkTargetStat = self.statFile(linkTarget)
                 (linkTargetSt, linkTargetAttrib) = linkTargetStat
                 if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
-                    d = Directory(self, f, f, stats)
-                    d.linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
-                    #print d.linkTarget
-                    return d
+                    linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
+                    return Directory(self, f, f, stats, linkTarget)
+        else:
+            if st and stat.S_ISLNK(st.st_mode):
+                linkTarget = self.getLinkTarget(path_join(self.fspath, f))
+                linkTargetStat = self.statFile(linkTarget)
+                (linkTargetSt, linkTargetAttrib) = linkTargetStat
+                if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
+                    linkTarget = '/Files/Local'+linkTarget
+                    return Directory(self, f, f, stats, linkTarget)
         if st and stat.S_ISDIR(st.st_mode):
             return Directory(self, f, f, stats)
         for i in unpackCmds:
@@ -284,12 +297,19 @@ class Directory(Fs):
 
     def getLinkTarget(self,f):                
         #if True:
-        try:
-            shell = win32com.client.Dispatch("WScript.Shell")
-            shortcut = shell.CreateShortCut(genericPathToWindows(f))
-            return shortcut.Targetpath
-        except:
-            pass
+        if platform.system() == 'Windows':
+            try:
+                shell = win32com.client.Dispatch("WScript.Shell")
+                shortcut = shell.CreateShortCut(genericPathToWindows(f))
+                return shortcut.Targetpath
+            except:
+                pass
+        else:
+            try:
+                #target = os.readlink(f)
+                return os.path.realpath(f)
+            except:
+                pass
         return None
     
     def getChildrenAsync(self):
@@ -380,8 +400,8 @@ else:
 
 
 class File(Fs):
-    def __init__(self, parent, name, fsname, stats=None):
-        super(File, self).__init__(parent, name, fsname, stats)
+    def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
+        super(File, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Open...', False, self.cb_openwith ))
 
     def icon(self):
@@ -391,13 +411,13 @@ class File(Fs):
         return True
 
 class PackedFile(File):
-    def __init__(self, parent, name, fsname, stats=None):
-        super(PackedFile, self).__init__(parent, name, fsname, stats)
+    def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
+        super(PackedFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
 
 class PictureFile(File):
-    def __init__(self, parent, name, fsname, stats=None):
-        super(PictureFile, self).__init__(parent, name, fsname, stats)
+    def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
+        super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
 
     def quickView(self):
