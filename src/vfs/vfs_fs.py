@@ -254,7 +254,10 @@ class Directory(Fs):
                 #print linkTarget
                 linkTargetStat = self.statFile(linkTarget)
                 (linkTargetSt, linkTargetAttrib) = linkTargetStat
-                linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
+                if linkTarget[0:2] == '\\\\':
+                    linkTarget = '/Network/'+windowsPathToGeneric(linkTarget)[2:]
+                else:
+                    linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
                 if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
                     return Directory(self, f[:-4], f, stats, linkTarget)
                 else:
