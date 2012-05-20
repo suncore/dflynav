@@ -63,7 +63,10 @@ class Fs(vfs_node.Node):
         (self.stat, self.attrib) = stats
         ext = fsPathExt(self.fspath)
         if linkTarget:
-            ext = 'link'
+            if platform.system() == 'Windows':
+                ext = 'shortcut'
+            else:
+                ext = 'link'
         if self.stat != None:
             self.size = self.stat.st_size
             sizestr = size2str(self.stat.st_size)
@@ -101,9 +104,10 @@ class Fs(vfs_node.Node):
             return None
 
     def open(self):
+        #if True:
         try:
             if platform.system() == 'Windows':
-                os.startfile(self.fspath)
+                os.startfile(genericPathToWindows(self.fspath))
             else:
                 os.chdir(self.parent.fspath)
                 subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
@@ -215,7 +219,10 @@ class Directory(Fs):
         if self.stat != None:
             type = ''
             if linkTarget:
-                type = 'link'
+                if platform.system() == 'Windows':
+                    type = 'shortcut'
+                else:
+                    type = 'link'
             self.meta = [ ('Size', '-', 0L), 
                       ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ('Type', type, type),
@@ -247,17 +254,21 @@ class Directory(Fs):
                 #print linkTarget
                 linkTargetStat = self.statFile(linkTarget)
                 (linkTargetSt, linkTargetAttrib) = linkTargetStat
+                linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
                 if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
-                    linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
-                    return Directory(self, f, f, stats, linkTarget)
+                    return Directory(self, f[:-4], f, stats, linkTarget)
+                else:
+                    return File(self, f[:-4], f, stats, linkTarget)
         else:
             if st and stat.S_ISLNK(st.st_mode):
                 linkTarget = self.getLinkTarget(path_join(self.fspath, f))
                 linkTargetStat = self.statFile(linkTarget)
                 (linkTargetSt, linkTargetAttrib) = linkTargetStat
+                linkTarget = '/Files/Local'+linkTarget
                 if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
-                    linkTarget = '/Files/Local'+linkTarget
                     return Directory(self, f, f, stats, linkTarget)
+                else:
+                    return File(self, f, f, stats, linkTarget)
         if st and stat.S_ISDIR(st.st_mode):
             return Directory(self, f, f, stats)
         for i in unpackCmds:
@@ -389,6 +400,29 @@ if platform.system() == 'Windows':
                 self.meta = [ ('Description', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
             except:
                 pass
+
+    class WinNetworkServer(Directory):
+        def __init__(self, parent, name, fsname):
+            super(WinNetworkServer, self).__init__(parent, name, fsname)
+    
+        def childByName(self, name):
+            return WinNetworkRoot(self, name, name)
+        
+        def startGetChildren(self):
+            self.childrenReady = True
+    
+        def childrenStop(self):
+            pass
+
+        def children(self):
+            return []
+    
+    class WinNetworkRoot(Directory):
+        def __init__(self, parent, name, fsname):
+            super(WinNetworkRoot, self).__init__(parent, name, fsname)
+
+        def childByName(self, name):
+            return Directory(self, name, name)
 
 else:
     class RootDirectory(Directory):

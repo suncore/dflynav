@@ -3,6 +3,7 @@ import platform, os
 from . import vfs_node, vfs_fs
 if platform.system() == 'Windows':
     from . import vfs_apps_Windows
+    import win32api
     
 
 class VfsRoot(vfs_node.Node):
@@ -15,6 +16,7 @@ class VfsRoot(vfs_node.Node):
             return [
                 VfsRoot_WinTopFolder(self, 'Home', homepath),
                 VfsRoot_WinDrives(self, 'Drives'),
+                VfsRoot_WinNetwork(self, 'Network'),
                 #vfs_apps_Windows.Apps(self, 'Applications')
                 ] 
         else:
@@ -30,11 +32,14 @@ class VfsRoot_WinTopFolder(vfs_fs.Directory):
 
 class VfsRoot_WinDrives(vfs_node.Node):
     def children(self):
-        import win32api
         drives = win32api.GetLogicalDriveStrings()
         drives = drives.split('\000')[:-1]
         drivelist = [ vfs_fs.WinDrive(self, i[0:2], i[0:2]+'/') for i in drives ]
         return drivelist
+
+class VfsRoot_WinNetwork(vfs_node.Node):
+    def childByName(self, name):
+        return vfs_fs.WinNetworkServer(self, name, '//'+name)
 
 class VfsRoot_Files(vfs_node.Node):
     def children(self):
