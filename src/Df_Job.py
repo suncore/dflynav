@@ -4,6 +4,7 @@ from PySide import QtGui
 import thread
 from utils import *
 from Queue import Queue
+import Df_Cmd
 
 class JobManager():
     def __init__(self, jobsW):
@@ -40,7 +41,7 @@ class JobManager():
                 job.updateTime()
                 job.setStatus("Running")
 
-                cmd = Df_Cmd(job.cmd, job.dst.fspath)
+                cmd = Df_Cmd.Cmd(job.cmd, job.dst.fspath)
                 output = cmd.readline()
                 #print output
                 while output:

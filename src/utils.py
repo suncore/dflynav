@@ -68,51 +68,6 @@ def toutf8(name):
                 name = name[0:i] + '?' + name[i+1:]
         return name
 
-def bf_exec(cmd):
-    pid = os.fork()
-    if pid == 0:
-        try:
-            os.execvp(cmd[0], cmd)
-        finally:
-            print('Could not exec ', cmd)
-            os._exit(1)
-
-
-class Df_Cmd(object):
-    def __init__(self, cmd, dst):
-        if platform.system() == 'Windows':
-            if cmd[0][0] == '/':
-                cmd2 = 'c:/cygwin' + cmd[0]
-            else:
-                cmd2 = 'c:/cygwin/bin/' + cmd[0]
-            cmd = (cmd2,) + cmd[1:]
-        self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=dst)
-
-    def readline(self):
-        return self.pob.stdout.readline()
-
-    def finish(self):
-        self.pob.wait()
-        return self.pob.returncode
-
-def bf_popen(cmd, bufsize=-1):
-    p2cread, p2cwrite = os.pipe()
-    c2pread, c2pwrite = os.pipe()
-    pid = os.fork()
-    if pid == 0:
-        os.dup2(p2cread, 0)
-        os.dup2(c2pwrite, 1)
-        os.dup2(c2pwrite, 2)
-        try:
-            os.execvp(cmd[0], cmd)
-        finally:
-            print('Could not exec ', cmd)
-            os._exit(1)
-    os.close(p2cread)
-    os.close(p2cwrite)
-    os.close(c2pwrite)
-    fromchild = os.fdopen(c2pread, 'r', bufsize)
-    return fromchild, pid
 
 def seq2str(seq):
     s = ''
