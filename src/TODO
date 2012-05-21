@@ -1,1 +1,40 @@
-Refaktorisera kommando-job m.a.p f�rvirring om noder vs pather och att rename inte funkar
+Refaktorisera kommando-job m.a.p förvirring om noder vs pather och att rename inte funkar
+
+Första windows-släpp - måsten
+-----------------------------
+Preview på bilder - control knapp + hover -> popup med preview (främst bilder)
+Tooltips på knappar som bara har ikoner
+E.T.A på långa filoperationer (+pause, cancel)
+dubbelklick - om inget händer, berätta varför för användaren
+Rätta buggar
+Favourite Links i Explorer ska synas i Df
+Browsing network shares via \\server\folder...
+Parsing .lnk files
+
+TODO övrigt
+-----------
+Preview - hover
+KOPiera/flytta/ta bort många filer-samma jobb
+Mer metadata på filer (owner, flaggor etc.)
+Applikationer-installerade
+Find
+Användardefinierade knappar
+Config: default packfunktion
+
+Buggar
+------
+/a/doc visar inte alla filer (åäö prob.?)
+windows file notifications på nätverksdiskar funkar inte
+Resize på name-kolumnen funkar inte
+Open With...-knapp df_openwith på linux är ej exekverbar
+Pack: Packar med absolutpath från root
+åäö i filnamn funkar inte
+Size: KB->kB
+missar refresh/change event ibland (create dir, delete dir)
+starta med tom config, bookmarks får "tom" första entry
+städa gamla körda jobb om över 100st
+Select på Loading... ger Traceback (most recent call last):
+  File "C:\Users\ervhch\git\ws\src\Df_Panel.py", line 230, in treeW_selectionChanged
+    sum += i.df_node.size
+AttributeError: 'NoneType' object has no attribute 'size'
+
