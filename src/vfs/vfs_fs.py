@@ -175,10 +175,10 @@ class Fs(vfs_node.Node):
         srcList, dst = self.getSelectionAndDestination()
         for src in srcList:
             newpath = Df_Dialog.Dialog("Rename", "Enter new name                                                                                                                                       ", 
-                                       src.name)
+                                       src.fsname)
             if newpath == None:
                 return
-            if newpath == src.fspath:
+            if newpath == src.fsname:
                 continue
             Df.d.jobm.addJobs(srcList[0].ops_rename, [ src ], 
                               path_join(src.parent.fspath, newpath))

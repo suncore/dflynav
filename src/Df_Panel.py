@@ -179,6 +179,7 @@ class Panel(object):
         self.setPathByString(path, True, False)
 
     def setPathByString(self, path, bestEffort = True, addToBackHistory = True):
+        path = path.rstrip('/')
         c = self.cd
         while c.parent:
             c = c.parent

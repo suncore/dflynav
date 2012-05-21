@@ -78,7 +78,7 @@ def bf_exec(cmd):
             os._exit(1)
 
 
-class Df_Cmd():
+class Df_Cmd(object):
     def __init__(self, cmd, dst):
         if platform.system() == 'Windows':
             if cmd[0][0] == '/':
@@ -93,7 +93,7 @@ class Df_Cmd():
 
     def finish(self):
         self.pob.wait()
-        return self.pob.returncode;
+        return self.pob.returncode
 
 def bf_popen(cmd, bufsize=-1):
     p2cread, p2cwrite = os.pipe()

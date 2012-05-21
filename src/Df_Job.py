@@ -42,10 +42,12 @@ class JobManager():
 
                 cmd = Df_Cmd(job.cmd, job.dst.fspath)
                 output = cmd.readline()
+                #print output
                 while output:
                     # TOOD: Update tooltip while running
                     job.output += output
                     output = cmd.readline()
+                    #print output
                 job.status = cmd.finish()
                 cmd = None
                 
