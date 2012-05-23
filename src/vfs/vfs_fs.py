@@ -13,19 +13,19 @@ from utils import *
 import subprocess, Df_Job
 
 unpackCmds = [
-    [ ('tar', 'xzf'),
+    [ ['tar', 'xzf'],
       ['tar.gz', 'tgz'] ],
-    [ ('tar', 'xjf'),
+    [ ['tar', 'xjf'],
       ['tar.bz2'] ],
-    [ ('unzip', '-oqq'),
+    [ ['unzip', '-oqq'],
       ['zip'] ],
-    [ ('gzip', '-d'),
+    [ ['gzip', '-d'],
       ['gz'] ],
-    [ ('bzip2', '-d'),
+    [ ['bzip2', '-d'],
       ['bz2'] ],
-    [ ('7za', 'x'),
+    [ ['7za', 'x'],
       ['7z'] ],
-    [ ('rar', 'x', '-o+'),
+    [ ['rar', 'x', '-o+'],
       ['rar', '001' ] ]
     ]
 
@@ -114,47 +114,11 @@ class Fs(vfs_node.Node):
         except:
             pass
 
-
-    def ops_move(self, src, dst):
-        cmd = ('/bin/mv', src.fspath, dst.fspath)
-        cmdString = '$ move %s to %s' % (src.fspath, dst.fspath)
-        return (cmd, cmdString)
-
-    def ops_rename(self, src, newpath):
-        cmd = ('/bin/mv', src.fspath, newpath) #TODO
-        cmdString = '$ rename %s to %s' % (src.fspath, newpath)
-        return (cmd, cmdString)
-
     def ops_mkdir(self, dir, dummy):
         cmd = ('/bin/mkdir', path_join(self.fspath, dir))
         cmdString = '$ mkdir %s' % ((path_join(self.fspath, dir)))
         return (cmd, cmdString)
-
-    def ops_delete(self, src, dst):
-        cmd = ('/bin/rm', '-rf', src.fspath)
-        cmdString = '$ delete %s' % src.fspath
-        return (cmd, cmdString)
  
-    def ops_link(self, src, dst):
-        cmd = ('/bin/ln', '-s', src.fspath, dst.fspath)
-        cmdString = '$ link %s to %s' % (src.fspath, dst.fspath)
-        return (cmd, cmdString)
-
-    def ops_pack(self, src, dst):
-        cmd = ('zip', '-r', src.fspath + '.zip', src.fspath)
-        cmdString = '$ pack %s' % src.fspath
-        return (cmd, cmdString)
-
-    def ops_unpack(self, src, dst):
-        ext = fsPathExt(src.fspath)
-        for i in unpackCmds:
-            cmd, exts = i
-            for e in exts:
-                if ext == e:
-                    cmd = cmd + (src.fspath,)
-                    cmdString = '$ unpack %s to %s' % (src.fspath, dst.fspath)
-                    return (cmd, cmdString)
-
     def ops_compare(self, src, dst):
         pass
     
@@ -165,46 +129,92 @@ class Fs(vfs_node.Node):
         srcNodeList, dstNode = self.getSelectionAndDestination()
         if not srcNodeList:
             return
-        srcList= [x.fspath for x in srcNodeList]
+        srcList = [x.fspath for x in srcNodeList]
         cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
-        srcList= [x.fsname for x in srcNodeList]
+        srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
+        if len(srcs) > 200:
+            srcs = srcs[0:200]+"..."
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_move(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_move, srcList, dst)
+        srcNodeList, dstNode = self.getSelectionAndDestination()
+        if not srcNodeList:
+            return
+        srcList = [x.fspath for x in srcNodeList]
+        cmd = [ '/bin/mv' ] + srcList + [ dstNode.fspath ]
+        srcList = [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList)
+        if len(srcs) > 200:
+            srcs = srcs[0:200]+"..."
+        wd = srcNodeList[0].parent.fspath
+        cmdString = '$ in %s: move %s to %s' % (wd, srcs, dstNode.fspath)
+        args = cmd, wd
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_rename(self):
         srcList, dst = self.getSelectionAndDestination()
         for src in srcList:
-            newpath = Df_Dialog.Dialog("Rename", "Enter new name                                                                                                                                       ", 
+            newname = Df_Dialog.Dialog("Rename", "Enter new name                                                                                                                                       ", 
                                        src.fsname)
-            if newpath == None:
+            if newname == None:
                 return
-            if newpath == src.fsname:
+            if newname == src.fsname:
                 continue
-            Df.d.jobm.addJobs(srcList[0].ops_rename, [ src ], 
-                              path_join(src.parent.fspath, newpath))
+            wd = src.parent.fspath
+            newpath = path_join(wd, newname)
+            cmd = ['/bin/mv', src.fspath, newpath]
+            cmdString = '$ in %s: rename %s to %s' % (wd, src.fsname, newname)
+            args = cmd, wd
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_delete(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_delete, srcList, dst)
+        srcNodeList, x_ = self.getSelectionAndDestination()
+        if not srcNodeList:
+            return
+        srcList = [x.fspath for x in srcNodeList]
+        cmd = [ '/bin/rm', '-rf' ] + srcList
+        srcList = [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList)
+        if len(srcs) > 200:
+            srcs = srcs[0:200]+"..."
+        wd = srcNodeList[0].parent.fspath
+        cmdString = '$ in %s: delete %s' % (wd, srcs)
+        args = cmd, wd
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_link(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_link, srcList, dst)
+        srcNodeList, dstNode = self.getSelectionAndDestination()
+        for i in srcNodeList:
+            cmd = [ '/bin/ln', '-s' ] + [ i.fspath ] + [ dstNode.fspath ]
+            cmdString = '$ link %s to %s' % (i.fspath, dstNode.fspath)
+            args = cmd, None
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_pack(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_pack, srcList, dst)
+        srcNodeList, x_ = self.getSelectionAndDestination()
+        for i in srcNodeList:
+            cmd = [ 'zip', '-r' ] + [ i.fspath + '.zip' ] + [ i.fspath ]
+            cmdString = '$ pack %s ' % i.fspath
+            args = cmd, None
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_unpack(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_unpack, srcList, dst)
+        srcNodeList, dstNode = self.getSelectionAndDestination()
+        for srcNode in srcNodeList:
+            ext = fsPathExt(srcNode.fspath)
+            for i in unpackCmds:
+                cmd, exts = i
+                for e in exts:
+                    if ext == e:
+                        cmd = cmd + [ srcNode.fspath ]
+                        cmdString = '$ unpack %s to %s' % (srcNode.fspath, dstNode.fspath)
+                        wd = dstNode.fspath
+                        args = cmd, wd
+                        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_compare(self):
         srcList, dst = self.getSelectionAndDestination()
@@ -216,9 +226,9 @@ class Fs(vfs_node.Node):
         p = srcList[0].fspath
         if platform.system() == 'Windows': 
             p = genericPathToWindows(p)
-            subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) 
+            subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) # TODO exception handling
         else:
-            subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) 
+            subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) # TODO use other path
 
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
