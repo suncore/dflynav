@@ -4,7 +4,17 @@ from PySide import QtGui
 import thread
 from utils import *
 from Queue import Queue
-import Df_Cmd
+
+
+class Cmd(object):
+    def __init__(self, args):
+        pass
+
+    def readline(self):
+        pass
+    
+    def finish(self):
+        pass
 
 class JobManager():
     def __init__(self, jobsW):
@@ -21,13 +31,12 @@ class JobManager():
         self.jobsW.header().setResizeMode(2, QtGui.QHeaderView.ResizeToContents)
         thread.start_new_thread(self.jobTask, (self,))
     
-    def addJobs(self, fun, srcList, dst):
-        for src in srcList:
-            job = Job(fun, src, dst)
-            self.jobs.append(job)
-            job.item = QtGui.QTreeWidgetItem( [ '', job.cmdString, "Queued" ] )
-            job.updateTime()
-            self.jobsW.insertTopLevelItem(0, job.item)
+    def addJob(self, executer, args, cmdString):
+        item = QtGui.QTreeWidgetItem( [ '', cmdString, "Queued" ] )
+        job = Job(args, executer, item)
+        self.jobs.append(job)
+        job.updateTime()
+        self.jobsW.insertTopLevelItem(0, job.item)
         self.q.put(1)
 
     def jobTask(self, dummy):
@@ -41,7 +50,7 @@ class JobManager():
                 job.updateTime()
                 job.setStatus("Running")
 
-                cmd = Df_Cmd.Cmd(job.cmd, job.dst.fspath)
+                cmd = job.executer(job.args)
                 output = cmd.readline()
                 #print output
                 while output:
@@ -51,16 +60,6 @@ class JobManager():
                     #print output
                 job.status = cmd.finish()
                 cmd = None
-                
-#                o, pid = bf_popen(job.cmd)
-#                output = o.readline()
-#                while output:
-#                    job.output += output
-#                    output = o.readline()
-#                o.close()
-#                pid, sts = os.waitpid(pid, 0)
-#                sts = sts >> 8
-
                 job.updateTime()
                 job.output = job.output.rstrip()
                 job.item.setToolTip(0, job.output)
@@ -74,17 +73,14 @@ class JobManager():
                 self.jobIndex += 1
 
 class Job():
-    def __init__(self, fun, src, dst):
-        self.fun = fun
-        self.src = src
-        self.dst = dst
+    def __init__(self, args, executer, item):
+        self.args = args
+        self.executer = executer
+        self.item = item
+        
         self.status = None
         self.output = ''
         self.started = False
-        (self.cmd, self.cmdString) = self.fun(src,dst)
-
-    def getCmdString(self):
-        return self.cmdString
 
     def setStatus(self, string):
         self.item.setText(2, string)

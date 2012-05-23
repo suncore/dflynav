@@ -10,7 +10,7 @@ if platform.system() == 'Windows':
     import win32com.client 
 from . import vfs_node
 from utils import *
-import subprocess
+import subprocess, Df_Job
 
 unpackCmds = [
     [ ('tar', 'xzf'),
@@ -114,11 +114,6 @@ class Fs(vfs_node.Node):
         except:
             pass
 
-    # -------------------------------------------------------------------------------
-    def ops_copy(self, src, dst):
-        cmd = ('/bin/cp', '-drx', src.fspath, dst.fspath)
-        cmdString = '$ copy %s to %s' % (src.fspath, dst.fspath)
-        return (cmd, cmdString)
 
     def ops_move(self, src, dst):
         cmd = ('/bin/mv', src.fspath, dst.fspath)
@@ -163,9 +158,21 @@ class Fs(vfs_node.Node):
     def ops_compare(self, src, dst):
         pass
     
+    def jobExecuter(self, args):
+        return Cmd(args)
+    
     def cb_copy(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_copy, srcList, dst)
+        srcNodeList, dstNode = self.getSelectionAndDestination()
+        if not srcNodeList:
+            return
+        srcList= [x.fspath for x in srcNodeList]
+        cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
+        srcList= [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList)
+        wd = srcNodeList[0].parent.fspath
+        cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
+        args = cmd, wd
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_move(self):
         srcList, dst = self.getSelectionAndDestination()
@@ -463,3 +470,26 @@ class PictureFile(File):
     def hover(self, enter):
         print "Hover ", enter
 
+
+
+
+class Cmd(Df_Job.Cmd):
+    def __init__(self, args):
+        cmd, workingDir = args
+        if platform.system() == 'Windows':
+            if cmd[0][0] == '/':
+                cmd2 = 'c:/cygwin' + cmd[0]
+            else:
+                cmd2 = 'c:/cygwin/bin/' + cmd[0]
+            cmd = [cmd2] + cmd[1:]
+        if workingDir:
+            self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=workingDir)
+        else:
+            self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+            
+    def readline(self):
+        return self.pob.stdout.readline()
+
+    def finish(self):
+        self.pob.wait()
+        return self.pob.returncode
