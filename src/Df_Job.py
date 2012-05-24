@@ -32,6 +32,7 @@ class JobManager():
         thread.start_new_thread(self.jobTask, (self,))
     
     def addJob(self, executer, args, cmdString):
+        #item = QtGui.QTreeWidgetItem( [ '',  "<b>Hello</b> <i>Qt!</i>", "Queued" ] )
         item = QtGui.QTreeWidgetItem( [ '', cmdString, "Queued" ] )
         job = Job(args, executer, item)
         self.jobs.append(job)
