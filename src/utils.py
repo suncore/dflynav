@@ -55,7 +55,7 @@ def size2str(size):
     if size >= mb:
         return "%.2f MB" % (size/mb)
     if size >= kb:
-        return "%.2f KB" % (size/kb)
+        return "%.2f kB" % (size/kb)
     else:
         return "%d B" % (size)
 

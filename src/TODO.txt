@@ -1,20 +1,15 @@
-Refaktorisera kommando-job m.a.p förvirring om noder vs pather och att rename inte funkar
 
 Första windows-släpp - måsten
 -----------------------------
-Preview på bilder - control knapp + hover -> popup med preview (främst bilder)
-Tooltips på knappar som bara har ikoner
 E.T.A på långa filoperationer (+pause, cancel)
-dubbelklick - om inget händer, berätta varför för användaren
+dubbelklick - om inget händer, berätta varför för användaren - logga exception fr�n open-kommandot
 Rätta buggar
-Favourite Links i Explorer ska synas i Df
-Browsing network shares via \\server\folder...
-Parsing .lnk files
+Preview bilder - g�r klart, visa metadata, storlek p� f�rsta bild etc.
+Preview p� alla vanliga filer - visa alla metadata
+Preview p� packade filer - visa lista p� inneh�ll
 
 TODO övrigt
 -----------
-Preview - hover
-KOPiera/flytta/ta bort många filer-samma jobb
 Mer metadata på filer (owner, flaggor etc.)
 Applikationer-installerade
 Find
@@ -23,8 +18,7 @@ Config: default packfunktion
 
 Buggar
 ------
-/a/doc visar inte alla filer (åäö prob.?)
-windows file notifications på nätverksdiskar funkar inte
+windows file notifications på nätverksdiskar funkar inte alltid
 Resize på name-kolumnen funkar inte
 Open With...-knapp df_openwith på linux är ej exekverbar
 Pack: Packar med absolutpath från root

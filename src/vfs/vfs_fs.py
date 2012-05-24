@@ -88,7 +88,10 @@ class Fs(vfs_node.Node):
         return isinstance(obj, Fs)
     
     def mkdir(self, dir):
-        Df.d.jobm.addJobs(self.ops_mkdir, [ dir ], None)
+        cmd = ['/bin/mkdir', path_join(self.fspath, dir)]
+        cmdString = '$ mkdir %s' % path_join(self.fspath, dir)
+        args = cmd, None
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         
     def fsFree(self):
         try:
@@ -114,10 +117,6 @@ class Fs(vfs_node.Node):
         except:
             pass
 
-    def ops_mkdir(self, dir, dummy):
-        cmd = ('/bin/mkdir', path_join(self.fspath, dir))
-        cmdString = '$ mkdir %s' % ((path_join(self.fspath, dir)))
-        return (cmd, cmdString)
  
     def ops_compare(self, src, dst):
         pass

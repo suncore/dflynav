@@ -61,6 +61,13 @@ if __name__ == '__main__':
     d.g.mw.splitter.setStretchFactor(0,1)
     d.g.mw.splitter.setStretchFactor(1,0)
     
+    d.g.mw.left_back.setToolTip("Back")
+    d.g.mw.right_back.setToolTip("Back")
+    d.g.mw.left_up.setToolTip("Up")
+    d.g.mw.right_up.setToolTip("Up")
+    d.g.mw.toleft.setToolTip("Set the left path to the same as the right path")
+    d.g.mw.toright.setToolTip("Set the right path to the same as the left path")
+    
     d.jobm = Df_Job.JobManager(d.g.mw.jobs)
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
