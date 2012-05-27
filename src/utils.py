@@ -6,11 +6,17 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from PySide.QtCore import *
 from PySide import QtGui
+import locale, datetime
+if platform.system() == 'Windows':
+    import win32api
 
 
 def JpegToPixmap(fn):
     im = Image.open(fn)
     exif = Exif(im)
+    date = ''
+    if 'DateTimeOriginal' in exif:
+        date = exif['DateTimeOriginal']
     if 'Orientation' in exif:
         if exif['Orientation'] == 6:
             im = im.rotate(-90)
@@ -20,7 +26,10 @@ def JpegToPixmap(fn):
             im = im.rotate(90)
     data = im.convert('RGBA').tostring('raw', 'BGRA')
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-    return (data, QtGui.QPixmap(image))
+    dateL = date.split(' ')
+    dateL = date.split(':')
+    date = time.strftime(locale.nl_langinfo(locale.D_T_FMT), time.localtime())
+    return ((data, QtGui.QPixmap(image)), date)
 
 def Exif(i):
     ret = {}
@@ -75,8 +84,16 @@ def seq2str(seq):
         s = s + ' ' + str(i)
     return s[1:]
 
-def time2str(t):
-    return time.strftime("%y-%m-%d %H:%M:%S", t)
+if platform.system() == 'Windows':
+    def time2str(t):
+        #return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
+        de = win32api.GetDateFormat(0, 0, t)
+        tm = win32api.GetTimeFormat(0, 0, t)
+        return de+' '+tm
+else:
+    def time2str(t):
+        return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
+        #return time.strftime("%y-%m-%d %H:%M:%S", t)
 
 def timenow():
     return time.localtime(time.time())

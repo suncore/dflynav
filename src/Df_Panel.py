@@ -153,8 +153,8 @@ class Panel(object):
         if i and i is not self.hoverItem:
             qv = i.df_node.quickView()
             if qv:
-                (data,pixmap) = qv
-                Df.d.preview.show(self.panelIdx, pixmap, i.df_node.fspath)
+                (pixmap, text) = qv
+                Df.d.preview.show(self.panelIdx, pixmap, text)
             self.hoverItem = i
 
     def openItem(self, item):

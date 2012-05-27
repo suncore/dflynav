@@ -21,7 +21,8 @@ class Preview():
         self.pixmap = None
         #self.size = self.gvW[0].size()
 
-    def show(self, index, pixmap, text):
+    def show(self, index, pm, text):
+        (self.data, pixmap) = pm
         if index == 0:
             otherIndex = 1
         else:
