@@ -16,7 +16,10 @@ def JpegToPixmap(fn):
     exif = Exif(im)
     date = ''
     if 'DateTimeOriginal' in exif:
+        # Date example: 2011:02:26 16:29:49
         date = exif['DateTimeOriginal']
+        t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+        date = time2str(t)
     if 'Orientation' in exif:
         if exif['Orientation'] == 6:
             im = im.rotate(-90)
@@ -26,9 +29,6 @@ def JpegToPixmap(fn):
             im = im.rotate(90)
     data = im.convert('RGBA').tostring('raw', 'BGRA')
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-    dateL = date.split(' ')
-    dateL = date.split(':')
-    date = time.strftime(locale.nl_langinfo(locale.D_T_FMT), time.localtime())
     return ((data, QtGui.QPixmap(image)), date)
 
 def Exif(i):
