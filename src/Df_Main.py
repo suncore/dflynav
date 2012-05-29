@@ -1,4 +1,3 @@
-
 # Builder/main module
 
     
@@ -82,6 +81,9 @@ if __name__ == '__main__':
     
 
     d.config.load(d.g.config)
+
+
+    test()
 
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
@@ -178,3 +180,21 @@ if __name__ == '__main__':
 #    app.exec_()
 #    
 #sys.exit(0)
+
+#def test():
+#    import win32com.client 
+#    strComputer = "server" 
+#    objWMIService = win32com.client.Dispatch("WbemScripting.SWbemLocator") 
+#    objSWbemServices = objWMIService.ConnectServer(strComputer,"root\cimv2") 
+#    colItems = objSWbemServices.ExecQuery("Select * from Win32_Share") 
+#    for objItem in colItems: 
+#        print "Access Mask: ", objItem.AccessMask 
+#        print "Allow Maximum: ", objItem.AllowMaximum 
+#        print "Caption: ", objItem.Caption 
+#        print "Description: ", objItem.Description 
+#        print "Install Date: ", objItem.InstallDate 
+#        print "Maximum Allowed: ", objItem.MaximumAllowed 
+#        print "Name: ", objItem.Name 
+#        print "Path: ", objItem.Path 
+#        print "Status: ", objItem.Status 
+#        print "Type: ", objItem.Type 

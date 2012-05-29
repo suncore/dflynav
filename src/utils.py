@@ -29,7 +29,9 @@ def JpegToPixmap(fn):
             im = im.rotate(90)
     data = im.convert('RGBA').tostring('raw', 'BGRA')
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-    return ((data, QtGui.QPixmap(image)), date)
+    w,h = im.size
+    size = str(w) + 'x' + str(h)
+    return ((data, QtGui.QPixmap(image)), date+'  '+size)
 
 def Exif(i):
     ret = {}

@@ -7,6 +7,7 @@ RÃ¤tta buggar
 Preview bilder - gör klart, visa metadata, storlek på första bild etc.
 Preview på alla vanliga filer - visa alla metadata
 Preview på packade filer - visa lista på innehåll
+/Network ska innehålla alla nätverksshares som finns i drive-listan i alla fall
 
 TODO Ã¶vrigt
 -----------

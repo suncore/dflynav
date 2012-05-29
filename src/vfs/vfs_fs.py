@@ -474,8 +474,8 @@ class PictureFile(File):
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
 
     def quickView(self):
-        (pixmap, date) = JpegToPixmap(self.fspath)
-        text = date
+        (pixmap, info) = JpegToPixmap(self.fspath)
+        text = info
         return (pixmap, text)
         
     def hover(self, enter):

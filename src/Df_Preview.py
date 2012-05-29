@@ -10,16 +10,20 @@ class Preview():
         self.textW = [0,0]
         self.treeW = [0,0]
         self.scene = [0,0]
-        self.item = [0,0]
+        self.item = [None, None]
+        self.data = [0,0]
+        self.pixmap = [0,0]
 
         self.containerW[0] = leftContainerW
         self.containerW[1] = rightContainerW
         self.gvW[0] = leftGvW
         self.gvW[1] = rightGvW
-        self.gvW[0].origresizeEvent = self.gvW[0].resizeEvent
-        self.gvW[1].origresizeEvent = self.gvW[1].resizeEvent
+        #self.gvW[0].origresizeEvent = self.gvW[0].resizeEvent
+        #self.gvW[1].origresizeEvent = self.gvW[1].resizeEvent
         self.gvW[0].resizeEvent = self.gvW_resizeEvent0
         self.gvW[1].resizeEvent = self.gvW_resizeEvent1
+        self.gvW[0].showEvent = self.gvW_showEvent0
+        self.gvW[1].showEvent = self.gvW_showEvent1
         self.gvW[1] = rightGvW
         self.textW[0] = leftTextW
         self.textW[1] = rightTextW
@@ -32,28 +36,41 @@ class Preview():
         #self.size = self.gvW[0].size()
 
     def gvW_resizeEvent0(self, event):
-        self.gvW[0].fitInView(self.item[0], Qt.KeepAspectRatio)
-
+        self.reShow(0)
     def gvW_resizeEvent1(self, event):
-        self.gvW[1].fitInView(self.item[1], Qt.KeepAspectRatio)
+        self.reShow(1)
+    def gvW_showEvent0(self, event):
+        self.reShow(0)
+    def gvW_showEvent1(self, event):
+        self.reShow(1)
+
+    def reShow(self, i):
+        #self.gvW[i].fitInView(100000,100000,1,1)
+        if self.item[i]:
+            #w = self.pixmap[i].width()
+            #h = self.pixmap[i].height()
+            #self.gvW[i].fitInView(w/2, h/2, 20,20, Qt.KeepAspectRatio)
+            self.gvW[i].fitInView(self.item[i], Qt.KeepAspectRatio)
+        #print self.pixmap[i].size()
 
     def show(self, index, qv):
         (pm, text) = qv
-        (self.data, pixmap) = pm
         if index == 0:
             i = 1
         else:
             i = 0
-        self.scene[i].clear()
+        (self.data[i], self.pixmap[i]) = pm
         #size = self.gvW[i].size()
         #size = QSize(size.width()*0.95, size.height()*0.95)
         #self.pixmap = pixmap #pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
-        self.item[i] = self.scene[i].addPixmap(pixmap)
-        self.gvW[i].fitInView(-2000,-2000,-1,-1)
         self.containerW[index].hide()
         self.containerW[i].show()
         self.treeW[i].hide()
         self.textW[i].setText(text)
+        self.scene[i].clear()
+        self.item[i] = self.scene[i].addPixmap(self.pixmap[i])
+        #print self.pixmap[i].size()
+        self.reShow(i)
         
     def hide(self):
         self.containerW[0].hide()
