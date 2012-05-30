@@ -9,11 +9,18 @@ from PySide import QtGui
 import locale, datetime
 if platform.system() == 'Windows':
     import win32api
-
+import exif as exifreader
+import tempfile
 
 def JpegToPixmap(fn):
     im = Image.open(fn)
-    exif = Exif(im)
+    exif = {}
+    info = im._getexif()
+    items = info.items()
+    if items:
+        for tag, value in items:
+            decoded = TAGS.get(tag, tag)
+            exif[decoded] = value
     date = ''
     if 'DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
@@ -33,13 +40,34 @@ def JpegToPixmap(fn):
     size = str(w) + 'x' + str(h)
     return ((data, QtGui.QPixmap(image)), date+'  '+size)
 
-def Exif(i):
-    ret = {}
-    info = i._getexif()
-    for tag, value in info.items():
-        decoded = TAGS.get(tag, tag)
-        ret[decoded] = value
-    return ret        
+def JpegThumbToIcon(fn):
+    file=open(fn, 'rb')
+    exif = exifreader.process_file(file)
+    file.close()
+    date = ''
+    thumb = None
+    if 'EXIF DateTimeOriginal' in exif:
+        # Date example: 2011:02:26 16:29:49
+        date = str(exif['EXIF DateTimeOriginal'])
+        t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+        date = time2str(t)
+    if 'JPEGThumbnail' in exif:
+        f = tempfile.TemporaryFile()
+        f.write(exif['JPEGThumbnail'])
+        f.seek(0)
+        im = Image.open(f)
+        if 'Orientation' in exif:
+            if exif['Orientation'] == 6:
+                im = im.rotate(-90)
+            elif exif['Orientation'] == 3:
+                im = im.rotate(180)
+            elif exif['Orientation'] == 8:
+                im = im.rotate(90)
+        data = im.convert('RGBA').tostring('raw', 'BGRA')
+        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+        thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
+        f.close()
+    return (thumb, date)
 
 def iff(test_, then_, else_):
     if test_:

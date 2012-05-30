@@ -83,7 +83,7 @@ if __name__ == '__main__':
     d.config.load(d.g.config)
 
 
-    test()
+
 
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()

@@ -229,6 +229,19 @@ class Fs(vfs_node.Node):
         else:
             subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) # TODO use other path
 
+#    def cb_open(self):
+#        srcList, dst = self.getSelectionAndDestination()
+#        try:
+#            if platform.system() == 'Windows':
+#                fspathL = [ genericPathToWindows(n.fspath) for n in srcList ]
+#                fspaths = ' '.join(fspathL)
+#                os.startfile(fspaths)
+#            else:
+#                os.chdir(self.parent.fspath)
+#                subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
+#        except:
+#            pass
+
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(Directory, self).__init__(parent, name, fsname, stats, linkTarget)
@@ -455,6 +468,7 @@ else:
 class File(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(File, self).__init__(parent, name, fsname, stats, linkTarget)
+        #self.actionButtonCallbacks.insert(0,( 'Open', False, self.cb_open ))
         self.actionButtonCallbacks.append(( 'Open...', False, self.cb_openwith ))
 
     def icon(self):
@@ -477,7 +491,13 @@ class PictureFile(File):
         (pixmap, info) = JpegToPixmap(self.fspath)
         text = info
         return (pixmap, text)
-        
+    def icon(self):
+        (iconData,date) = JpegThumbToIcon(self.fspath)
+        if not iconData:
+            return super(PictureFile, self).icon()
+        self.iconData, icon = iconData
+        return icon
+    
     def hover(self, enter):
         print "Hover ", enter
 
