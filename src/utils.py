@@ -10,7 +10,7 @@ import locale, datetime
 if platform.system() == 'Windows':
     import win32api
 import exif as exifreader
-import tempfile
+import tempfile, Df
 
 def JpegToPixmap(fn):
     im = Image.open(fn)
@@ -52,7 +52,9 @@ def JpegThumbToIcon(fn):
         t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
         date = time2str(t)
     if 'JPEGThumbnail' in exif:
-        f = tempfile.TemporaryFile()
+        f = Df.d.tempfile
+        f.truncate(0)
+        f.seek(0)
         f.write(exif['JPEGThumbnail'])
         f.seek(0)
         im = Image.open(f)
@@ -78,7 +80,6 @@ def JpegThumbToIcon(fn):
         data = im.convert('RGBA').tostring('raw', 'BGRA')
         image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
         thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
-        f.close()
     return (thumb, date)
 
 def iff(test_, then_, else_):

@@ -486,16 +486,20 @@ class PictureFile(File):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
-        self.bigIcon = True
-
+            
     def quickView(self):
         (pixmap, info) = JpegToPixmap(self.fspath)
         text = info
         return (pixmap, text)
+
     def icon(self):
+        self.bigIcon = False
+        if not Df.d.config.showThumbs:
+            return super(PictureFile, self).icon()
         (iconData,date) = JpegThumbToIcon(self.fspath)
         if not iconData:
             return super(PictureFile, self).icon()
+        self.bigIcon = True
         self.iconData, icon = iconData
         return icon
     

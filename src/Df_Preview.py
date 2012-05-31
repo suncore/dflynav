@@ -46,11 +46,26 @@ class Preview():
 
     def reShow(self, i):
         #self.gvW[i].fitInView(100000,100000,1,1)
-        if self.item[i]:
+        if self.pixmap[i]:
             #w = self.pixmap[i].width()
             #h = self.pixmap[i].height()
             #self.gvW[i].fitInView(w/2, h/2, 20,20, Qt.KeepAspectRatio)
-            self.gvW[i].fitInView(self.item[i], Qt.KeepAspectRatio)
+            #self.gvW[i].fitInView(self.item[i], Qt.KeepAspectRatio)
+            size = self.gvW[i].viewport().size()
+            vw = size.width()
+            vh = size.height()
+            pixmap = self.pixmap[i].scaled(QSize(vw,vh), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            size = pixmap.size()
+            pw = size.width()
+            ph = size.height()
+            x = y = 0
+            if vw > pw:
+                x = -(vw-pw)/2
+            if vh > ph:
+                y = -(vh-ph)/2
+            self.gvW[i].setSceneRect(QRectF(x,y,vw,vh))
+            self.scene[i].clear()
+            self.item[i] = self.scene[i].addPixmap(pixmap)
         #print self.pixmap[i].size()
 
     def show(self, index, qv):
@@ -60,15 +75,10 @@ class Preview():
         else:
             i = 0
         (self.data[i], self.pixmap[i]) = pm
-        #size = self.gvW[i].size()
-        #size = QSize(size.width()*0.95, size.height()*0.95)
-        #self.pixmap = pixmap #pixmap.scaled(size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.containerW[index].hide()
         self.containerW[i].show()
         self.treeW[i].hide()
         self.textW[i].setText(text)
-        self.scene[i].clear()
-        self.item[i] = self.scene[i].addPixmap(self.pixmap[i])
         #print self.pixmap[i].size()
         self.reShow(i)
         

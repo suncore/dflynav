@@ -6,7 +6,7 @@ import sys
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin
-import platform, Df_Config, Df_Icon, Df_Preview
+import platform, Df_Config, Df_Icon, Df_Preview, tempfile
 
 if __name__ == '__main__':
 
@@ -82,13 +82,13 @@ if __name__ == '__main__':
 
     d.config.load(d.g.config)
 
-
-
+    d.tempfile = tempfile.TemporaryFile()
 
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
     d.config.save()
+    d.tempfile.close()
     sys.exit(r)
 
 
