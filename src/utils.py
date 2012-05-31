@@ -6,11 +6,26 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from PySide.QtCore import *
 from PySide import QtGui
-
+import locale, datetime
+if platform.system() == 'Windows':
+    import win32api
+import exif as exifreader
+import tempfile
 
 def JpegToPixmap(fn):
     im = Image.open(fn)
-    exif = Exif(im)
+    exif = {}
+    info = im._getexif()
+    if info:
+        for tag, value in info.items():
+            decoded = TAGS.get(tag, tag)
+            exif[decoded] = value
+    date = ''
+    if 'DateTimeOriginal' in exif:
+        # Date example: 2011:02:26 16:29:49
+        date = exif['DateTimeOriginal']
+        t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+        date = time2str(t)
     if 'Orientation' in exif:
         if exif['Orientation'] == 6:
             im = im.rotate(-90)
@@ -20,15 +35,51 @@ def JpegToPixmap(fn):
             im = im.rotate(90)
     data = im.convert('RGBA').tostring('raw', 'BGRA')
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-    return (data, QtGui.QPixmap(image))
+    w,h = im.size
+    size = str(w) + 'x' + str(h)
+    return ((data, QtGui.QPixmap(image)), date+'  '+size)
 
-def Exif(i):
-    ret = {}
-    info = i._getexif()
-    for tag, value in info.items():
-        decoded = TAGS.get(tag, tag)
-        ret[decoded] = value
-    return ret        
+def JpegThumbToIcon(fn):
+    file=open(fn, 'rb')
+    exif = exifreader.process_file(file)
+    file.close()
+    date = ''
+    thumb = None
+    #print exif
+    if 'EXIF DateTimeOriginal' in exif:
+        # Date example: 2011:02:26 16:29:49
+        date = str(exif['EXIF DateTimeOriginal'])
+        t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+        date = time2str(t)
+    if 'JPEGThumbnail' in exif:
+        f = tempfile.TemporaryFile()
+        f.write(exif['JPEGThumbnail'])
+        f.seek(0)
+        im = Image.open(f)
+        if 'Image Orientation' in exif:
+            o = str(exif['Image Orientation'])
+            if o == '6':
+                im = im.rotate(-90)
+            elif o == '3':
+                im = im.rotate(180)
+            elif o == '8':
+                im = im.rotate(90)
+        w,h = im.size
+        if w > h:
+            s = w
+            b = (0,((w-h)/2))
+        else:
+            s = h
+            b = (((h-w)/2),0)
+        c = 128
+        im2 = Image.new('RGBA', (s,s), (c,c,c,255))
+        im2.paste(im, b)
+        im=im2
+        data = im.convert('RGBA').tostring('raw', 'BGRA')
+        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+        thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
+        f.close()
+    return (thumb, date)
 
 def iff(test_, then_, else_):
     if test_:
@@ -55,7 +106,7 @@ def size2str(size):
     if size >= mb:
         return "%.2f MB" % (size/mb)
     if size >= kb:
-        return "%.2f KB" % (size/kb)
+        return "%.2f kB" % (size/kb)
     else:
         return "%d B" % (size)
 
@@ -75,8 +126,16 @@ def seq2str(seq):
         s = s + ' ' + str(i)
     return s[1:]
 
-def time2str(t):
-    return time.strftime("%y-%m-%d %H:%M:%S", t)
+if platform.system() == 'Windows':
+    def time2str(t):
+        #return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
+        de = win32api.GetDateFormat(0, 0, t)
+        tm = win32api.GetTimeFormat(0, 0, t)
+        return de+' '+tm
+else:
+    def time2str(t):
+        return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
+        #return time.strftime("%y-%m-%d %H:%M:%S", t)
 
 def timenow():
     return time.localtime(time.time())

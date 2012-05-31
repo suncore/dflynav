@@ -88,7 +88,10 @@ class Fs(vfs_node.Node):
         return isinstance(obj, Fs)
     
     def mkdir(self, dir):
-        Df.d.jobm.addJobs(self.ops_mkdir, [ dir ], None)
+        cmd = ['/bin/mkdir', path_join(self.fspath, dir)]
+        cmdString = '$ mkdir %s' % path_join(self.fspath, dir)
+        args = cmd, None
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         
     def fsFree(self):
         try:
@@ -114,10 +117,6 @@ class Fs(vfs_node.Node):
         except:
             pass
 
-    def ops_mkdir(self, dir, dummy):
-        cmd = ('/bin/mkdir', path_join(self.fspath, dir))
-        cmdString = '$ mkdir %s' % ((path_join(self.fspath, dir)))
-        return (cmd, cmdString)
  
     def ops_compare(self, src, dst):
         pass
@@ -229,6 +228,19 @@ class Fs(vfs_node.Node):
             subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) # TODO exception handling
         else:
             subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) # TODO use other path
+
+#    def cb_open(self):
+#        srcList, dst = self.getSelectionAndDestination()
+#        try:
+#            if platform.system() == 'Windows':
+#                fspathL = [ genericPathToWindows(n.fspath) for n in srcList ]
+#                fspaths = ' '.join(fspathL)
+#                os.startfile(fspaths)
+#            else:
+#                os.chdir(self.parent.fspath)
+#                subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
+#        except:
+#            pass
 
 class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
@@ -456,6 +468,7 @@ else:
 class File(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(File, self).__init__(parent, name, fsname, stats, linkTarget)
+        #self.actionButtonCallbacks.insert(0,( 'Open', False, self.cb_open ))
         self.actionButtonCallbacks.append(( 'Open...', False, self.cb_openwith ))
 
     def icon(self):
@@ -473,10 +486,19 @@ class PictureFile(File):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
+        self.bigIcon = True
 
     def quickView(self):
-        return JpegToPixmap(self.fspath)
-        
+        (pixmap, info) = JpegToPixmap(self.fspath)
+        text = info
+        return (pixmap, text)
+    def icon(self):
+        (iconData,date) = JpegThumbToIcon(self.fspath)
+        if not iconData:
+            return super(PictureFile, self).icon()
+        self.iconData, icon = iconData
+        return icon
+    
     def hover(self, enter):
         print "Hover ", enter
 

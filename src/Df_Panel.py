@@ -57,6 +57,7 @@ class Panel(object):
         self.treeW_noClear = False
         self.hoverItem = None
         self.hovering = False
+        self.defaultIconSize = self.treeW.iconSize()
         
     def start(self):
         self.refreshCd()
@@ -153,8 +154,7 @@ class Panel(object):
         if i and i is not self.hoverItem:
             qv = i.df_node.quickView()
             if qv:
-                (data,pixmap) = qv
-                Df.d.preview.show(self.panelIdx, pixmap, i.df_node.fspath)
+                Df.d.preview.show(self.panelIdx, qv)
             self.hoverItem = i
 
     def openItem(self, item):
@@ -234,6 +234,7 @@ class Panel(object):
 
     def setPath2(self):
         #self.pathW.setText(self.cd.path())
+        bigIcon = False
         self.cd.startMonitor(self.panelIdx)
         ch = self.cd.children()
         keys = [ 'Name' ]
@@ -259,8 +260,13 @@ class Panel(object):
             pi.df_node = i
             items.append(pi)
             self.nrItems += 1
+            bigIcon = bigIcon or i.bigIcon
         self.treeW.clearSelection()
         self.treeW.clear()
+        if bigIcon:
+            self.treeW.setIconSize(QSize(40,40))
+        else:
+            self.treeW.setIconSize(self.defaultIconSize)
         self.setActionButtons(items)
         self.treeW.insertTopLevelItems(0, items)
         self.treeW.sortItems(0,Qt.AscendingOrder)
