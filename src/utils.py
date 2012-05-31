@@ -16,9 +16,8 @@ def JpegToPixmap(fn):
     im = Image.open(fn)
     exif = {}
     info = im._getexif()
-    items = info.items()
-    if items:
-        for tag, value in items:
+    if info:
+        for tag, value in info.items():
             decoded = TAGS.get(tag, tag)
             exif[decoded] = value
     date = ''
@@ -46,6 +45,7 @@ def JpegThumbToIcon(fn):
     file.close()
     date = ''
     thumb = None
+    #print exif
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])
@@ -56,13 +56,25 @@ def JpegThumbToIcon(fn):
         f.write(exif['JPEGThumbnail'])
         f.seek(0)
         im = Image.open(f)
-        if 'Orientation' in exif:
-            if exif['Orientation'] == 6:
+        if 'Image Orientation' in exif:
+            o = str(exif['Image Orientation'])
+            if o == '6':
                 im = im.rotate(-90)
-            elif exif['Orientation'] == 3:
+            elif o == '3':
                 im = im.rotate(180)
-            elif exif['Orientation'] == 8:
+            elif o == '8':
                 im = im.rotate(90)
+        w,h = im.size
+        if w > h:
+            s = w
+            b = (0,((w-h)/2))
+        else:
+            s = h
+            b = (((h-w)/2),0)
+        c = 128
+        im2 = Image.new('RGBA', (s,s), (c,c,c,255))
+        im2.paste(im, b)
+        im=im2
         data = im.convert('RGBA').tostring('raw', 'BGRA')
         image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
         thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))

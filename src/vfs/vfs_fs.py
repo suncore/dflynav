@@ -486,6 +486,7 @@ class PictureFile(File):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
+        self.bigIcon = True
 
     def quickView(self):
         (pixmap, info) = JpegToPixmap(self.fspath)

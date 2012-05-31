@@ -33,7 +33,14 @@ class Config():
             self.configW.showHidden.setCheckState(Qt.Checked)
         else:
             self.configW.showHidden.setCheckState(Qt.Unchecked)
-        self.configW.showHidden.stateChanged.connect(self.showHiddenStateChanged)
+
+        self.configW.showThumbs.stateChanged.connect(self.showThumbsStateChanged)
+        self.showThumbs = int(self.settings.value("showThumbs", int(Qt.Unchecked)))
+        if self.showThumbs == int(Qt.Checked):
+            self.configW.showThumbs.setCheckState(Qt.Checked)
+        else:
+            self.configW.showThumbs.setCheckState(Qt.Unchecked)
+        self.configW.showThumbs.stateChanged.connect(self.showThumbsStateChanged)
 
         self.configW.useCurrentLeft.clicked.connect(self.useCurrentLeft)
         self.configW.useCurrentRight.clicked.connect(self.useCurrentRight)
@@ -68,6 +75,8 @@ class Config():
             self.settings.setValue("startDirRight", self.configW.rightStartDir.text())
         self.showHidden = int(self.configW.showHidden.checkState())
         self.settings.setValue("showHidden", self.showHidden)
+        self.showThumbs = int(self.configW.showThumbs.checkState())
+        self.settings.setValue("showThumbs", self.showThumbs)
                  
     def useCurrentLeft(self):
         self.configW.leftStartDir.setText(Df.d.lp.cd.path())
@@ -77,3 +86,6 @@ class Config():
         
     def showHiddenStateChanged(self, state):
         self.showHidden = int(state)
+
+    def showThumbsStateChanged(self, state):
+        self.showThumbs = int(state)

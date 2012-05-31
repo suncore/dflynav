@@ -56,7 +56,7 @@
 # 'EXIF DateTimeOriginal', 'Image Orientation', 'MakerNote FocusMode'
 #
 # Copyright (c) 2002-2007 Gene Cash All rights reserved
-# Copyright (c) 2007-2008 Ianaré Sévi All rights reserved
+# Copyright (c) 2007-2008 Ianarï¿½ Sï¿½vi All rights reserved
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -173,15 +173,15 @@ EXIF_TAGS = {
     0x010F: ('Make', ),
     0x0110: ('Model', ),
     0x0111: ('StripOffsets', ),
-    0x0112: ('Orientation',
-             {1: 'Horizontal (normal)',
-              2: 'Mirrored horizontal',
-              3: 'Rotated 180',
-              4: 'Mirrored vertical',
-              5: 'Mirrored horizontal then rotated 90 CCW',
-              6: 'Rotated 90 CW',
-              7: 'Mirrored horizontal then rotated 90 CW',
-              8: 'Rotated 90 CCW'}),
+    0x0112: ('Orientation', ),
+#             {1: 'Horizontal (normal)',
+#              2: 'Mirrored horizontal',
+#              3: 'Rotated 180',
+#              4: 'Mirrored vertical',
+#              5: 'Mirrored horizontal then rotated 90 CCW',
+#              6: 'Rotated 90 CW',
+#              7: 'Mirrored horizontal then rotated 90 CW',
+#              8: 'Rotated 90 CCW'}),
     0x0115: ('SamplesPerPixel', ),
     0x0116: ('RowsPerStrip', ),
     0x0117: ('StripByteCounts', ),

@@ -14,6 +14,7 @@ class Node(object):
         self.changed = False
         self.size = 0
         self.linkTarget = None
+        self.bigIcon = False
 
     def icon(self):
         return Df.d.iconFactory.getFolderIcon()
