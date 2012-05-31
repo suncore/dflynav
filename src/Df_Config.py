@@ -33,8 +33,8 @@ class Config():
             self.configW.showHidden.setCheckState(Qt.Checked)
         else:
             self.configW.showHidden.setCheckState(Qt.Unchecked)
+        self.configW.showHidden.stateChanged.connect(self.showHiddenStateChanged)
 
-        self.configW.showThumbs.stateChanged.connect(self.showThumbsStateChanged)
         self.showThumbs = int(self.settings.value("showThumbs", int(Qt.Unchecked)))
         if self.showThumbs == int(Qt.Checked):
             self.configW.showThumbs.setCheckState(Qt.Checked)

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'config.ui'
 #
-# Created: Thu May 31 19:45:06 2012
+# Created: Thu May 31 20:01:53 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,11 +28,11 @@ class Ui_Config(object):
         self.showHidden.setTristate(False)
         self.showHidden.setObjectName("showHidden")
         self.gridLayout_3.addWidget(self.showHidden, 0, 0, 1, 1)
-        self.checkBox = QtGui.QCheckBox(self.groupBox_2)
-        self.checkBox.setChecked(True)
-        self.checkBox.setTristate(False)
-        self.checkBox.setObjectName("checkBox")
-        self.gridLayout_3.addWidget(self.checkBox, 1, 0, 1, 1)
+        self.showThumbs = QtGui.QCheckBox(self.groupBox_2)
+        self.showThumbs.setChecked(True)
+        self.showThumbs.setTristate(False)
+        self.showThumbs.setObjectName("showThumbs")
+        self.gridLayout_3.addWidget(self.showThumbs, 1, 0, 1, 1)
         self.gridLayout.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.groupBox = QtGui.QGroupBox(Config)
         self.groupBox.setObjectName("groupBox")
@@ -74,7 +74,7 @@ class Ui_Config(object):
         Config.setWindowTitle(QtGui.QApplication.translate("Config", "Configuration", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("Config", "Miscellaneous", None, QtGui.QApplication.UnicodeUTF8))
         self.showHidden.setText(QtGui.QApplication.translate("Config", "Show hidden files", None, QtGui.QApplication.UnicodeUTF8))
-        self.checkBox.setText(QtGui.QApplication.translate("Config", "Show Image Thumbnails (may slow listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
+        self.showThumbs.setText(QtGui.QApplication.translate("Config", "Show Image Thumbnails (may slow listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Config", "Start directories", None, QtGui.QApplication.UnicodeUTF8))
         self.rememberStartFolders.setText(QtGui.QApplication.translate("Config", "Remember start directories from last run", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Config", "Left start folder", None, QtGui.QApplication.UnicodeUTF8))
