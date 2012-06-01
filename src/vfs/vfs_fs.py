@@ -362,7 +362,7 @@ class Directory(Fs):
             for f in os.listdir(self.fspath):
                 if self.stopAsync:
                     break
-                f = f.decode('utf-8','replace')
+                #f = f.decode('utf-8','replace')
                 #f = str(fn)
                 stats = self.statFile(path_join(self.fspath, f))
                 #stats = self.statFile(os.path.join(self.fspath, f))

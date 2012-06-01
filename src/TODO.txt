@@ -23,7 +23,7 @@ windows file notifications på nätverksdiskar funkar inte alltid
 Resize på name-kolumnen funkar inte
 Open With...-knapp df_openwith på linux är ej exekverbar
 Pack: Packar med absolutpath från root
-åäö i filnamn funkar inte
+åäö i filnamn funkar inte p� Linux?
 Size: KB->kB
 missar refresh/change event ibland (create dir, delete dir)
 starta med tom config, bookmarks får "tom" första entry
