@@ -487,7 +487,7 @@ class PictureFile(File):
         super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
             
-    def quickView(self):
+    def preview(self):
         (pixmap, info) = JpegToPixmap(self.fspath)
         text = info
         return (pixmap, text)

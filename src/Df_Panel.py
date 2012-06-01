@@ -128,14 +128,14 @@ class Panel(object):
 #        self.treeW_leaveEventOrig(e)
             
     def treeW_keyPressEvent(self, e):
-        if e.key() == Qt.Key_Control:
+        if e.key() == Qt.Key_Alt:
             self.hovering = True
-            self.quickView()
+            self.preview()
         self.treeW_keyPressEventOrig(e)
             
             
     def treeW_keyReleaseEvent(self, e):
-        if e.key() == Qt.Key_Control:
+        if e.key() == Qt.Key_Alt:
             Df.d.preview.hide()
             self.hovering = False
             self.hoverItem = None
@@ -145,14 +145,14 @@ class Panel(object):
     def treeW_mouseMoveEvent(self, e):
         self.treeW.setFocus()
         if self.hovering:
-            self.quickView()
+            self.preview()
         self.treeW_mouseMoveEventOrig(e)
 
-    def quickView(self):
+    def preview(self):
         pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
         i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
         if i and i is not self.hoverItem:
-            qv = i.df_node.quickView()
+            qv = i.df_node.preview()
             if qv:
                 Df.d.preview.show(self.panelIdx, qv)
             self.hoverItem = i
@@ -234,7 +234,8 @@ class Panel(object):
 
     def setPath2(self):
         #self.pathW.setText(self.cd.path())
-        bigIcon = False
+        bigIcons = 0
+        smallIcons = 0
         self.cd.startMonitor(self.panelIdx)
         ch = self.cd.children()
         keys = [ 'Name' ]
@@ -260,10 +261,13 @@ class Panel(object):
             pi.df_node = i
             items.append(pi)
             self.nrItems += 1
-            bigIcon = bigIcon or i.bigIcon
+            if i.bigIcon:
+                bigIcons += 1
+            else:
+                smallIcons += 1
         self.treeW.clearSelection()
         self.treeW.clear()
-        if bigIcon:
+        if bigIcons > smallIcons:
             self.treeW.setIconSize(QSize(40,40))
         else:
             self.treeW.setIconSize(self.defaultIconSize)

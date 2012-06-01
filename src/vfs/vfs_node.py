@@ -68,6 +68,6 @@ class Node(object):
     def fsFree(self):
         return None
     
-    def quickView(self):
+    def preview(self):
         return None
 
