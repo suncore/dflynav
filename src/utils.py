@@ -44,12 +44,14 @@ def JpegThumbToIcon(fn):
     exif = exifreader.process_file(file)
     file.close()
     date = ''
+    dateSecs = 0
     thumb = None
     #print exif
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])
         t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+        dateSecs = time.mktime(t)
         date = time2str(t)
     if 'JPEGThumbnail' in exif:
         f = Df.d.tempfile
@@ -80,7 +82,7 @@ def JpegThumbToIcon(fn):
         data = im.convert('RGBA').tostring('raw', 'BGRA')
         image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
         thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
-    return (thumb, date)
+    return (thumb, date, dateSecs)
 
 def iff(test_, then_, else_):
     if test_:

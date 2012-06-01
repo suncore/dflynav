@@ -241,7 +241,13 @@ class Panel(object):
         keys = [ 'Name' ]
         self.treeW.setColumnCount(0)
         if ch:
-            k = [ k for (k,s,v) in ch[0].meta ]
+            metalen = 0
+            for i in ch:
+                l = len(i.meta)
+                if metalen < l:
+                    mastermeta = i.meta
+                    metalen = l
+            k = [ k for (k,s,v) in mastermeta ]
             keys = keys + k
         self.treeW.setHeaderLabels(keys)
         self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
@@ -249,8 +255,14 @@ class Panel(object):
         self.nrItems = 0
         for i in ch:
             item  = [ i.name ]
+            idx = 0
             for k,s,v in i.meta:
-                item.append(s)
+                k2,s2,v2 = mastermeta[idx]
+                if k == k2:
+                    item.append(s)
+                else:
+                    item.append('')
+                idx += 1
             pi = PanelItem(item)
             col = 1
             for k,s,v in i.meta:

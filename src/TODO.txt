@@ -4,14 +4,13 @@ Första windows-släpp - måsten
 E.T.A på långa filoperationer (+pause, cancel)
 dubbelklick - om inget händer, berätta varför för användaren - logga exceptions fr�n open-kommandot
 Rätta buggar
-Preview p� alla vanliga filer - visa alla metadata
-Preview p� packade filer - visa lista p� inneh�ll
-extra metadata p� bilder
+mer metadata p� vanliga filer 
+visa exif-metadata f�r bildfiler
+blandade metadata i samma lista
 
 
 TODO övrigt
 -----------
-Mer metadata på filer (owner, flaggor etc.)
 Applikationer-installerade
 Find
 Användardefinierade knappar
@@ -23,8 +22,6 @@ windows file notifications på nätverksdiskar funkar inte alltid
 Resize på name-kolumnen funkar inte
 Open With...-knapp df_openwith på linux är ej exekverbar
 Pack: Packar med absolutpath från root
-åäö i filnamn funkar inte p� Linux?
-Size: KB->kB
 missar refresh/change event ibland (create dir, delete dir)
 starta med tom config, bookmarks får "tom" första entry
 städa gamla körda jobb om över 100st
