@@ -364,7 +364,11 @@ class Directory(Fs):
                     break
                 #f = f.decode('utf-8','replace')
                 #f = str(fn)
-                stats = self.statFile(path_join(self.fspath, f))
+                try:
+                    pj = path_join(self.fspath, f)
+                except:
+                    continue
+                stats = self.statFile(pj)
                 #stats = self.statFile(os.path.join(self.fspath, f))
                 hide = f[0] == '.'
                 if platform.system() == 'Windows':
