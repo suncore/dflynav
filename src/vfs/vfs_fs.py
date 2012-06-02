@@ -107,15 +107,16 @@ class Fs(vfs_node.Node):
             return None
 
     def open(self):
-        #if True:
+        error = None
         try:
             if platform.system() == 'Windows':
-                os.startfile(genericPathToWindows(self.fspath))
+                os.startfile(genericPathToWindows(self.fspath+'e'))
             else:
-                os.chdir(self.parent.fspath)
-                subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
+                #os.chdir(self.parent.fspath)
+                subprocess.call(["xdg-open", self.fspath]) # TODO should run completely async
         except:
-            pass
+            t,error,tb = sys.exc_info()
+        Df.d.jobm.message("Open: " + self.fspath, str(error))
 
  
     def ops_compare(self, src, dst):

@@ -230,7 +230,8 @@ class Panel(object):
         self.waitingForChildren = True
         self.pathW.setText(self.cd.path())
         self.setStatus(0,0)
-
+        #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        #self.firstSectionWidth = self.treeW.header().sectionSize(0)
 
     def setPath2(self):
         #self.pathW.setText(self.cd.path())
@@ -241,6 +242,7 @@ class Panel(object):
         keys = [ 'Name' ]
         self.treeW.setColumnCount(0)
         if ch:
+            mastermeta = ch[0].meta
             metalen = 0
             for i in ch:
                 l = len(i.meta)
@@ -250,7 +252,19 @@ class Panel(object):
             k = [ k for (k,s,v) in mastermeta ]
             keys = keys + k
         self.treeW.setHeaderLabels(keys)
-        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        #w = 
+        #print self.treeW.header().sectionSizeFromContents(0)
+#        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+#        w = self.treeW.header().sectionSize(0)
+#        print 'width'+str(w)
+
+        #self.treeW.header().resizeSection(0, self.firstSectionWidth)
+        #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Interactive)
+
+        #w = self.treeW.header().viewport().width()
+        #print w
+        
+        #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
         items = []
         self.nrItems = 0
         for i in ch:
@@ -291,9 +305,14 @@ class Panel(object):
         self.highestCol = len(keys)
         col = 1
         for i in keys:
+            #self.treeW.header().setResizeMode(col, QtGui.QHeaderView.Interactive)
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
+        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        self.firstSectionWidth = self.treeW.header().sectionSize(0)
+        self.treeW.header().resizeSection(0, self.firstSectionWidth)
+        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Interactive)
                  
     def treeW_clearSelection(self):
         if not self.treeW_noClear:

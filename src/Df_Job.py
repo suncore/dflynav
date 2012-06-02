@@ -63,15 +63,25 @@ class JobManager():
                 cmd = None
                 job.updateTime()
                 job.output = job.output.rstrip()
-                job.item.setToolTip(0, job.output)
-                job.item.setToolTip(1, job.output)
-                job.item.setToolTip(2, job.output)
+                job.setToolTip(job.output)
                 #print job.output
                 if job.status != 0:
                     job.setStatus("Failed")
                 else:
                     job.setStatus("Done")
                 self.jobIndex += 1
+
+    def message(self, msg, error):
+        item = QtGui.QTreeWidgetItem( [ '', msg, "Running" ] )
+        job = Job(None, None, item)
+        job.updateTime()
+        self.jobsW.insertTopLevelItem(0, job.item)
+        if error:
+            job.setStatus("Failed")
+            job.setToolTip(error)
+        else:
+            job.setStatus("Done")
+        
 
 class Job():
     def __init__(self, args, executer, item):
@@ -88,3 +98,7 @@ class Job():
         
     def updateTime(self):
         self.item.setText(0, time2str(timenow()))
+
+    def setToolTip(self, msg):
+        for i in range(0,3):
+            self.item.setToolTip(i, msg)

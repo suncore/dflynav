@@ -2,12 +2,9 @@
 Första windows-släpp - måsten
 -----------------------------
 E.T.A på långa filoperationer (+pause, cancel)
-dubbelklick - om inget händer, berätta varför för användaren - logga exceptions fr�n open-kommandot
+stoppa filops
 Rätta buggar
 mer metadata p� vanliga filer 
-visa exif-metadata f�r bildfiler
-blandade metadata i samma lista
-
 
 TODO övrigt
 -----------
@@ -19,7 +16,6 @@ Config: default packfunktion
 Buggar
 ------
 windows file notifications på nätverksdiskar funkar inte alltid
-Resize på name-kolumnen funkar inte
 Open With...-knapp df_openwith på linux är ej exekverbar
 Pack: Packar med absolutpath från root
 missar refresh/change event ibland (create dir, delete dir)
