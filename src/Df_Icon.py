@@ -94,4 +94,4 @@ class IconFactory(object):
         (data, icon) = ImageToIcon(bgim)
         self.icons[ext] = (data, icon)
         return icon
-    
+

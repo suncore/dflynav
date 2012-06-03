@@ -5,6 +5,7 @@ from Df_UiMainwin import Ui_MainWindow
 from Df_UiDialog import Ui_Dialog
 from Df_UiConfig import Ui_Config
 from Df_UiPreview import Ui_Preview
+from Df_UiJobstatus import Ui_Jobstatus
 import os
 import vfs
 
@@ -23,6 +24,11 @@ class Dialog(QtGui.QDialog, Ui_Dialog):
         self.setupUi(self)
 
 class Config(QtGui.QDialog, Ui_Config):
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+class Jobstatus(QtGui.QDialog, Ui_Jobstatus):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)

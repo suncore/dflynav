@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'config.ui'
 #
-# Created: Thu May 31 20:01:53 2012
+# Created: Sun Jun  3 20:25:41 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -74,7 +74,7 @@ class Ui_Config(object):
         Config.setWindowTitle(QtGui.QApplication.translate("Config", "Configuration", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("Config", "Miscellaneous", None, QtGui.QApplication.UnicodeUTF8))
         self.showHidden.setText(QtGui.QApplication.translate("Config", "Show hidden files", None, QtGui.QApplication.UnicodeUTF8))
-        self.showThumbs.setText(QtGui.QApplication.translate("Config", "Show Image Thumbnails (may slow listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
+        self.showThumbs.setText(QtGui.QApplication.translate("Config", "Show photo thumbnails and detailed information (may slow down listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Config", "Start directories", None, QtGui.QApplication.UnicodeUTF8))
         self.rememberStartFolders.setText(QtGui.QApplication.translate("Config", "Remember start directories from last run", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Config", "Left start folder", None, QtGui.QApplication.UnicodeUTF8))

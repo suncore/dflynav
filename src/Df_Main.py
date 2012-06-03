@@ -27,8 +27,9 @@ if __name__ == '__main__':
     d.g.mw = Df_Gui.MainWindow()
     #d.g.dia = Df_Gui.Dialog()
     d.g.config = Df_Gui.Config()
+    d.g.jobstatus = Df_Gui.Jobstatus()
     #d.g.preview = Df_Gui.Preview()
-    #d.g.config.show()
+    d.g.jobstatus.show()
     #d.g.mw.showMaximized()
     d.g.mw.show()
     
@@ -67,7 +68,7 @@ if __name__ == '__main__':
     d.g.mw.toleft.setToolTip("Set the left path to the same as the right path")
     d.g.mw.toright.setToolTip("Set the right path to the same as the left path")
     
-    d.jobm = Df_Job.JobManager(d.g.mw.jobs)
+    d.jobm = Df_Job.JobManager(d.g.mw.jobs, d.g.jobstatus)
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
     def periodicTimer():

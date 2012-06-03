@@ -1690,7 +1690,7 @@ def process_file(f, stop_tag='UNDEF', details=True, strict=False, debug=False):
                 if debug: print "Length",hex(ord(data[base+2])), hex(ord(data[base+3]))
                 if debug: print "Code",data[base+4:base+8]
                 if debug: print "Increment base by",ord(data[base+2])*256+ord(data[base+3])+2
-                print "There is useful EXIF-like data here, but we have no parser for it."
+                #print "There is useful EXIF-like data here, but we have no parser for it."
                 base=base+ord(data[base+2])*256+ord(data[base+3])+2
             elif data[base:base+2]=='\xFF\xDB':
                 if debug: print "JPEG image data at base",hex(base),"No more segments are expected."
@@ -1711,7 +1711,7 @@ def process_file(f, stop_tag='UNDEF', details=True, strict=False, debug=False):
                 if debug: print "Length",hex(ord(data[base+2])), hex(ord(data[base+3]))
                 if debug: print "Code",data[base+4:base+8]
                 if debug: print "Increment base by",ord(data[base+2])*256+ord(data[base+3])+2
-                print "There is useful EXIF-like data here (quality, comment, copyright), but we have no parser for it."
+                #print "There is useful EXIF-like data here (quality, comment, copyright), but we have no parser for it."
                 base=base+ord(data[base+2])*256+ord(data[base+3])+2
             else: 
                 try:

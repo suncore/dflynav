@@ -43,7 +43,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="showThumbs">
         <property name="text">
-         <string>Show Image Thumbnails (may slow listing of folders)</string>
+         <string>Show photo thumbnails and detailed information (may slow down listing of folders)</string>
         </property>
         <property name="checked">
          <bool>true</bool>

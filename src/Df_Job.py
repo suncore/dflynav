@@ -17,8 +17,9 @@ class Cmd(object):
         pass
 
 class JobManager():
-    def __init__(self, jobsW):
+    def __init__(self, jobsW, jobstatusW):
         self.jobsW = jobsW
+        self.jobstatusW = jobstatusW
         self.q = Queue()
         self.jobs = []
         self.jobIndex = 0
