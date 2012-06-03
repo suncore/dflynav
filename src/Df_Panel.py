@@ -88,15 +88,17 @@ class Panel(object):
     def pathW_returnPressed(self):
         text = self.pathW.text()
         text = text.rstrip('/ ')
-        c = self.setPathByString(text, False)
-        if not c:
+        c = self.setPathByString(text, False, False, True)
+        if c:
+            self.setPath(c)
+        else:
             text = Df_Dialog.Dialog("Create directory?", "Could not find this directory. Do you want to create it?                                                                                                                              ", 
                                        text)
             if text:
                 head = text.split('/')[:-1]
                 head = '/'.join(head)
                 tail = text.split('/')[-1:][0]
-                c = self.setPathByString(head, False)
+                c = self.setPathByString(head, False, False, True)
                 if not c:
                     Df_Dialog.Message("Could not find parent directory", 'Could not find the parent directory\n"' + head + '"\nto create directory\n"' + tail + '"\nin.')
                     self.refreshCd()
@@ -178,7 +180,7 @@ class Panel(object):
         path = self.backHistory[0]
         self.setPathByString(path, True, False)
 
-    def setPathByString(self, path, bestEffort = True, addToBackHistory = True):
+    def setPathByString(self, path, bestEffort = True, addToBackHistory = True, searchOnly = False):
         path = path.rstrip('/')
         c = self.cd
         while c.parent:
@@ -192,7 +194,8 @@ class Panel(object):
                     break
                 else:
                     return None
-        self.setPath(c, addToBackHistory)
+        if not searchOnly:
+            self.setPath(c, addToBackHistory)
         return c
 
     def refreshCd(self):
@@ -326,7 +329,8 @@ class Panel(object):
         self.setActionButtons(s)
         sum = 0
         for i in s:
-            sum += i.df_node.size
+            if i.df_node:
+                sum += i.df_node.size
         self.setStatus(len(s), self.nrItems, sum, self.cd.fsFree())
         
     def setActionButtons(self, s):

@@ -18,11 +18,7 @@ Buggar
 windows file notifications på nätverksdiskar funkar inte alltid
 Open With...-knapp df_openwith på linux är ej exekverbar
 Pack: Packar med absolutpath från root
-missar refresh/change event ibland (create dir, delete dir)
 starta med tom config, bookmarks får "tom" första entry
 städa gamla körda jobb om över 100st
-Select på Loading... ger Traceback (most recent call last):
-  File "C:\Users\ervhch\git\ws\src\Df_Panel.py", line 230, in treeW_selectionChanged
-    sum += i.df_node.size
 AttributeError: 'NoneType' object has no attribute 'size'
 
