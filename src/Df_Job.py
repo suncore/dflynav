@@ -32,7 +32,7 @@ class JobManager():
         self.jobsW.header().setResizeMode(2, QtGui.QHeaderView.ResizeToContents)
         thread.start_new_thread(self.jobTask, (self,))
         self.jobsW.itemPressed.connect(self.mouseButtonPressed)
-        self.message("hej", None)
+        self.message("hej", "dkokw")
         self.jobstatusW.close.clicked.connect(self.closeClicked)
 
     def closeClicked(self):
@@ -126,5 +126,6 @@ class Message(Entry):
     def __init__(self, msg, error, jobsW):
         super(Message, self).__init__(msg, jobsW)
         self.msg = msg
-        self.error = error
+        if error:
+            self.output = error
 
