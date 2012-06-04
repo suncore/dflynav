@@ -493,15 +493,14 @@ class PictureFile(File):
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
         self.bigIcon = False
         if not Df.d.config.showThumbs:
-            self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
-            #self.icon_ = super(PictureFile, self).icon()
+            #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
+            self.icon_ = super(PictureFile, self).icon()
         else:
             (iconData, date, dateSecs) = JpegThumbToIcon(self.fspath)
             if not iconData:
                 #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
                 self.icon_ = super(PictureFile, self).icon()
             else:
-                #print iconData.width()
                 self.bigIcon = True
                 self.iconData, self.icon_ = iconData
                 self.meta.append(("Taken", date, dateSecs))
