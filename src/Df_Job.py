@@ -31,15 +31,28 @@ class JobManager():
         self.jobsW.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
         self.jobsW.header().setResizeMode(2, QtGui.QHeaderView.ResizeToContents)
         thread.start_new_thread(self.jobTask, (self,))
-    
+        self.jobsW.itemPressed.connect(self.mouseButtonPressed)
+        self.message("hej", None)
+        self.jobstatusW.close.clicked.connect(self.closeClicked)
+
+    def closeClicked(self):
+        self.jobstatusW.hide()
+
     def addJob(self, executer, args, cmdString):
-        #item = QtGui.QTreeWidgetItem( [ '',  "<b>Hello</b> <i>Qt!</i>", "Queued" ] )
-        item = QtGui.QTreeWidgetItem( [ '', cmdString, "Queued" ] )
-        job = Job(args, executer, item)
+        job = Job(args, executer, cmdString, self.jobsW)
+        job.setStatus("Queued")
         self.jobs.append(job)
         job.updateTime()
-        self.jobsW.insertTopLevelItem(0, job.item)
         self.q.put(1)
+
+    def message(self, msg, error):
+        msg = Message(msg, error, self.jobsW)
+        msg.updateTime()
+        if error:
+            msg.setStatus("Failed")
+            msg.setToolTip(error)
+        else:
+            msg.setStatus("Done")
 
     def jobTask(self, dummy):
         while True:
@@ -72,29 +85,25 @@ class JobManager():
                     job.setStatus("Done")
                 self.jobIndex += 1
 
-    def message(self, msg, error):
-        item = QtGui.QTreeWidgetItem( [ '', msg, "Running" ] )
-        job = Job(None, None, item)
-        job.updateTime()
-        self.jobsW.insertTopLevelItem(0, job.item)
-        if error:
-            job.setStatus("Failed")
-            job.setToolTip(error)
-        else:
-            job.setStatus("Done")
+
+    def mouseButtonPressed(self, item):
+        self.jobstatusW.output.setPlainText(item.df_entry.cmd + item.df_entry.output)
+        self.jobstatusW.status.setText(item.df_entry.statusString)
+        self.jobstatusW.show()
         
 
-class Job():
-    def __init__(self, args, executer, item):
-        self.args = args
-        self.executer = executer
+class Entry(object):
+    def __init__(self, cmd, jobsW):
+        item = QtGui.QTreeWidgetItem( [ '', cmd, "" ] )
+        jobsW.insertTopLevelItem(0, item)
         self.item = item
-        
-        self.status = None
+        item.df_entry = self
+        self.cmd = cmd
+        self.statusString = ""
         self.output = ''
-        self.started = False
 
     def setStatus(self, string):
+        self.statusString = string
         self.item.setText(2, string)
         
     def updateTime(self):
@@ -103,3 +112,18 @@ class Job():
     def setToolTip(self, msg):
         for i in range(0,3):
             self.item.setToolTip(i, msg)
+
+class Job(Entry):
+    def __init__(self, args, executer, cmdString, jobsW):
+        super(Job, self).__init__(cmdString, jobsW)
+        self.args = args
+        self.executer = executer
+        self.status = None
+        self.started = False
+
+class Message(Entry):
+    def __init__(self, msg, error, jobsW):
+        super(Message, self).__init__(msg, jobsW)
+        self.msg = msg
+        self.error = error
+
