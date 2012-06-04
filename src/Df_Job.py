@@ -87,7 +87,8 @@ class JobManager():
 
 
     def mouseButtonPressed(self, item):
-        self.jobstatusW.output.setPlainText(item.df_entry.cmd + item.df_entry.output)
+        self.jobstatusW.output.setPlainText(item.df_entry.output)
+        self.jobstatusW.command.setText(item.df_entry.cmd)
         self.jobstatusW.status.setText(item.df_entry.statusString)
         self.jobstatusW.show()
         
