@@ -29,7 +29,7 @@ if __name__ == '__main__':
     d.g.config = Df_Gui.Config()
     d.g.jobstatus = Df_Gui.Jobstatus()
     #d.g.preview = Df_Gui.Preview()
-    d.g.jobstatus.show()
+    #d.g.jobstatus.show()
     #d.g.mw.showMaximized()
     d.g.mw.show()
     

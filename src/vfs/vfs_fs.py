@@ -501,7 +501,7 @@ class PictureFile(File):
                 #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
                 self.icon_ = super(PictureFile, self).icon()
             else:
-                print iconData.width()
+                #print iconData.width()
                 self.bigIcon = True
                 self.iconData, self.icon_ = iconData
                 self.meta.append(("Taken", date, dateSecs))
