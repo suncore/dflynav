@@ -1,6 +1,10 @@
 
 import Df
 
+
+helptext = "hej"
+
+
 class GlobalButtons(object):
     def __init__(self, mw, configW, helpW):
         mw.refresh.clicked.connect(self.refresh)
@@ -8,7 +12,7 @@ class GlobalButtons(object):
         mw.help.clicked.connect(self.help)
         self.configW = configW
         self.helpW = helpW
-        self.helpW.helpText.setPlainText("Don't panic")
+        self.helpW.helpText.setPlainText(helptext)
         
     def refresh(self):
         Df.d.lp.setPath(Df.d.lp.cd)
