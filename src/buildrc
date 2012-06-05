@@ -4,5 +4,6 @@ pyside-uic dialog.ui  > Df_UiDialog.py
 pyside-uic config.ui  > Df_UiConfig.py
 pyside-uic preview.ui  > Df_UiPreview.py
 pyside-uic jobstatus.ui  > Df_UiJobstatus.py
+pyside-uic help.ui  > Df_UiHelp.py
 pyside-rcc dragonfly.qrc  > dragonfly_rc.py
 

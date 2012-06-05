@@ -28,6 +28,7 @@ if __name__ == '__main__':
     #d.g.dia = Df_Gui.Dialog()
     d.g.config = Df_Gui.Config()
     d.g.jobstatus = Df_Gui.Jobstatus()
+    d.g.help = Df_Gui.Help()
     #d.g.preview = Df_Gui.Preview()
     #d.g.jobstatus.show()
     #d.g.mw.showMaximized()
@@ -37,7 +38,7 @@ if __name__ == '__main__':
     d.g.mw.right_preview_container.hide()
     d.g.mw.left_preview_container.hide()
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
-    d.gb = Df_GlobalButtons.GlobalButtons(d.g.mw, d.g.config)
+    d.gb = Df_GlobalButtons.GlobalButtons(d.g.mw, d.g.config, d.g.help)
     
     d.history = []
     d.bookmarks = [ ]

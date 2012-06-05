@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'jobstatus.ui'
 #
-# Created: Mon Jun  4 18:08:14 2012
+# Created: Tue Jun  5 16:53:02 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
