@@ -1,6 +1,7 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
+Preview på folders och möjlighet att sätta folder från preview
 E.T.A pÃ¥ lÃ¥nga filoperationer (+pause, cancel)
 stoppa filops
 RÃ¤tta buggar
