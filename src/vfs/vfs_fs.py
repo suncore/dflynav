@@ -519,8 +519,6 @@ class PictureFile(File):
         print "Hover ", enter
 
 
-
-
 class Cmd(Df_Job.Cmd):
     def __init__(self, args):
         cmd, workingDir = args
@@ -541,3 +539,11 @@ class Cmd(Df_Job.Cmd):
     def finish(self):
         self.pob.wait()
         return self.pob.returncode
+
+    def stop(self):
+        self.pob.terminate()
+        if platform.system() != 'Windows':
+            time.sleep(2) # Ugly but good enough
+            self.pob.kill()
+        
+    

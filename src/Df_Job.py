@@ -16,7 +16,7 @@ class Cmd(object):
     def finish(self):
         pass
 
-class JobManager():
+class JobManager(object):
     def __init__(self, jobsW, jobstatusW):
         self.jobsW = jobsW
         self.jobstatusW = jobstatusW
@@ -32,11 +32,18 @@ class JobManager():
         self.jobsW.header().setResizeMode(2, QtGui.QHeaderView.ResizeToContents)
         thread.start_new_thread(self.jobTask, (self,))
         self.jobsW.itemPressed.connect(self.mouseButtonPressed)
-        self.message("hej", "dkokw")
         self.jobstatusW.close.clicked.connect(self.closeClicked)
+        self.jobstatusW.stop.clicked.connect(self.stopClicked)
+        self.jobStatusWindowActive = False
+        self.runningCmd = None
 
     def closeClicked(self):
+        self.jobStatusWindowActive = False
         self.jobstatusW.hide()
+
+    def stopClicked(self):
+        if self.runningCmd:
+            self.runningCmd.stop()
 
     def addJob(self, executer, args, cmdString):
         job = Job(args, executer, cmdString, self.jobsW)
@@ -64,17 +71,21 @@ class JobManager():
                 job.started = True
                 job.updateTime()
                 job.setStatus("Running")
+                self.updateJobStatusWindow(job)
 
                 cmd = job.executer(job.args)
+                self.runningCmd = cmd
                 output = cmd.readline()
                 #print output
                 while output:
                     # TOOD: Update tooltip while running
                     job.output += output
+                    self.updateJobStatusWindow(job)
                     output = cmd.readline()
                     #print output
                 job.status = cmd.finish()
                 cmd = None
+                self.runningCmd = None
                 job.updateTime()
                 job.output = job.output.rstrip()
                 job.setToolTip(job.output)
@@ -83,14 +94,24 @@ class JobManager():
                     job.setStatus("Failed")
                 else:
                     job.setStatus("Done")
+                self.updateJobStatusWindow(job)
                 self.jobIndex += 1
 
 
     def mouseButtonPressed(self, item):
-        self.jobstatusW.output.setPlainText(item.df_entry.output)
-        self.jobstatusW.command.setText(item.df_entry.cmd)
-        self.jobstatusW.status.setText(item.df_entry.statusString)
+        self.jobStatusWindowActive = True
+        self.updateJobStatusWindow(item.df_entry)
         self.jobstatusW.show()
+        
+    def updateJobStatusWindow(self, n):
+        if self.jobStatusWindowActive:
+            self.jobstatusW.output.setPlainText("Output from command:\n" + n.output)
+            self.jobstatusW.command.setText("Command: " + n.cmd)
+            self.jobstatusW.status.setText("Status: "+n.statusString)
+            e = n.statusString == "Running"
+            self.jobstatusW.stop.setEnabled(e)
+            e = n.statusString == "Queued"
+            self.jobstatusW.start.setEnabled(e)
         
 
 class Entry(object):
