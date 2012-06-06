@@ -58,6 +58,7 @@ class Panel(object):
         self.hoverItem = None
         self.hovering = False
         self.defaultIconSize = self.treeW.iconSize()
+        self.controlMod = False
         
     def start(self):
         self.refreshCd()
@@ -132,7 +133,10 @@ class Panel(object):
     def treeW_keyPressEvent(self, e):
         if e.key() == Qt.Key_Alt:
             self.hovering = True
+            self.hoverOldOppositeFolder = self.other.cd
             self.preview()
+        elif e.key() == Qt.Key_Control:
+            self.controlMod = True
         self.treeW_keyPressEventOrig(e)
             
             
@@ -141,6 +145,9 @@ class Panel(object):
             Df.d.preview.hide()
             self.hovering = False
             self.hoverItem = None
+            self.other.setPath(self.hoverOldOppositeFolder)
+        if e.key() == Qt.Key_Control:
+            self.controlMod = False
         self.treeW_keyReleaseEventOrig(e)
             
 
@@ -153,10 +160,17 @@ class Panel(object):
     def preview(self):
         pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
         i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
+        n = i.df_node
         if i and i is not self.hoverItem:
-            qv = i.df_node.preview()
-            if qv:
-                Df.d.preview.show(self.panelIdx, qv)
+            if not n.leaf():
+                if n.linkTarget:
+                    self.other.setPathByString(n.linkTarget)
+                else:
+                    self.other.setPath(n)
+            else:
+                qv = n.preview()
+                if qv:
+                    Df.d.preview.show(self.panelIdx, qv)
             self.hoverItem = i
 
     def openItem(self, item):
@@ -165,10 +179,13 @@ class Panel(object):
         if node.leaf():
             node.open()
         else:
+            s = self
+            if self.controlMod:
+                s = self.other
             if node.linkTarget:
-                self.setPathByString(node.linkTarget)
+                s.setPathByString(node.linkTarget)
                 return
-            self.setPath(node)
+            s.setPath(node)
 
     def upW_clicked(self):
         if self.cd.parent:

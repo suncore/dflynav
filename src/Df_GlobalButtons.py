@@ -17,7 +17,7 @@ Creating a folder: Type the name of the folder in the folder entry. If it does n
 
 If you have opened or copied files, the list at the bottom shows a history of operations. Click on one to see more details.
 
-It is possible to preview picture files. Move the mouse cursor over a picture file and press the Alt button. A preview of the picture file will be shown on the opposite side.
+It is possible to preview picture files. Move the mouse cursor over a picture file and press the Alt button. A preview of the picture file will be shown on the opposite side. In the same manner, it is also possible to quick-browse folders by moving the mouse cursor over a folder and pressing the Alt button.
 
 The rest should be self-explanatory. If not, drop me a mail at info@dflynav.com.
 '''
