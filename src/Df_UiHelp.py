@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'help.ui'
 #
-# Created: Tue Jun  5 16:53:02 2012
+# Created: Thu Jun  7 08:56:31 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,18 +13,18 @@ class Ui_Help(object):
     def setupUi(self, Help):
         Help.setObjectName("Help")
         Help.setWindowModality(QtCore.Qt.ApplicationModal)
-        Help.resize(400, 300)
+        Help.resize(513, 557)
         Help.setModal(True)
         self.gridLayout = QtGui.QGridLayout(Help)
         self.gridLayout.setObjectName("gridLayout")
-        self.helpText = QtGui.QPlainTextEdit(Help)
-        self.helpText.setObjectName("helpText")
-        self.gridLayout.addWidget(self.helpText, 0, 0, 1, 1)
         self.buttonBox = QtGui.QDialogButtonBox(Help)
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName("buttonBox")
         self.gridLayout.addWidget(self.buttonBox, 1, 0, 1, 1)
+        self.helpText = QtGui.QTextEdit(Help)
+        self.helpText.setObjectName("helpText")
+        self.gridLayout.addWidget(self.helpText, 0, 0, 1, 1)
 
         self.retranslateUi(Help)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), Help.accept)
