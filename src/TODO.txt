@@ -1,11 +1,12 @@
 
 Första windows-släpp - måsten
 -----------------------------
-Preview p� folders och m�jlighet att s�tta folder fr�n preview
-E.T.A på långa filoperationer (+pause, cancel)
-stoppa filops
 Rätta buggar
 mer metadata p� vanliga filer 
+websida, $7
+installationspaket, py2exe, krypto
+DRM/licens
+
 
 TODO övrigt
 -----------
@@ -16,10 +17,12 @@ Config: default packfunktion
 
 Buggar
 ------
-windows file notifications på nätverksdiskar funkar inte alltid
-Open With...-knapp df_openwith på linux är ej exekverbar
+Nu
 Pack: Packar med absolutpath från root
 starta med tom config, bookmarks får "tom" första entry
+
+Sen
+windows file notifications på nätverksdiskar funkar inte alltid
+Open With...-knapp df_openwith på linux är ej exekverbar
 städa gamla körda jobb om över 100st
-AttributeError: 'NoneType' object has no attribute 'size'
 
