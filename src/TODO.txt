@@ -1,9 +1,9 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
-Ikoner har ej rätt transparens runtom?
+Ikoner har ej rï¿½tt transparens runtom?
 installationspaket, py2exe, krypto
-gömma sällananvänd metadata
+gï¿½mma sï¿½llananvï¿½nd metadata
 RÃ¤tta buggar
 websida, $7
 DRM/licens
@@ -14,6 +14,7 @@ Applikationer-installerade
 Find
 AnvÃ¤ndardefinierade knappar
 Config: default packfunktion
+owner/group metadata Linux
 
 Buggar
 ------

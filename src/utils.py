@@ -112,7 +112,8 @@ if platform.system() == 'Windows':
         return s
 else:
     def mode2str(stats):
-        mode, attrib = stats
+        st, attrib = stats
+        mode = int(st.st_mode)
         u, g, o = mode >> 6 & 0x7, mode >> 3 & 0x7, mode & 0x7
         return mode2strp(u) + mode2strp(g) + mode2strp(o)
 
