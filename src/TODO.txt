@@ -3,9 +3,8 @@ FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
 Ikoner har ej rätt transparens runtom?
 installationspaket, py2exe, krypto
-gömma sällananvänd metadata
 RÃ¤tta buggar
-websida, $7
+websida, $14
 DRM/licens
 
 TODO Ã¶vrigt
