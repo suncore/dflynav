@@ -3,9 +3,8 @@ Första windows-släpp - måsten
 -----------------------------
 Ikoner har ej r�tt transparens runtom?
 installationspaket, py2exe, krypto
-g�mma s�llananv�nd metadata
 Rätta buggar
-websida, $7
+websida, $14
 DRM/licens
 
 TODO övrigt
