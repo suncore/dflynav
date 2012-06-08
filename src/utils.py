@@ -8,7 +8,7 @@ from PySide.QtCore import *
 from PySide import QtGui
 import locale, datetime
 if platform.system() == 'Windows':
-    import win32api
+    import win32api, win32con
 import exif as exifreader
 import tempfile, Df
 
@@ -96,9 +96,25 @@ def mode2strp(mode):
     r, w, x = mode & R_MSK, mode & W_MSK, mode & X_MSK
     return iff(r, R_STR, Z_STR) + iff(w, W_STR, Z_STR) + iff(x, X_STR, Z_STR) + ' '
 
-def mode2str(mode):
-    u, g, o = mode >> 6 & 0x7, mode >> 3 & 0x7, mode & 0x7
-    return mode2strp(u) + mode2strp(g) + mode2strp(o)
+
+if platform.system() == 'Windows':
+    def mode2str(stats):
+        mode, attrib = stats
+        s = ''
+        if win32con.FILE_ATTRIBUTE_HIDDEN & attrib:
+            s += 'H'
+        if win32con.FILE_ATTRIBUTE_SYSTEM & attrib:
+            s += 'S'
+        if win32con.FILE_ATTRIBUTE_READONLY & attrib:
+            s += 'R'
+        if win32con.FILE_ATTRIBUTE_ARCHIVE & attrib:
+            s += 'A'
+        return s
+else:
+    def mode2str(stats):
+        mode, attrib = stats
+        u, g, o = mode >> 6 & 0x7, mode >> 3 & 0x7, mode & 0x7
+        return mode2strp(u) + mode2strp(g) + mode2strp(o)
 
 def size2str(size):
     kb = 1024.0

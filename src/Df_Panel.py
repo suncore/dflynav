@@ -21,9 +21,13 @@ class PanelItem(QtGui.QTreeWidgetItem):
                     return True
             return ln.name_low < rn.name_low
         else:
-            (lk, ls, lv) = self.df_node.meta[col-1]
-            (rk, rs, rv) = other.df_node.meta[col-1]
-            return lv < rv 
+            try:
+                (lk, ls, lv) = self.df_node.meta[col-1]
+                (rk, rs, rv) = other.df_node.meta[col-1]
+                r = lv < rv
+            except:
+                r = True
+            return r 
 
 
 class Panel(object):
@@ -59,6 +63,7 @@ class Panel(object):
         self.hovering = False
         self.defaultIconSize = self.treeW.iconSize()
         self.controlMod = False
+        self.hoverOldOppositeFolder = None
         
     def start(self):
         self.refreshCd()
@@ -125,10 +130,9 @@ class Panel(object):
 #        if i:
 #            print i.df_node.fspath
             
-#    def treeW_leaveEvent(self, e):
-#        Df.d.preview.hide()
-#        self.hovering = False
-#        self.treeW_leaveEventOrig(e)
+    def treeW_leaveEvent(self, e):
+        self.stopMods()
+        #self.treeW_leaveEventOrig(e)
             
     def treeW_keyPressEvent(self, e):
         if e.key() == Qt.Key_Alt:
@@ -139,17 +143,18 @@ class Panel(object):
             self.controlMod = True
         self.treeW_keyPressEventOrig(e)
             
-            
     def treeW_keyReleaseEvent(self, e):
-        if e.key() == Qt.Key_Alt:
-            Df.d.preview.hide()
-            self.hovering = False
-            self.hoverItem = None
-            self.other.setPath(self.hoverOldOppositeFolder)
-        if e.key() == Qt.Key_Control:
-            self.controlMod = False
-        self.treeW_keyReleaseEventOrig(e)
+        self.stopMods()
+        #self.treeW_keyReleaseEventOrig(e)
             
+    def stopMods(self):
+        Df.d.preview.hide()
+        self.hovering = False
+        self.hoverItem = None
+        if self.hoverOldOppositeFolder:
+            self.other.setPath(self.hoverOldOppositeFolder)
+        self.hoverOldOppositeFolder = None
+        self.controlMod = False
 
     def treeW_mouseMoveEvent(self, e):
         self.treeW.setFocus()
@@ -329,10 +334,17 @@ class Panel(object):
             self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
             col += 1
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
+        
+        for i in range(len(keys)):
+            if i > 2:
+                self.treeW.header().hideSection(i)
         self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
-        self.firstSectionWidth = self.treeW.header().sectionSize(0)
-        self.treeW.header().resizeSection(0, self.firstSectionWidth)
+        firstSectionWidth = self.treeW.header().sectionSize(0)
         self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Interactive)
+        self.treeW.header().resizeSection(0, firstSectionWidth*.96)
+        for i in range(len(keys)):
+            if i > 2:
+                self.treeW.header().showSection(i)
                  
     def treeW_clearSelection(self):
         if not self.treeW_noClear:

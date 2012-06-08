@@ -127,6 +127,9 @@ class Entry(object):
     def setStatus(self, string):
         self.statusString = string
         self.item.setText(2, string)
+        if string == "Failed":
+            self.item.setBackground(2, Qt.red)
+            self.item.setForeground(2, Qt.white)
         
     def updateTime(self):
         self.item.setText(0, time2str(timenow()))

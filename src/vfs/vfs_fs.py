@@ -63,17 +63,19 @@ class Fs(vfs_node.Node):
         (self.stat, self.attrib) = stats
         ext = fsPathExt(self.fspath)
         if linkTarget:
-            if platform.system() == 'Windows':
-                ext = 'shortcut'
-            else:
-                ext = 'link'
+            ext = 'link'
         if self.stat != None:
             self.size = self.stat.st_size
             sizestr = size2str(self.stat.st_size)
+            flags = mode2str(stats)
             self.meta = [ ('Size', sizestr, self.size), 
                       ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ('Type', ext, ext),
+                      ('Flags', flags, flags),
+                      ('Size in bytes', str(self.size), self.size), 
                       ]
+        if linkTarget:
+            self.meta.append(('Link target', linkTarget, linkTarget))
         self.actionButtonCallbacks = [ 
                      ( 'Copy', True, self.cb_copy ),
                      ( 'Move', True, self.cb_move ),
@@ -249,16 +251,8 @@ class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(Directory, self).__init__(parent, name, fsname, stats, linkTarget)
         if self.stat != None:
-            type = ''
-            if linkTarget:
-                if platform.system() == 'Windows':
-                    type = 'shortcut'
-                else:
-                    type = 'link'
-            self.meta = [ ('Size', '-', 0L), 
-                      ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
-                      ('Type', type, type),
-                      ]
+            self.meta[0] = ('Size', '-', 0L)
+            self.meta[4] = ('Size in bytes', '-', 0L)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
         self.stopAsync = False
         self.children_ = []

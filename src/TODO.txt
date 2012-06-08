@@ -1,12 +1,12 @@
 
 Första windows-släpp - måsten
 -----------------------------
-Rätta buggar
-mer metadata p� vanliga filer 
-websida, $7
+Ikoner har ej r�tt transparens runtom?
 installationspaket, py2exe, krypto
+g�mma s�llananv�nd metadata
+Rätta buggar
+websida, $7
 DRM/licens
-
 
 TODO övrigt
 -----------
@@ -20,6 +20,8 @@ Buggar
 Nu
 Pack: Packar med absolutpath från root
 starta med tom config, bookmarks får "tom" första entry
+Alt-tab blir evig hover
+refresh at resize
 
 Sen
 windows file notifications på nätverksdiskar funkar inte alltid
