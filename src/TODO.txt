@@ -6,6 +6,7 @@ installationspaket, py2exe, krypto
 Rätta buggar
 websida, $14
 DRM/licens
+find-funktion
 
 TODO övrigt
 -----------
@@ -19,12 +20,14 @@ Buggar
 ------
 Nu
 Pack: Packar med absolutpath från root
-starta med tom config, bookmarks får "tom" första entry
 Alt-tab blir evig hover
-refresh at resize
 
 Sen
+refresh at resize
 windows file notifications på nätverksdiskar funkar inte alltid
 Open With...-knapp df_openwith på linux är ej exekverbar
 städa gamla körda jobb om över 100st
+Linux: starta med tom config, bookmarks får "tom" första entry
 
+bygga installpackage:
+C:\pyinstaller>c:\Python27\python.exe pyinstaller.py -y -F -n DragonflyNavigator c:\Users\hch\git\ws\src\Df_Main.py

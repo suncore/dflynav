@@ -1,0 +1,7 @@
+#!/bin/sh
+cd /cygdrive/c/pyinstaller/
+/cygdrive/c/Python27/python.exe pyinstaller.py -y -n DragonflyNavigator 'c:\Users\hch\git\ws\src\Df_Main.py'
+cd /cygdrive/c/pyinstaller/DragonflyNavigator/dist/DragonflyNavigator
+mkdir -p src
+cp -r /cygdrive/c/Users/hch/git/ws/src/icons src
+cp -r /cygdrive/c/Users/hch/git/ws/src/res src

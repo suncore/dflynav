@@ -5,7 +5,7 @@ import Df
 
 class Config():
     def __init__(self):
-        self.settings = QSettings("ISS", "Dragonfly Navigator")
+        self.settings = QSettings("Dragonfly", "Dragonfly Navigator")
     
     def load(self, configW):
         self.configW = configW
