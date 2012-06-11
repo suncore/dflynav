@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'config.ui'
 #
-# Created: Thu Jun  7 08:56:31 2012
+# Created: Mon Jun 11 20:10:19 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Config(object):
     def setupUi(self, Config):
         Config.setObjectName("Config")
-        Config.resize(563, 301)
+        Config.resize(563, 326)
         self.gridLayout = QtGui.QGridLayout(Config)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtGui.QDialogButtonBox(Config)
@@ -24,15 +24,18 @@ class Ui_Config(object):
         self.groupBox_2.setObjectName("groupBox_2")
         self.gridLayout_3 = QtGui.QGridLayout(self.groupBox_2)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.showHidden = QtGui.QCheckBox(self.groupBox_2)
-        self.showHidden.setTristate(False)
-        self.showHidden.setObjectName("showHidden")
-        self.gridLayout_3.addWidget(self.showHidden, 0, 0, 1, 1)
         self.showThumbs = QtGui.QCheckBox(self.groupBox_2)
         self.showThumbs.setChecked(True)
         self.showThumbs.setTristate(False)
         self.showThumbs.setObjectName("showThumbs")
         self.gridLayout_3.addWidget(self.showThumbs, 1, 0, 1, 1)
+        self.showHidden = QtGui.QCheckBox(self.groupBox_2)
+        self.showHidden.setTristate(False)
+        self.showHidden.setObjectName("showHidden")
+        self.gridLayout_3.addWidget(self.showHidden, 0, 0, 1, 1)
+        self.showIcons = QtGui.QCheckBox(self.groupBox_2)
+        self.showIcons.setObjectName("showIcons")
+        self.gridLayout_3.addWidget(self.showIcons, 2, 0, 1, 1)
         self.gridLayout.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.groupBox = QtGui.QGroupBox(Config)
         self.groupBox.setObjectName("groupBox")
@@ -73,8 +76,9 @@ class Ui_Config(object):
     def retranslateUi(self, Config):
         Config.setWindowTitle(QtGui.QApplication.translate("Config", "Configuration", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox_2.setTitle(QtGui.QApplication.translate("Config", "Miscellaneous", None, QtGui.QApplication.UnicodeUTF8))
-        self.showHidden.setText(QtGui.QApplication.translate("Config", "Show hidden files", None, QtGui.QApplication.UnicodeUTF8))
         self.showThumbs.setText(QtGui.QApplication.translate("Config", "Show photo thumbnails and detailed information (may slow down listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
+        self.showHidden.setText(QtGui.QApplication.translate("Config", "Show hidden files", None, QtGui.QApplication.UnicodeUTF8))
+        self.showIcons.setText(QtGui.QApplication.translate("Config", "Show file icons (may slow down listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Config", "Start directories", None, QtGui.QApplication.UnicodeUTF8))
         self.rememberStartFolders.setText(QtGui.QApplication.translate("Config", "Remember start directories from last run", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Config", "Left start folder", None, QtGui.QApplication.UnicodeUTF8))

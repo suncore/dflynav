@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>563</width>
-    <height>301</height>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,16 +30,6 @@
       <string>Miscellaneous</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="showHidden">
-        <property name="text">
-         <string>Show hidden files</string>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QCheckBox" name="showThumbs">
         <property name="text">
@@ -50,6 +40,23 @@
         </property>
         <property name="tristate">
          <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="showHidden">
+        <property name="text">
+         <string>Show hidden files</string>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="showIcons">
+        <property name="text">
+         <string>Show file icons (may slow down listing of folders)</string>
         </property>
        </widget>
       </item>
