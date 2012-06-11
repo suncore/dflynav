@@ -15,7 +15,10 @@ import tempfile, Df
 def JpegToPixmap(fn):
     im = Image.open(fn)
     exif = {}
-    info = im._getexif()
+    try:
+        info = im._getexif()
+    except:
+        info = None
     if info:
         for tag, value in info.items():
             decoded = TAGS.get(tag, tag)
