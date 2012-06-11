@@ -5,6 +5,7 @@ from PySide import QtGui
 from utils import *
 from PIL import Image, ImageDraw
 import hashlib, random
+import colorsys
 
 if platform.system() == 'Windows':
     import win32ui
@@ -40,7 +41,7 @@ class IconFactory(object):
         #im = colorize(im,0)
         self.fileImageData, self.fileIcon = ImageToIcon(im)
         self.bgims = []
-        self.bgimnum = 7
+        self.bgimnum = 20
         self.bgimcols = [((255,157,29),(255,109,11)),
                          ((241,33,121),(203,39,128)),
                          ((251,49,34),(197,16,34)),
@@ -48,21 +49,20 @@ class IconFactory(object):
                          ((19,117,250),(1,20,145)),
                          ((0,210,0),(0,154,0)),
                          ((126,126,249),(82,97,176))]
-        l1 = 0.5
-        u1 = 1.0
-        l2 = 0.1
-        u2 = 0.3
         for i in range(self.bgimnum):
-            r1 = int(255*random.uniform(l1,u1))
-            g1 = int(255*random.uniform(l1,u1))
-            b1 = int(255*random.uniform(l1,u1))
-            r2 = int(255*random.uniform(l2,u2))
-            g2 = int(255*random.uniform(l2,u2))
-            b2 = int(255*random.uniform(l2,u2))
-            self.bgimcols[i] = ((r1,g1,b1),(r2,g2,b2))
+            h = random.uniform(0,1)
+            r1,g1,b1 = colorsys.hsv_to_rgb(h,1,0.9)
+            r2,g2,b2 = colorsys.hsv_to_rgb(h,1,0.5)
+            r1 = int(255*r1)
+            g1 = int(255*g1)
+            b1 = int(255*b1)
+            r2 = int(255*r2)
+            g2 = int(255*g2)
+            b2 = int(255*b2)
+            self.bgimcols.append(((r1,g1,b1),(r2,g2,b2)))
         self.icons = {}
-        for i in range(1,self.bgimnum+1):
-            self.bgims.append(Image.open('src/icons/b' + str(i) + '.png'))
+#        for i in range(1,self.bgimnum+1):
+#            self.bgims.append(Image.open('src/icons/b' + str(i) + '.png'))
         if platform.system() == 'Windows':
             self.tempDirectory = os.getenv("temp")
             self.ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
