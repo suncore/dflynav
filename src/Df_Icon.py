@@ -8,6 +8,15 @@ from PIL import Image
 #import colorsys
 import hashlib
 
+if platform.system() == 'Windows':
+    import win32ui
+    import win32gui
+    import win32con
+    import win32api
+    import cStringIO
+    import Image
+            
+
 #rgb_to_hsv = np.vectorize(colorsys.rgb_to_hsv)
 #hsv_to_rgb = np.vectorize(colorsys.hsv_to_rgb)
 #
@@ -59,6 +68,41 @@ class IconFactory(object):
         return self.folderIcon
     
     def getFileIcon(self, path):
+        if platform.system() == 'Windows':
+            tempDirectory = os.getenv("temp")
+            ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
+            ico_y = win32api.GetSystemMetrics(win32con.SM_CYICON)
+            large, small = win32gui.ExtractIconEx(path,0)
+            if len(small) > 0 and len(large) > 0:
+                win32gui.DestroyIcon(small[0])
+                       
+                #creating a destination memory DC
+                hdc = win32ui.CreateDCFromHandle( win32gui.GetDC(0) )
+                hbmp = win32ui.CreateBitmap()
+                hbmp.CreateCompatibleBitmap(hdc, ico_x, ico_y)
+                hdc = hdc.CreateCompatibleDC()
+                       
+                hdc.SelectObject( hbmp )
+                       
+                #draw a icon in it
+                hdc.FillSolidRect( (0,0, ico_x, ico_y), 0xffffff )
+                hdc.DrawIcon( (0,0), large[0] )
+                #hdc.DeleteDC()
+                win32gui.DestroyIcon(large[0])
+                
+                #convert picture
+                hbmp.SaveBitmapFile( hdc, tempDirectory + "\dfIcontemp.bmp")
+    
+                
+                im = Image.open(tempDirectory + "\dfIcontemp.bmp")
+                
+                #os.remove(tempDirectory + "\dfIcontemp.bmp")    
+    
+                (data, icon) = ImageToIcon(im)
+                #self.icons[path] = (data, icon)
+                return icon
+
+        
         ext = fsPathExt(path)
         if ext == '':
             return self.fileIcon
@@ -91,6 +135,7 @@ class IconFactory(object):
         offs = (self.bgim.size[0]-letterSize)/2
         bgim.paste(im, (offs,offs), im)
         #im = Image.composite(im, bgim, im)
+
         (data, icon) = ImageToIcon(bgim)
         self.icons[ext] = (data, icon)
         return icon

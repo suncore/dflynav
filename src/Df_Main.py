@@ -6,7 +6,7 @@ import sys
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin
-import platform, Df_Config, Df_Icon, Df_Preview, tempfile
+import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
 
 if __name__ == '__main__':
 
@@ -14,6 +14,9 @@ if __name__ == '__main__':
     d = Df_Dragonfly.DragonFly()
     d.version = 1.0
     Df.d = d
+
+    d.tempfile = tempfile.TemporaryFile()
+    
     d.config = Df_Config.Config()
     
     d.fsNotify = [ None, None ]
@@ -80,12 +83,11 @@ if __name__ == '__main__':
     d.timer = QtCore.QTimer()
     d.timer.timeout.connect(periodicTimer)
     d.timer.start(100)
-    #os.putenv('nodosfilewarning','1')
+    os.putenv('nodosfilewarning','1')
     
 
     d.config.load(d.g.config)
 
-    d.tempfile = tempfile.TemporaryFile()
 
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
@@ -98,48 +100,7 @@ if __name__ == '__main__':
 
 
 
-#
-#import sys
-#from PySide import QtCore, QtGui
-#
-#class MainForm(QtGui.QMainWindow):
-#    def __init__(self, parent=None):
-#        super(MainForm, self).__init__(parent)
-#
-#        # create button
-#        #self.button = QtGui.QPushButton("test button", self)       
-#        self.button = QtGui.QLabel("test button", self)       
-#        self.button.resize(100, 30)
-#
-#        # set button context menu policy
-#        self.button.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-#        self.button.customContextMenuRequested.connect(self.on_context_menu)
-#
-#        #self.connect(self.button, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), self.on_context_menu)
-#
-#        # create context menu
-#        self.popMenu = QtGui.QMenu(self)
-#        self.popMenu.addAction(QtGui.QAction('test0', self))
-#        self.popMenu.addAction(QtGui.QAction('test1', self))
-#        self.popMenu.addSeparator()
-#        self.popMenu.addAction(QtGui.QAction('test2', self))        
-#
-#    def on_context_menu(self, point):
-#        # show context menu
-#        self.popMenu.exec_(self.button.mapToGlobal(point))        
-#
-#def main():
-#    app = QtGui.QApplication(sys.argv)
-#    form = MainForm()
-#    form.show()
-#    app.exec_()
-#
-#if __name__ == '__main__':
-#    main()
-#    
-    
-
-#
+#Extract icon from executable
 #import sys
 #import win32ui
 #import win32gui
@@ -184,6 +145,47 @@ if __name__ == '__main__':
 #    
 #sys.exit(0)
 
+
+#import win32ui
+#import win32gui
+#import win32con
+#import win32api
+#import cStringIO
+#import Image
+#
+#tempDirectory = os.getenv("temp")
+#ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
+#
+#dst = cStringIO.StringIO()
+#
+#large, small = win32gui.ExtractIconEx(path,0)
+#win32gui.DestroyIcon(small[0])
+#       
+##creating a destination memory DC
+#hdc = win32ui.CreateDCFromHandle( win32gui.GetDC(0) )
+#hbmp = win32ui.CreateBitmap()
+#hbmp.CreateCompatibleBitmap(hdc, ico_x, ico_x)
+#hdc = hdc.CreateCompatibleDC()
+#       
+#hdc.SelectObject( hbmp )
+#       
+##draw a icon in it
+#hdc.DrawIcon( (0,0), large[0] )
+#win32gui.DestroyIcon(large[0])
+#
+##convert picture
+#hbmp.SaveBitmapFile( hdc, tempDirectory + "\Icontemp.bmp")
+#
+#im = Image.open(tempDirectory + "\Icontemp.bmp")
+#im.save(dst, "JPEG")
+#
+#dst.seek(0)
+#
+#os.remove(tempDirectory + "\Icontemp.bmp")    
+#return dst.read()
+
+
+#Browsing windows network shares:
 #def test():
 #    import win32com.client 
 #    strComputer = "server" 

@@ -1,12 +1,14 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
+riktiga ikoner för filer som har det inbyggt, åtminstone exe-filer
 Ikoner har ej rï¿½tt transparens runtom?
 installationspaket, py2exe, krypto
 RÃ¤tta buggar
-websida, $14
+websida, $17
 DRM/licens
 find-funktion
+Ikon till programmet
 
 TODO Ã¶vrigt
 -----------
@@ -21,6 +23,10 @@ Buggar
 Nu
 Pack: Packar med absolutpath frÃ¥n root
 Alt-tab blir evig hover
+
+Om man har jobstatuswindow öppet får man ofta hängning/krasch och detta i konsollen:
+  QObject: Cannot create children for a parent that is in a different thread.
+  (Parent is QTextDocument(0x3144308), parent's thread is QThread(0x219e288), current thread is QThread(0x3144988)
 
 Sen
 refresh at resize

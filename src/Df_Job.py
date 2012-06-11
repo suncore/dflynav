@@ -74,26 +74,29 @@ class JobManager(object):
                 self.updateJobStatusWindow(job)
 
                 cmd = job.executer(job.args)
-                self.runningCmd = cmd
-                output = cmd.readline()
-                #print output
-                while output:
-                    # TOOD: Update tooltip while running
-                    job.output += output
-                    self.updateJobStatusWindow(job)
-                    output = cmd.readline()
-                    #print output
-                job.status = cmd.finish()
-                cmd = None
-                self.runningCmd = None
-                job.updateTime()
-                job.output = job.output.rstrip()
-                job.setToolTip(job.output)
-                #print job.output
-                if job.status != 0:
+                if cmd.error:
+                    job.output += cmd.error
                     job.setStatus("Failed")
                 else:
-                    job.setStatus("Done")
+                    self.runningCmd = cmd
+                    output = cmd.readline()
+                    #print output
+                    while output:
+                        job.output += output
+                        self.updateJobStatusWindow(job)
+                        output = cmd.readline()
+                        #print output
+                    job.status = cmd.finish()
+                    cmd = None
+                    self.runningCmd = None
+                    job.output = job.output.rstrip()
+                    #print job.output
+                    if job.status != 0:
+                        job.setStatus("Failed")
+                    else:
+                        job.setStatus("Done")
+                job.setToolTip(job.output)
+                job.updateTime()
                 self.updateJobStatusWindow(job)
                 self.jobIndex += 1
 
@@ -135,6 +138,7 @@ class Entry(object):
         self.item.setText(0, time2str(timenow()))
 
     def setToolTip(self, msg):
+        return
         for i in range(0,3):
             self.item.setToolTip(i, msg)
 

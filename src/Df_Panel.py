@@ -165,6 +165,8 @@ class Panel(object):
     def preview(self):
         pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
         i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
+        if not i:
+            return
         n = i.df_node
         if i and i is not self.hoverItem:
             if not n.leaf():

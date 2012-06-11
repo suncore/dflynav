@@ -516,16 +516,22 @@ class PictureFile(File):
 class Cmd(Df_Job.Cmd):
     def __init__(self, args):
         cmd, workingDir = args
+        self.error = None
         if platform.system() == 'Windows':
             if cmd[0][0] == '/':
                 cmd2 = 'c:/cygwin' + cmd[0]
             else:
                 cmd2 = 'c:/cygwin/bin/' + cmd[0]
             cmd = [cmd2] + cmd[1:]
-        if workingDir:
-            self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=workingDir)
-        else:
-            self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        try:
+            if workingDir:
+                self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=workingDir)
+            else:
+                self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+        except:
+            t,self.error,tb = sys.exc_info()
+        if self.error:
+            self.error = 'Command failed: "'+' '.join(cmd)+'"\nError code: '+str(self.error)+'\nThis usually means that the executable program '+cmd[0]+' could not be found to run the command.'
             
     def readline(self):
         return self.pob.stdout.readline()
