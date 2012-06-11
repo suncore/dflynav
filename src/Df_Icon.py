@@ -63,46 +63,36 @@ class IconFactory(object):
         self.icons = {}
         for i in range(1,self.bgimnum+1):
             self.bgims.append(Image.open('src/icons/b' + str(i) + '.png'))
+        if platform.system() == 'Windows':
+            self.tempDirectory = os.getenv("temp")
+            self.ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
+            self.ico_y = win32api.GetSystemMetrics(win32con.SM_CYICON)
 
     def getFolderIcon(self):
         return self.folderIcon
     
     def getFileIcon(self, path):
         if platform.system() == 'Windows':
-            tempDirectory = os.getenv("temp")
-            ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
-            ico_y = win32api.GetSystemMetrics(win32con.SM_CYICON)
-            large, small = win32gui.ExtractIconEx(path,0)
+            try:
+                large, small = win32gui.ExtractIconEx(path,0)
+            except:
+                large = small = []
             if len(small) > 0 and len(large) > 0:
                 win32gui.DestroyIcon(small[0])
-                       
-                #creating a destination memory DC
                 hdc = win32ui.CreateDCFromHandle( win32gui.GetDC(0) )
                 hbmp = win32ui.CreateBitmap()
-                hbmp.CreateCompatibleBitmap(hdc, ico_x, ico_y)
+                hbmp.CreateCompatibleBitmap(hdc, self.ico_x, self.ico_y)
                 hdc = hdc.CreateCompatibleDC()
-                       
                 hdc.SelectObject( hbmp )
-                       
-                #draw a icon in it
-                hdc.FillSolidRect( (0,0, ico_x, ico_y), 0xffffff )
+                hdc.FillSolidRect( (0,0, self.ico_x, self.ico_y), 0xffffff ) #TODO should use current background
                 hdc.DrawIcon( (0,0), large[0] )
                 #hdc.DeleteDC()
                 win32gui.DestroyIcon(large[0])
-                
-                #convert picture
-                hbmp.SaveBitmapFile( hdc, tempDirectory + "\dfIcontemp.bmp")
-    
-                
-                im = Image.open(tempDirectory + "\dfIcontemp.bmp")
-                
-                #os.remove(tempDirectory + "\dfIcontemp.bmp")    
-    
+                hbmp.SaveBitmapFile( hdc, self.tempDirectory + "\dfIcontemp.bmp")
+                im = Image.open(self.tempDirectory + "\dfIcontemp.bmp")
                 (data, icon) = ImageToIcon(im)
                 #self.icons[path] = (data, icon)
                 return icon
-
-        
         ext = fsPathExt(path)
         if ext == '':
             return self.fileIcon

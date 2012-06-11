@@ -1,7 +1,6 @@
 
 Första windows-släpp - måsten
 -----------------------------
-riktiga ikoner f�r filer som har det inbyggt, �tminstone exe-filer
 Ikoner har ej r�tt transparens runtom?
 installationspaket, py2exe, krypto
 Rätta buggar

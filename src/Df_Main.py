@@ -1,3 +1,16 @@
+
+#import win32con, sys
+#from win32com.shell import shell, shellcon
+#
+#flags = shellcon.SHGFI_LARGEICON | shellcon.SHGFI_ICON | \
+#        shellcon.SHGFI_USEFILEATTRIBUTES
+#hr, info = shell.SHGetFileInfo('pdf', win32con.FILE_ATTRIBUTE_NORMAL,
+#                               flags)
+#hicon, iicon, attr, display_name, type_name = info
+#print info
+#
+#sys.exit(0)
+
 # Builder/main module
 
     
