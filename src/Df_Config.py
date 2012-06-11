@@ -42,6 +42,13 @@ class Config():
             self.configW.showThumbs.setCheckState(Qt.Unchecked)
         self.configW.showThumbs.stateChanged.connect(self.showThumbsStateChanged)
 
+        self.showIcons = int(self.settings.value("showIcons", int(Qt.Unchecked)))
+        if self.showIcons == int(Qt.Checked):
+            self.configW.showIcons.setCheckState(Qt.Checked)
+        else:
+            self.configW.showIcons.setCheckState(Qt.Unchecked)
+        self.configW.showIcons.stateChanged.connect(self.showIconsStateChanged)
+
         self.configW.useCurrentLeft.clicked.connect(self.useCurrentLeft)
         self.configW.useCurrentRight.clicked.connect(self.useCurrentRight)
         self.configW.buttonBox.accepted.connect(self.accepted)
@@ -77,6 +84,8 @@ class Config():
         self.settings.setValue("showHidden", self.showHidden)
         self.showThumbs = int(self.configW.showThumbs.checkState())
         self.settings.setValue("showThumbs", self.showThumbs)
+        self.showIcons = int(self.configW.showIcons.checkState())
+        self.settings.setValue("showIcons", self.showIcons)
                  
     def useCurrentLeft(self):
         self.configW.leftStartDir.setText(Df.d.lp.cd.path())
@@ -89,3 +98,6 @@ class Config():
 
     def showThumbsStateChanged(self, state):
         self.showThumbs = int(state)
+
+    def showIconsStateChanged(self, state):
+        self.showIcons = int(state)

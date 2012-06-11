@@ -72,7 +72,7 @@ class IconFactory(object):
         return self.folderIcon
     
     def getFileIcon(self, path):
-        if platform.system() == 'Windows':
+        if platform.system() == 'Windows' and Df.d.config.showIcons:
             try:
                 large, small = win32gui.ExtractIconEx(path,0)
             except:
