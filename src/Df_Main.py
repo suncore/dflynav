@@ -49,6 +49,7 @@ if __name__ == '__main__':
     #d.g.preview = Df_Gui.Preview()
     #d.g.jobstatus.show()
     #d.g.mw.showMaximized()
+    d.g.mw.setWindowIcon(QtGui.QIcon('src/icons/dragonfly.png'))
     d.g.mw.show()
     
     d.preview = Df_Preview.Preview(d.g.mw.left_preview_container, d.g.mw.right_preview_container, d.g.mw.left_preview_gv, d.g.mw.right_preview_gv, d.g.mw.left_preview_text, d.g.mw.right_preview_text, d.g.mw.left_tree, d.g.mw.right_tree)

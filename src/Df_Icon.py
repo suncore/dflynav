@@ -26,22 +26,15 @@ def ImageToIcon(im):
 class IconFactory(object):
     def __init__(self):
         self.radius = 0
-        self.size = (70,70)
+        self.size = (64,64)
         #import os
         #print os.getcwd()
         #self.bgim = Image.open('/a/proj/dragonfly/ws3/src/icons/Background1.png')
-        self.bgim = Image.open('src/icons/Background1.png')
+        #self.bgim = Image.open('src/icons/Background1.png')
         self.allLettersIm = Image.open('src/icons/Letters.png')
-        #im = Image.open('src/icons/Folder.png')
-        im = round_rectangle(self.size, self.radius, (255,241,19), (255,204,1), True)
-
-        self.folderImageData, self.folderIcon = ImageToIcon(im)
-        #im = Image.open('src/icons/File.png')
-        im = round_rectangle(self.size, self.radius, (70,180,255), (25,161,255), True)
         #im = colorize(im,0)
-        self.fileImageData, self.fileIcon = ImageToIcon(im)
-        self.bgims = []
-        self.bgimnum = 20
+        #self.bgims = []
+        self.bgimnum = 25
         self.bgimcols = [((255,157,29),(255,109,11)),
                          ((241,33,121),(203,39,128)),
                          ((251,49,34),(197,16,34)),
@@ -49,9 +42,13 @@ class IconFactory(object):
                          ((19,117,250),(1,20,145)),
                          ((0,210,0),(0,154,0)),
                          ((126,126,249),(82,97,176))]
+        self.bgimcols = []
         for i in range(self.bgimnum):
-            h = random.uniform(0,1)
-            r1,g1,b1 = colorsys.hsv_to_rgb(h,1,0.9)
+            h = i/float(self.bgimnum-1) # random.uniform(0,1)
+            r1,g1,b1 = colorsys.hsv_to_rgb(h,.95,0.8)
+            h += .05
+            if h > 1:
+                h -= 1
             r2,g2,b2 = colorsys.hsv_to_rgb(h,1,0.5)
             r1 = int(255*r1)
             g1 = int(255*g1)
@@ -60,6 +57,17 @@ class IconFactory(object):
             g2 = int(255*g2)
             b2 = int(255*b2)
             self.bgimcols.append(((r1,g1,b1),(r2,g2,b2)))
+
+        #im = Image.open('src/icons/Folder.png')
+        im = round_rectangle(self.size, self.radius, (255,241,19), (255,204,1), True)
+
+        self.folderImageData, self.folderIcon = ImageToIcon(im)
+        #im = Image.open('src/icons/File.png')
+        #im = round_rectangle(self.size, self.radius, (70,180,255), (25,161,255), True)
+        im = round_rectangle(self.size, self.radius, self.bgimcols[-1][0], self.bgimcols[-1][1], True)
+        self.bgimnum -= 1
+        self.fileImageData, self.fileIcon = ImageToIcon(im)
+
         self.icons = {}
 #        for i in range(1,self.bgimnum+1):
 #            self.bgims.append(Image.open('src/icons/b' + str(i) + '.png'))
@@ -91,7 +99,7 @@ class IconFactory(object):
                 hbmp.SaveBitmapFile( hdc, self.tempDirectory + "\dfIcontemp.bmp")
                 im = Image.open(self.tempDirectory + "\dfIcontemp.bmp")
                 (data, icon) = ImageToIcon(im)
-                #self.icons[path] = (data, icon)
+                #self.icons[path] = (data, icon) # TODO need to save data?
                 return icon
         ext = fsPathExt(path)
         if ext == '':
@@ -104,7 +112,7 @@ class IconFactory(object):
                 (532, 226, 'opqrstuvwxyz'))
         hs = 42 # hs = half of the total crop size
         deltay = 92.6
-        letterSize = (76*self.bgim.size[0])/100
+        letterSize = (76*self.size[0])/100
         if e <= 'n':
             col = cols[0]
             ix = ord(e)-ord('a')
@@ -126,7 +134,7 @@ class IconFactory(object):
 
         bgim = round_rectangle(self.size, self.radius, self.bgimcols[idx][0], self.bgimcols[idx][1], True)
         
-        offs = (self.bgim.size[0]-letterSize)/2
+        offs = (self.size[0]-letterSize)/2
         bgim.paste(im, (offs,offs), im)
         #im = Image.composite(im, bgim, im)
 

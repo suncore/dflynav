@@ -354,8 +354,8 @@ class Directory(Fs):
     
     def getChildrenAsync(self):
         c = []
-        if True:
-        #try:
+        #if True:
+        try:
             for f in os.listdir(self.fspath):
                 if self.stopAsync:
                     break
@@ -376,8 +376,8 @@ class Directory(Fs):
                     hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
                 if not hide or Df.d.config.showHidden:
                     c.append(self.buildChild(f, stats))
-        #except:
-        #    pass
+        except:
+            pass
         self.children_ = c
         #print "2", self.children_
         self.childrenReady = True

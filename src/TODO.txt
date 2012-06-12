@@ -1,7 +1,6 @@
 
 Första windows-släpp - måsten
 -----------------------------
-Ikoner har ej r�tt transparens runtom?
 installationspaket, py2exe, krypto
 Rätta buggar
 websida, $17
