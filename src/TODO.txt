@@ -6,7 +6,6 @@ Rätta buggar
 websida, $17
 DRM/licens
 find-funktion
-Ikon till programmet
 
 TODO övrigt
 -----------
