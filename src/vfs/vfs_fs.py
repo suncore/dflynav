@@ -517,9 +517,10 @@ class Cmd(Df_Job.Cmd):
     def __init__(self, args):
         cmd, workingDir = args
         self.error = None
+        si = None
         if platform.system() == 'Windows':
-            if os.path.exists("cygwin"):
-                p = "cygwin"
+            if os.path.exists("src/cygwin"):
+                p = "src/cygwin"
             else:
                 p = "c:/cygwin"
             if cmd[0][0] == '/':
@@ -527,11 +528,15 @@ class Cmd(Df_Job.Cmd):
             else:
                 cmd2 = p + '/bin/' + cmd[0]
             cmd = [cmd2] + cmd[1:]
+            si = subprocess.STARTUPINFO()
+            #si.dwFlags = subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW
+            si.dwFlags = subprocess.STARTF_USESHOWWINDOW
+            si.wShowWindow = subprocess.SW_HIDE
         try:
             if workingDir:
-                self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=workingDir)
+                self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=workingDir, startupinfo=si)
             else:
-                self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True)
+                self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, startupinfo=si)
         except:
             t,self.error,tb = sys.exc_info()
         if self.error:

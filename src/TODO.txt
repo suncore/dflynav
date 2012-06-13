@@ -1,13 +1,15 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
-installationspaket, py2exe, krypto
+installationspaket pyinstaller
 RÃ¤tta buggar
 websida, $17
 DRM/licens
 find-funktion
 link-knapp ska göra shortcuts, inte cygwin-länkar
 funktion: kolla storlek på folders (typ du -sh)
+fixa start job knappen
+preview på png,gif etc.
 
 TODO Ã¶vrigt
 -----------

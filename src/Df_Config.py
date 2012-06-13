@@ -1,7 +1,7 @@
 from PySide.QtCore import *
 from PySide import QtGui
 from utils import *
-import Df
+import Df, time, hashlib
 
 class Config():
     def __init__(self):
@@ -19,6 +19,20 @@ class Config():
             Df.d.bookmarks = [ Df.d.bookmarks ]
         Df.d.lp.updateBookmarksMenu()
         Df.d.rp.updateBookmarksMenu()
+
+        s = "cm29sh5g9sxk24fg2.dr"
+        ikey = self.settings.value("ikey", "")
+        if ikey == "":
+            now = str(int(time.time()))
+            h = hashlib.sha1(now+s).hexdigest()
+            self.settings.setValue("ikey", now+'.'+h)
+        else:
+            a = ikey.split('.')
+            h = hashlib.sha1(a[0]+s).hexdigest()
+            if h == a[1]:
+                print "key ok"
+            else:
+                print "key nok"
 
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:

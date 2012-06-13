@@ -97,7 +97,7 @@ if __name__ == '__main__':
     d.timer = QtCore.QTimer()
     d.timer.timeout.connect(periodicTimer)
     d.timer.start(100)
-    os.putenv('nodosfilewarning','1')
+    os.putenv('CYGWIN', 'nodosfilewarning')
     
 
     d.config.load(d.g.config)
