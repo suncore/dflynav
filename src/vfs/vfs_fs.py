@@ -518,10 +518,14 @@ class Cmd(Df_Job.Cmd):
         cmd, workingDir = args
         self.error = None
         if platform.system() == 'Windows':
-            if cmd[0][0] == '/':
-                cmd2 = 'c:/cygwin' + cmd[0]
+            if os.path.exists("cygwin"):
+                p = "cygwin"
             else:
-                cmd2 = 'c:/cygwin/bin/' + cmd[0]
+                p = "c:/cygwin"
+            if cmd[0][0] == '/':
+                cmd2 = p + cmd[0]
+            else:
+                cmd2 = p + '/bin/' + cmd[0]
             cmd = [cmd2] + cmd[1:]
         try:
             if workingDir:
