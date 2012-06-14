@@ -1,7 +1,7 @@
 from PySide.QtCore import *
 from PySide import QtGui
 from utils import *
-import Df, time, hashlib
+import Df, time, hashlib, sys
 
 class Config():
     def __init__(self):
@@ -21,18 +21,36 @@ class Config():
         Df.d.rp.updateBookmarksMenu()
 
         s = "cm29sh5g9sxk24fg2.dr"
-        ikey = self.settings.value("ikey", "")
+        ikey = self.settings.value("ikey", "") # Installation time key
         if ikey == "":
+            if Df.d.bookmarks != []:
+                sys.exit(0) # Deleted key. No go.
             now = str(int(time.time()))
             h = hashlib.sha1(now+s).hexdigest()
-            self.settings.setValue("ikey", now+'.'+h)
+            self.settings.setValue("ikey", now+','+h)
         else:
-            a = ikey.split('.')
+            a = ikey.split(',')
             h = hashlib.sha1(a[0]+s).hexdigest()
-            if h == a[1]:
-                print "key ok"
+            if h != a[1]:
+                sys.exit(0) # Hacked key. No go.
+
+        lkey = self.settings.value("lkey", "") # License key = email address + hash
+        if lkey == "":
+            ikey = self.settings.value("ikey", "") # Installation time key
+            a = ikey.split(',')
+            daysleft = 31-(time.time() - int(a[0]))/3600/24
+            if daysleft < 0:
+                print "Trial period has expired"
+                sys.exit(0)
+            print "You have " + str(int(daysleft)) + " days left on the trial. You can purchase a non-limited license here."
+        else:
+            a = lkey.split(',')
+            h = hashlib.sha1(a[0]+s).hexdigest()[0:8]
+            if h != a[1]:
+                print "License key invalid"
+                sys.exit(0) # Hacked registry key. No go.
             else:
-                print "key nok"
+                print "License key ok"
 
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:

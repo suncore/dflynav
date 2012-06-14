@@ -6,10 +6,14 @@ RÃ¤tta buggar
 websida, $17
 DRM/licens
 find-funktion
-link-knapp ska göra shortcuts, inte cygwin-länkar
+link-knapp ska göra shortcuts på windows, inte cygwin-länkar
 funktion: kolla storlek på folders (typ du -sh)
 fixa start job knappen
 preview på png,gif etc.
+kraschdump-insamling för felsökning
+python -E (ignore python-variables)
+beskriv varför dragonfly togs fram - få andra att tro på samma sak
+kolla i koden för winscp hur de skaffar ikoner och beskrivning på filtyper
 
 TODO Ã¶vrigt
 -----------
