@@ -1,0 +1,64 @@
+#!/bin/bash 
+
+set -e
+
+if [ $# -lt 2 ]; then
+    echo "cppv - copy files with progress bar and rate limiting ability"
+    echo "Usage: cppv source_file[s] destination_file_or_directory"
+    echo "No other non-positional command line arguments can be given"
+    echo "Always recurses like find"
+    echo "You can change copying speed limit on the fly with \"pv -R\" if you find out pv's PID"
+    echo "Use FIND_OPTS, PV_OPTS, CPIO_O_OPTS, CPIO_I_OPTS to override arguments to the pipeline parts"
+    echo "Examples:"
+    echo "    cppv a b # Copy file a to b. Just calls \"pv a > b\""
+    echo "    cppv a d/ # Copy file a to d/a. Calls \"find a | cpio -o | pv | (cd d && cpio -i)\""
+    echo "    cppv *{01..26}*.mkv /mnt/usb/ # Copy all matching files to /mnt/usb/."
+    echo "    cppv dir1 dir2 # duplicate dir1"
+    echo "    PV_OPTS=\"-L 1M\" cppv . /tmp/ # Limit copying rate to 1M"
+    echo "    cppv /home/vi/bin /tmp/ # Warning: Copy /home/vi/bin to /tmp/home/vi/bin"
+    exit 1
+fi;
+
+true ${CPIO_O_OPTS:="-H newc -0o"}
+true ${CPIO_I_OPTS:="-0diu --no-absolute-filenames"}
+true ${FIND_OPTS:="-depth -print0"}
+
+ARGS=( "$@" );
+
+DEST="${ARGS[$#-1]}"
+unset ARGS[$#-1];
+
+if [[ ( "${1:0:1}" == "-"  && ! -e "$1" ) || ( "${DEST:0:1}" == "-" && ! -e "$DEST" )  ]]; then
+    echo "There should not be any command line options. Only file names." >&2
+    exit 1;
+fi
+
+DIRMODE=0
+
+if [[ $# > 2 || "${DEST:${#DEST}-1:1}" == "/" || -d $DEST ]]; then
+    DIRMODE=1
+elif [[ -d "$1" && ! -d "$2" ]]; then
+    DIRMODE=1
+    mkdir "$DEST";
+    DEST=`readlink -f "$DEST"`;
+    cd "$1";
+    ARGS=(".")
+fi
+
+if [ $DIRMODE == 0 ]; then
+    pv "$1" > "$2" && exit 0;
+fi;
+
+if [ ! -d "$DEST" ]; then
+    echo Not a directory: "$DEST" >&2
+    exit 1
+fi
+
+if [ "${1:0:1}" == "/" ]; then
+    echo "Warning: it will do a bit different thing than usual cp" >&2
+    echo "    For example, copying $1 to $DEST$1, not to $DEST/`basename $1`" >&2
+fi
+
+SIZE=`du -sb "${ARGS[@]}" | perl -ne '/^(\d+)/ and $q+=$1; END{print $q}'`
+
+find "${ARGS[@]}" $FIND_OPTS | cpio $CPIO_O_OPTS | pv -s $SIZE $PV_OPTS | (cd "$DEST" && cpio $CPIO_I_OPTS)

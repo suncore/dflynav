@@ -8,6 +8,7 @@ if platform.system() == 'Windows':
     import ctypes, win32file, win32api, win32wnet, win32con
     import sys
     import win32com.client 
+    from win32com.shell import shell, shellcon
 from . import vfs_node
 from utils import *
 import subprocess, Df_Job
@@ -134,15 +135,25 @@ class Fs(vfs_node.Node):
         if not srcNodeList:
             return
         srcList = [x.fspath for x in srcNodeList]
+        
+        if platform.system() == 'Windows':
+            srcs = ' '.join(srcList)
+            shell.SHFileOperation (
+              (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), shellcon.FOF_RENAMEONCOLLISION, None, None)
+            )
+            return
+        
         cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
         srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
-        if len(srcs) > 200:
-            srcs = srcs[0:200]+"..."
+        #if len(srcs) > 130:
+        #    srcs = srcs[0:130]+"..."
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+        
+
 
     def cb_move(self):
         srcNodeList, dstNode = self.getSelectionAndDestination()

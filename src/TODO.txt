@@ -14,6 +14,7 @@ kraschdump-insamling för felsökning
 python -E (ignore python-variables)
 beskriv varför dragonfly togs fram - få andra att tro på samma sak
 kolla i koden för winscp hur de skaffar ikoner och beskrivning på filtyper
+vue 10 går ej att starta efter unzip
 
 TODO Ã¶vrigt
 -----------

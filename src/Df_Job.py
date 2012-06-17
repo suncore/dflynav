@@ -108,8 +108,11 @@ class JobManager(object):
         
     def updateJobStatusWindow(self, n):
         if self.jobStatusWindowActive:
-            self.jobstatusW.output.setPlainText("Output from command:\n" + n.output)
-            self.jobstatusW.command.setText("Command: " + n.cmd)
+            self.jobstatusW.output.setPlainText("Command: " + n.cmd + "Output from command:\n" + n.output)
+            cmd = n.cmd
+            if len(n.cmd) > 130:
+                cmd = n.cmd[0:130]+"..."
+            self.jobstatusW.command.setText("Command: " + cmd)
             self.jobstatusW.status.setText("Status: "+n.statusString)
             e = n.statusString == "Running"
             self.jobstatusW.stop.setEnabled(e)
@@ -133,6 +136,9 @@ class Entry(object):
         if string == "Failed":
             self.item.setBackground(2, Qt.red)
             self.item.setForeground(2, Qt.white)
+#        elif string == "Running":
+#            self.item.setBackground(2, Qt.green)
+#            self.item.setForeground(2, Qt.white)
         
     def updateTime(self):
         self.item.setText(0, time2str(timenow()))
