@@ -178,6 +178,13 @@ def fsPathExt(path):
             ext = ''
         return ext
 
+def windows2cygwinpath(p):
+    p = windowsPathToGeneric(p)
+    if p[1] == ":":
+        d = p[0]
+        return "/cygdrive/" + d + '/' + p[2:]
+    return p
+
 def genericPathToWindows(p):
     p = '\\'.join(p.split('/'))
     return p

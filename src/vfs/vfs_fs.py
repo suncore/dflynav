@@ -18,6 +18,8 @@ unpackCmds = [
       ['tar.gz', 'tgz'] ],
     [ ['tar', 'xjf'],
       ['tar.bz2'] ],
+    [ ['tar', 'xf'],
+      ['tar'] ],
     [ ['unzip', '-oqq'],
       ['zip'] ],
     [ ['gzip', '-d'],
@@ -225,7 +227,7 @@ class Fs(vfs_node.Node):
                 cmd, exts = i
                 for e in exts:
                     if ext == e:
-                        cmd = cmd + [ srcNode.fspath ]
+                        cmd = cmd + [ windows2cygwinpath(srcNode.fspath) ]
                         cmdString = '$ unpack %s to %s' % (srcNode.fspath, dstNode.fspath)
                         wd = dstNode.fspath
                         args = cmd, wd

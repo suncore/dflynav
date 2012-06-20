@@ -30,6 +30,7 @@ Buggar
 Nu
 Pack: Packar med absolutpath frÃ¥n root
 Alt-tab blir evig hover
+Testa packa upp tar.gz fil på windows på installerad df (ej från eclipse)
 
 Om man har jobstatuswindow öppet får man ofta hängning/krasch och detta i konsollen:
   QObject: Cannot create children for a parent that is in a different thread.

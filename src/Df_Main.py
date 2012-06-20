@@ -98,7 +98,17 @@ if __name__ == '__main__':
     d.timer.timeout.connect(periodicTimer)
     d.timer.start(100)
     os.putenv('CYGWIN', 'nodosfilewarning')
-    
+    if platform.system() == 'Windows':
+        path = os.getenv('PATH')
+        if path[-1] != ";":
+            path += ";"
+        if os.path.exists("src/cygwin"):
+            cwd = os.getcwd()
+            path += cwd + "\\src\\cygwin\\bin" + ";" 
+        else:
+            path += "c:\\cygwin\\bin;"
+        os.putenv('PATH', path)
+
 
     d.config.load(d.g.config)
 
