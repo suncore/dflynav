@@ -7,6 +7,7 @@ class Find():
     def __init__(self, findW):
         self.findW = findW
         self.findW.input.returnPressed.connect(self.find)
+        self.findW..header().hide()
 
     def find(self):
         self.panel.setPathByString(self.findW.input.text())
