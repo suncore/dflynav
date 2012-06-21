@@ -123,7 +123,7 @@ class Fs(vfs_node.Node):
             t,error,tb = sys.exc_info()
         if error:
             error = str(error)
-        Df.d.jobm.message("$ open: " + self.fspath, error)
+        Df.d.jobm.addJobDone("$ open: " + self.fspath, error)
 
  
     def ops_compare(self, src, dst):
@@ -137,22 +137,21 @@ class Fs(vfs_node.Node):
         if not srcNodeList:
             return
         srcList = [x.fspath for x in srcNodeList]
-        
-        if platform.system() == 'Windows':
-            srcs = '\0'.join(srcList)
-            shell.SHFileOperation (
-              (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), shellcon.FOF_RENAMEONCOLLISION, None, None)
-            )
-            return
-        
         cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
-        srcList = [x.fsname for x in srcNodeList]
-        srcs = ', '.join(srcList)
+        srcList2 = [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList2)
         #if len(srcs) > 130:
         #    srcs = srcs[0:130]+"..."
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
+        if platform.system() == 'Windows':
+            Df.d.jobm.addJobDone(cmdString, None)
+            srcs = '\0'.join(srcList)
+            shell.SHFileOperation (
+              (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), shellcon.FOF_RENAMEONCOLLISION, None, None)
+            )
+            return
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         
 
@@ -245,7 +244,7 @@ class Fs(vfs_node.Node):
             p = genericPathToWindows(p)
             subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) # TODO exception handling
         else:
-            subprocess.call(["/a/proj/dragonfly/ws3/src/df_openwith", p]) # TODO use other path
+            subprocess.call(["src/df_openwith", p]) # TODO use other path
 
 #    def cb_open(self):
 #        srcList, dst = self.getSelectionAndDestination()

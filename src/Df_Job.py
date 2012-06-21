@@ -35,67 +35,71 @@ class JobManager(object):
         self.jobstatusW.close.clicked.connect(self.closeClicked)
         self.jobstatusW.stop.clicked.connect(self.stopClicked)
         self.jobStatusWindowActive = False
-        self.runningCmd = None
+        self.runningJob = None
+        self.jobStatusWindowJob = None
+        self.jobstatusW.command.hide()
+        self.jobstatusW.start.hide()
 
     def closeClicked(self):
         self.jobStatusWindowActive = False
         self.jobstatusW.hide()
 
     def stopClicked(self):
-        if self.runningCmd:
-            self.runningCmd.stop()
+        self.jobStatusWindowJob.processed = True
+        self.jobStatusWindowJob.setStatus("Aborted")
+        if self.runningJob:
+            self.runningJob.runCmd.stop()
 
-    def addJob(self, executer, args, cmdString):
-        job = Job(args, executer, cmdString, self.jobsW)
+    def addJob(self, executer, args, cmd):
+        job = Job(args, executer, cmd, self.jobsW)
         job.setStatus("Queued")
         self.jobs.append(job)
         job.updateTime()
         self.q.put(1)
 
-    def message(self, msg, error):
-        msg = Message(msg, error, self.jobsW)
-        msg.updateTime()
+    def addJobDone(self, cmd, error):
+        job = JobDone(cmd, error, self.jobsW)
+        job.updateTime()
         if error:
-            msg.setStatus("Failed")
-            msg.setToolTip(error)
+            job.setStatus("Failed")
+            job.setToolTip(error)
         else:
-            msg.setStatus("Done")
+            job.setStatus("Done")
 
     def jobTask(self, dummy):
         while True:
             x = self.q.get(True)
             while self.jobIndex < len(self.jobs):
                 job = self.jobs[self.jobIndex]
-                if job.started:
+                if job.processed:
                     continue
-                job.started = True
+                job.processed = True
                 job.updateTime()
                 job.setStatus("Running")
                 self.updateJobStatusWindow(job)
 
-                cmd = job.executer(job.args)
-                if cmd.error:
-                    job.output += cmd.error
+                job.runCmd = job.executer(job.args)
+                if job.runCmd.error:
+                    job.output += job.runCmd.error
                     job.setStatus("Failed")
                 else:
-                    self.runningCmd = cmd
-                    output = cmd.readline()
+                    self.runningJob = job
+                    output = job.runCmd.readline()
                     #print output
                     while output:
                         job.output += output
                         self.updateJobStatusWindow(job)
-                        output = cmd.readline()
+                        output = job.runCmd.readline()
                         #print output
-                    job.status = cmd.finish()
-                    cmd = None
-                    self.runningCmd = None
+                    status = job.runCmd.finish()
+                    self.runningJob = None
                     job.output = job.output.rstrip()
                     #print job.output
-                    if job.status != 0:
+                    if status != 0:
                         job.setStatus("Failed")
                     else:
                         job.setStatus("Done")
-                job.setToolTip(job.output)
+                #job.setToolTip(job.output)
                 job.updateTime()
                 self.updateJobStatusWindow(job)
                 self.jobIndex += 1
@@ -108,16 +112,20 @@ class JobManager(object):
         
     def updateJobStatusWindow(self, n):
         if self.jobStatusWindowActive:
-            self.jobstatusW.output.setPlainText("Command: " + n.cmd + "Output from command:\n" + n.output)
-            cmd = n.cmd
-            if len(n.cmd) > 130:
-                cmd = n.cmd[0:130]+"..."
-            self.jobstatusW.command.setText("Command: " + cmd)
+            self.jobStatusWindowJob = n
+            out = n.output
+            if out == "":
+                out = "OK"
+            self.jobstatusW.output.setPlainText("Command:\n" + n.cmd + "\n\nOutput from command: \n" + out)
+#            cmd = n.cmd
+#            if len(n.cmd) > 130:
+#                cmd = n.cmd[0:130]+"..."
+#            self.jobstatusW.command.setText("Command: " + cmd)
             self.jobstatusW.status.setText("Status: "+n.statusString)
-            e = n.statusString == "Running"
-            self.jobstatusW.stop.setEnabled(e)
-            e = n.statusString == "Queued"
-            self.jobstatusW.start.setEnabled(e)
+            eq = n.statusString == "Queued"
+            er = n.statusString == "Running"
+            self.jobstatusW.start.setEnabled(eq)
+            self.jobstatusW.stop.setEnabled(er or eq)
         
 
 class Entry(object):
@@ -143,23 +151,22 @@ class Entry(object):
     def updateTime(self):
         self.item.setText(0, time2str(timenow()))
 
-    def setToolTip(self, msg):
-        return
-        for i in range(0,3):
-            self.item.setToolTip(i, msg)
+#    def setToolTip(self, msg):
+#        return
+#        for i in range(0,3):
+#            self.item.setToolTip(i, msg)
 
 class Job(Entry):
-    def __init__(self, args, executer, cmdString, jobsW):
-        super(Job, self).__init__(cmdString, jobsW)
+    def __init__(self, args, executer, cmd, jobsW):
+        super(Job, self).__init__(cmd, jobsW)
         self.args = args
         self.executer = executer
-        self.status = None
-        self.started = False
+        self.processed = False
+        self.runCmd = None
 
-class Message(Entry):
-    def __init__(self, msg, error, jobsW):
-        super(Message, self).__init__(msg, jobsW)
-        self.msg = msg
+class JobDone(Entry):
+    def __init__(self, cmd, error, jobsW):
+        super(JobDone, self).__init__(cmd, jobsW)
         if error:
             self.output = error
 
