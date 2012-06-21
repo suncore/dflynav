@@ -139,7 +139,7 @@ class Fs(vfs_node.Node):
         srcList = [x.fspath for x in srcNodeList]
         
         if platform.system() == 'Windows':
-            srcs = ' '.join(srcList)
+            srcs = '\0'.join(srcList)
             shell.SHFileOperation (
               (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), shellcon.FOF_RENAMEONCOLLISION, None, None)
             )
