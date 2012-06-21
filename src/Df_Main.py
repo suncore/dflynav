@@ -46,6 +46,7 @@ if __name__ == '__main__':
     d.g.config = Df_Gui.Config()
     d.g.jobstatus = Df_Gui.Jobstatus()
     d.g.help = Df_Gui.Help()
+    d.g.find = Df_Gui.Find()
     #d.g.preview = Df_Gui.Preview()
     #d.g.jobstatus.show()
     #d.g.mw.showMaximized()
@@ -86,7 +87,8 @@ if __name__ == '__main__':
     d.g.mw.right_up.setToolTip("Up")
     d.g.mw.toleft.setToolTip("Set the left path to the same as the right path")
     d.g.mw.toright.setToolTip("Set the right path to the same as the left path")
-    
+
+    d.find = Df_Find.Find(d.g.find)    
     d.jobm = Df_Job.JobManager(d.g.mw.jobs, d.g.jobstatus)
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
