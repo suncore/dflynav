@@ -31,12 +31,13 @@ class PanelItem(QtGui.QTreeWidgetItem):
 
 
 class Panel(object):
-    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW):
+    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW):
         self.mainW = mainW
         self.treeW = treeW
         self.pathW = pathW
         self.upW = upW
         self.statusW = statusW
+        self.findW = findW
         self.other = None # Pointer to the other panel filled in by the builder
         self.treeW.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
@@ -64,6 +65,7 @@ class Panel(object):
         self.defaultIconSize = self.treeW.iconSize()
         self.controlMod = False
         self.hoverOldOppositeFolder = None
+        self.findW.clicked.connect(self.find)
         
     def start(self):
         self.refreshCd()
@@ -91,6 +93,9 @@ class Panel(object):
         self.pathW.returnPressed.connect(self.pathW_returnPressed)
         
     # Signal handlers ----------------------------------------------------------------------------------
+    def find(self):
+        Df.d.find.show(self)
+        
     def pathW_returnPressed(self):
         text = self.pathW.text()
         text = text.rstrip('/ ')

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwin.ui'
 #
-# Created: Thu Jun 21 20:50:53 2012
+# Created: Thu Jun 21 21:26:09 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(748, 568)
+        MainWindow.resize(766, 568)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -58,6 +58,9 @@ class Ui_MainWindow(object):
         self.left_bookmarks.setSizePolicy(sizePolicy)
         self.left_bookmarks.setObjectName("left_bookmarks")
         self.horizontalLayout.addWidget(self.left_bookmarks)
+        self.left_find = QtGui.QPushButton(self.layoutWidget)
+        self.left_find.setObjectName("left_find")
+        self.horizontalLayout.addWidget(self.left_find)
         self.left.addLayout(self.horizontalLayout, 4, 0, 1, 2)
         self.left_status = QtGui.QLabel(self.layoutWidget)
         self.left_status.setAlignment(QtCore.Qt.AlignCenter)
@@ -164,6 +167,9 @@ class Ui_MainWindow(object):
         self.right_bookmarks.setSizePolicy(sizePolicy)
         self.right_bookmarks.setObjectName("right_bookmarks")
         self.horizontalLayout_4.addWidget(self.right_bookmarks)
+        self.right_find = QtGui.QPushButton(self.layoutWidget)
+        self.right_find.setObjectName("right_find")
+        self.horizontalLayout_4.addWidget(self.right_find)
         self.right.addLayout(self.horizontalLayout_4, 4, 0, 1, 2)
         self.right_tree = QtGui.QTreeWidget(self.layoutWidget)
         self.right_tree.setRootIsDecorated(False)
@@ -201,6 +207,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "Dragonfly Navigator", None, QtGui.QApplication.UnicodeUTF8))
         self.left_history.setText(QtGui.QApplication.translate("MainWindow", "History", None, QtGui.QApplication.UnicodeUTF8))
         self.left_bookmarks.setText(QtGui.QApplication.translate("MainWindow", "Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
+        self.left_find.setText(QtGui.QApplication.translate("MainWindow", "Find", None, QtGui.QApplication.UnicodeUTF8))
         self.left_status.setText(QtGui.QApplication.translate("MainWindow", "status", None, QtGui.QApplication.UnicodeUTF8))
         self.left_preview_text.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
         self.configure.setText(QtGui.QApplication.translate("MainWindow", "Configure", None, QtGui.QApplication.UnicodeUTF8))
@@ -209,6 +216,7 @@ class Ui_MainWindow(object):
         self.right_status.setText(QtGui.QApplication.translate("MainWindow", "status", None, QtGui.QApplication.UnicodeUTF8))
         self.right_history.setText(QtGui.QApplication.translate("MainWindow", "History", None, QtGui.QApplication.UnicodeUTF8))
         self.right_bookmarks.setText(QtGui.QApplication.translate("MainWindow", "Bookmarks", None, QtGui.QApplication.UnicodeUTF8))
+        self.right_find.setText(QtGui.QApplication.translate("MainWindow", "Find", None, QtGui.QApplication.UnicodeUTF8))
         self.right_preview_text.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
 
 import dragonfly_rc

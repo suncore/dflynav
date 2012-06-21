@@ -18,7 +18,7 @@ import sys
 #, os
 from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
-import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin
+import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
 
 if __name__ == '__main__':
@@ -48,7 +48,6 @@ if __name__ == '__main__':
     d.g.help = Df_Gui.Help()
     d.g.find = Df_Gui.Find()
     #d.g.preview = Df_Gui.Preview()
-    d.g.find.show()
     #d.g.mw.showMaximized()
     d.g.mw.setWindowIcon(QtGui.QIcon('src/icons/dragonfly.png'))
     d.g.mw.show()
@@ -61,8 +60,8 @@ if __name__ == '__main__':
     
     d.history = []
     d.bookmarks = [ ]
-    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back)
-    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back)
+    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back, d.g.mw.left_find)
+    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back, d.g.mw.right_find)
     d.lp.other = d.rp
     d.rp.other = d.lp
     #d.mainw = Df_Mainwin.Mainwin(d.g.mw, d.lp, d.rp)

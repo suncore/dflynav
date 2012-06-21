@@ -15,36 +15,29 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0">
-    <widget class="QLineEdit" name="lineEdit"/>
+    <widget class="QLineEdit" name="input"/>
    </item>
    <item row="0" column="0">
-    <widget class="QLabel" name="label">
+    <widget class="QLabel" name="heading">
      <property name="text">
       <string>TextLabel</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="2" column="0">
+    <widget class="QLabel" name="instruction">
+     <property name="text">
+      <string>Click on results below to navigate to the result</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
     <widget class="QTreeWidget" name="hitlist">
      <column>
       <property name="text">
        <string>Object</string>
       </property>
      </column>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="find">
-     <property name="text">
-      <string>Find</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Click on results below to navigate to the result</string>
-     </property>
     </widget>
    </item>
   </layout>

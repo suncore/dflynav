@@ -6,14 +6,18 @@ import Df, time, hashlib, sys
 class Find():
     def __init__(self, findW):
         self.findW = findW
-        self.findW.find.clicked.connect(self.find)
+        self.findW.input.returnPressed.connect(self.find)
 
     def find(self):
-        pass
+        self.panel.setPathByString(self.findW.input.text())
 
-    def clear(self):
+    def reset(self):
+        self.findW.heading.setText("Find in " + self.panel.cd.path() + "\nEnter part of object name to search for and press return.")
         self.findW.input.clear()
+        self.findW.hitlist.clear()
 
-    def show(self):
-        self.clear()
+    def show(self, panel):
+        self.panel = panel
+        self.reset()
         self.findW.show()
+

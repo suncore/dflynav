@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>748</width>
+    <width>766</width>
     <height>568</height>
    </rect>
   </property>
@@ -69,6 +69,13 @@
               </property>
               <property name="text">
                <string>Bookmarks</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="left_find">
+              <property name="text">
+               <string>Find</string>
               </property>
              </widget>
             </item>
@@ -262,6 +269,13 @@
               </property>
               <property name="text">
                <string>Bookmarks</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="right_find">
+              <property name="text">
+               <string>Find</string>
               </property>
              </widget>
             </item>
