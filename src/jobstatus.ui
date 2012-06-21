@@ -17,24 +17,7 @@
    <string>Job status</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0" colspan="2">
-    <widget class="QLabel" name="status">
-     <property name="text">
-      <string>status</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QPlainTextEdit" name="output"/>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="command">
-     <property name="text">
-      <string>Command</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" rowspan="3" colspan="2">
+   <item row="3" column="0" rowspan="3" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="stop">
@@ -58,6 +41,16 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="status">
+     <property name="text">
+      <string>status</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QPlainTextEdit" name="output"/>
    </item>
   </layout>
  </widget>

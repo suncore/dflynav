@@ -7,6 +7,7 @@ from Df_UiConfig import Ui_Config
 from Df_UiPreview import Ui_Preview
 from Df_UiJobstatus import Ui_Jobstatus
 from Df_UiHelp import Ui_Help
+from Df_UiFind import Ui_Find
 import os
 import vfs
 
@@ -30,6 +31,11 @@ class Config(QtGui.QDialog, Ui_Config):
         self.setupUi(self)
 
 class Help(QtGui.QDialog, Ui_Help):
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+        self.setupUi(self)
+
+class Find(QtGui.QDialog, Ui_Find):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.setupUi(self)

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>563</width>
-    <height>326</height>
+    <width>624</width>
+    <height>351</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -30,19 +30,6 @@
       <string>Miscellaneous</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="showThumbs">
-        <property name="text">
-         <string>Show photo thumbnails and detailed information (may slow down listing of folders)</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <property name="tristate">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0">
        <widget class="QCheckBox" name="showHidden">
         <property name="text">
@@ -53,10 +40,30 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="showThumbs">
+        <property name="text">
+         <string>Show photo thumbnails (may slow down listing of folders)</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="tristate">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="showIcons">
         <property name="text">
          <string>Show file icons (may slow down listing of folders)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QCheckBox" name="useInternalFileCopy">
+        <property name="text">
+         <string>Use internal method for copying files (faster but shows no progress bar)</string>
         </property>
        </widget>
       </item>
