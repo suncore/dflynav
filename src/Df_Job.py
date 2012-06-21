@@ -37,7 +37,7 @@ class JobManager(object):
         self.jobStatusWindowActive = False
         self.runningJob = None
         self.jobStatusWindowJob = None
-        self.jobstatusW.command.hide()
+        #self.jobstatusW.command.hide()
         self.jobstatusW.start.hide()
 
     def closeClicked(self):

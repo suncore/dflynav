@@ -74,6 +74,13 @@ class Config():
             self.configW.showThumbs.setCheckState(Qt.Unchecked)
         self.configW.showThumbs.stateChanged.connect(self.showThumbsStateChanged)
 
+        self.useInternalFileCopy = int(self.settings.value("useInternalFileCopy", int(Qt.Unchecked)))
+        if self.useInternalFileCopy == int(Qt.Checked):
+            self.configW.useInternalFileCopy.setCheckState(Qt.Checked)
+        else:
+            self.configW.useInternalFileCopy.setCheckState(Qt.Unchecked)
+        self.configW.useInternalFileCopy.stateChanged.connect(self.useInternalFileCopyStateChanged)
+
         self.showIcons = int(self.settings.value("showIcons", int(Qt.Unchecked)))
         if self.showIcons == int(Qt.Checked):
             self.configW.showIcons.setCheckState(Qt.Checked)
@@ -116,6 +123,8 @@ class Config():
         self.settings.setValue("showHidden", self.showHidden)
         self.showThumbs = int(self.configW.showThumbs.checkState())
         self.settings.setValue("showThumbs", self.showThumbs)
+        self.useInternalFileCopy = int(self.configW.useInternalFileCopy.checkState())
+        self.settings.setValue("useInternalFileCopy", self.useInternalFileCopy)
         self.showIcons = int(self.configW.showIcons.checkState())
         self.settings.setValue("showIcons", self.showIcons)
                  
@@ -130,6 +139,9 @@ class Config():
 
     def showThumbsStateChanged(self, state):
         self.showThumbs = int(state)
+
+    def useInternalFileCopyStateChanged(self, state):
+        self.useInternalFileCopy = int(state)
 
     def showIconsStateChanged(self, state):
         self.showIcons = int(state)

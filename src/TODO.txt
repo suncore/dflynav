@@ -1,20 +1,18 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
+find-funktion
 installationspaket pyinstaller
 RÃ¤tta buggar
 websida, $17
 DRM/licens
-find-funktion
 link-knapp ska göra shortcuts på windows, inte cygwin-länkar
 funktion: kolla storlek på folders (typ du -sh)
-fixa start job knappen
 preview på png,gif etc.
 kraschdump-insamling för felsökning
 python -E (ignore python-variables)
 beskriv varför dragonfly togs fram - få andra att tro på samma sak
 kolla i koden för winscp hur de skaffar ikoner och beskrivning på filtyper
-vue 10 går ej att starta efter unzip
 browsa kameror/iphone bilder
 
 TODO Ã¶vrigt
@@ -24,6 +22,8 @@ Find
 AnvÃ¤ndardefinierade knappar
 Config: default packfunktion
 owner/group metadata Linux
+fixa start job knappen
+
 
 Buggar
 ------
@@ -31,6 +31,7 @@ Nu
 Pack: Packar med absolutpath frÃ¥n root
 Alt-tab blir evig hover
 Testa packa upp tar.gz fil på windows på installerad df (ej från eclipse)
+vue 10 går ej att starta efter unzip
 
 Om man har jobstatuswindow öppet får man ofta hängning/krasch och detta i konsollen:
   QObject: Cannot create children for a parent that is in a different thread.

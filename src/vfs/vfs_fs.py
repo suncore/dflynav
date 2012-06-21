@@ -145,11 +145,13 @@ class Fs(vfs_node.Node):
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
-        if platform.system() == 'Windows':
+        if platform.system() == 'Windows' and not Df.d.config.useInternalFileCopy:
             Df.d.jobm.addJobDone(cmdString, None)
             srcs = '\0'.join(srcList)
+            #flag = shellcon.FOF_RENAMEONCOLLISION
+            flag = 0
             shell.SHFileOperation (
-              (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), shellcon.FOF_RENAMEONCOLLISION, None, None)
+              (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), flag, None, None)
             )
             return
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
