@@ -17,6 +17,22 @@
    <item row="1" column="0">
     <widget class="QLineEdit" name="input"/>
    </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="instruction">
+     <property name="text">
+      <string>Click on results below to navigate to the result</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QTreeWidget" name="hitlist">
+     <column>
+      <property name="text">
+       <string>Object</string>
+      </property>
+     </column>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="heading">
      <property name="text">
@@ -25,19 +41,10 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QLabel" name="instruction">
+    <widget class="QCheckBox" name="recursive">
      <property name="text">
-      <string>Click on results below to navigate to the result</string>
+      <string>Search sub-folders recursively</string>
      </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QTreeWidget" name="hitlist">
-     <column>
-      <property name="text">
-       <string>Object</string>
-      </property>
-     </column>
     </widget>
    </item>
   </layout>
