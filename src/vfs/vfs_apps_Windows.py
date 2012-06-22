@@ -9,7 +9,7 @@ import sys
 from _winreg import *
 
 class Apps(vfs_node.Node):
-    def children(self):
+    def children(self, async=True):
         dl = []
         for i in "appdata", "programdata":
             p = os.getenv(i)
@@ -25,7 +25,7 @@ class UninstallDirectory(vfs_node.Node):
     def __init__(self, parent, name):
         super(UninstallDirectory, self).__init__(parent, name)
 
-    def children(self):
+    def children(self, async=True):
         c = []
         aReg = ConnectRegistry(None,HKEY_LOCAL_MACHINE)
         oldname = ''

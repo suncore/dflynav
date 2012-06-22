@@ -28,7 +28,7 @@ class Node(object):
     def startGetChildren(self):
         self.childrenReady = True
 
-    def children(self):
+    def children(self, async=True):
         return self.children_
 
     def childrenStop(self):

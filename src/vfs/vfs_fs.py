@@ -281,8 +281,10 @@ class Directory(Fs):
             self.childrenReady = False
             Df.d.vfsJobm.addJob(self.getChildrenAsync)
         
-    def children(self):
+    def children(self, async=True):
         #print "1 ", self.childrenReady, self.children_
+        if not async:
+            self.getChildrenAsync()
         return self.children_
 
     def buildChild(self, f, stats):
@@ -461,7 +463,7 @@ if platform.system() == 'Windows':
         def childrenStop(self):
             pass
 
-        def children(self):
+        def children(self, async=True):
             return []
     
     class WinNetworkRoot(Directory):
