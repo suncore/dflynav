@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'config.ui'
 #
-# Created: Thu Jun 21 21:26:09 2012
+# Created: Sat Jun 23 14:44:15 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Config(object):
     def setupUi(self, Config):
         Config.setObjectName("Config")
-        Config.resize(624, 351)
+        Config.resize(624, 376)
         self.gridLayout = QtGui.QGridLayout(Config)
         self.gridLayout.setObjectName("gridLayout")
         self.buttonBox = QtGui.QDialogButtonBox(Config)
@@ -39,6 +39,9 @@ class Ui_Config(object):
         self.useInternalFileCopy = QtGui.QCheckBox(self.groupBox_2)
         self.useInternalFileCopy.setObjectName("useInternalFileCopy")
         self.gridLayout_3.addWidget(self.useInternalFileCopy, 3, 0, 1, 1)
+        self.confirmDelete = QtGui.QCheckBox(self.groupBox_2)
+        self.confirmDelete.setObjectName("confirmDelete")
+        self.gridLayout_3.addWidget(self.confirmDelete, 4, 0, 1, 1)
         self.gridLayout.addWidget(self.groupBox_2, 1, 0, 1, 1)
         self.groupBox = QtGui.QGroupBox(Config)
         self.groupBox.setObjectName("groupBox")
@@ -83,6 +86,7 @@ class Ui_Config(object):
         self.showThumbs.setText(QtGui.QApplication.translate("Config", "Show photo thumbnails (may slow down listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
         self.showIcons.setText(QtGui.QApplication.translate("Config", "Show file icons (may slow down listing of folders)", None, QtGui.QApplication.UnicodeUTF8))
         self.useInternalFileCopy.setText(QtGui.QApplication.translate("Config", "Use internal method for copying files (faster but shows no progress bar)", None, QtGui.QApplication.UnicodeUTF8))
+        self.confirmDelete.setText(QtGui.QApplication.translate("Config", "Confirm delete", None, QtGui.QApplication.UnicodeUTF8))
         self.groupBox.setTitle(QtGui.QApplication.translate("Config", "Start directories", None, QtGui.QApplication.UnicodeUTF8))
         self.rememberStartFolders.setText(QtGui.QApplication.translate("Config", "Remember start directories from last run", None, QtGui.QApplication.UnicodeUTF8))
         self.label.setText(QtGui.QApplication.translate("Config", "Left start folder", None, QtGui.QApplication.UnicodeUTF8))

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>624</width>
-    <height>351</height>
+    <height>376</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,6 +64,13 @@
        <widget class="QCheckBox" name="useInternalFileCopy">
         <property name="text">
          <string>Use internal method for copying files (faster but shows no progress bar)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="confirmDelete">
+        <property name="text">
+         <string>Confirm delete</string>
         </property>
        </widget>
       </item>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'preview.ui'
 #
-# Created: Thu Jun 21 21:26:09 2012
+# Created: Sat Jun 23 14:44:15 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!

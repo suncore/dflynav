@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'find.ui'
 #
-# Created: Sat Jun 23 07:36:46 2012
+# Created: Sat Jun 23 14:44:15 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Find(object):
     def setupUi(self, Find):
         Find.setObjectName("Find")
-        Find.resize(400, 300)
+        Find.resize(569, 390)
         self.gridLayout = QtGui.QGridLayout(Find)
         self.gridLayout.setObjectName("gridLayout")
         self.heading = QtGui.QLabel(Find)
