@@ -7,11 +7,12 @@ from Queue import Queue
 class Find():
     def __init__(self, findW):
         self.findW = findW
-        self.findW.input.returnPressed.connect(self.startFind)
+        #self.findW.input.returnPressed.connect(self.startFind)
         self.findW.hitlist.header().hide()
         self.findW.hitlist.itemPressed.connect(self.itemClicked)
         self.findW.close.clicked.connect(self.close)
         self.findW.stop.clicked.connect(self.stopNow)
+        self.findW.start.clicked.connect(self.startFind)
         self.q = Queue()
         thread.start_new_thread(self.findTask, (self,))
         self.stop = False
@@ -19,6 +20,7 @@ class Find():
         self.setSearchingFor("")
 
     def startFind(self):
+        self.findW.hitlist.clear()
         cd = self.panel.cd
         t = self.findW.input.text()
         recurse = int(self.findW.recursive.checkState()) != 0
@@ -32,7 +34,6 @@ class Find():
         ch = node.children(False)
         for n in ch:
             if self.stop:
-                print "stopping"
                 return
             if string.find(n.name, t) != -1:
                 item = QtGui.QTreeWidgetItem( [ n.path() ] )
@@ -51,12 +52,13 @@ class Find():
 
     def itemClicked(self, item):
         #print item.text(0)
-        self.panel.setPath(item.df_node.parent)
+        self.panel.setPathByString(item.df_node.parent.path())
         # TODO set selection on df_node
         self.setHeader()
+        self.panel.findMark = item.df_node.path()
 
     def setHeader(self):
-        self.findW.heading.setText("Find in " + self.panel.cd.path() + "\nEnter part of object name to search for and press return.")
+        self.findW.heading.setText("Find in " + self.panel.cd.path() + "\nEnter part of object name to search for.")
 
     def show(self, panel):
         self.panel = panel
@@ -70,11 +72,11 @@ class Find():
         self.findW.hide()
         
     def stopNow(self):
-        print "stopNow"
         self.stop = True
 
     def setStatus(self, status):
-        #self.findW.stop.setEnabled(status != "Idle")
+        self.findW.stop.setEnabled(status != "Idle")
+        self.findW.start.setEnabled(status == "Idle")
         if status == "Idle":
             self.setSearchingFor("")
         self.findW.status.setText("Search engine: " + status)

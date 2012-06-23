@@ -14,7 +14,7 @@ cp $SRC/icons/dragonfly.ico icons
 cp $SRC/icons/Letters.png icons
 cp -r $SRC/res .
 mkdir -p cygwin/bin
-cp /bin/cp /bin/mv /bin/rm /bin/*dll cygwin/bin
+cp /bin/cp /bin/mv /bin/rm /bin/du /bin/*dll cygwin/bin
 cp $SRC/*pyo .
 mkdir -p vfs
 cp $SRC/vfs/*pyo vfs

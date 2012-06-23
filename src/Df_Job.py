@@ -62,7 +62,7 @@ class JobManager(object):
         job.updateTime()
         if error:
             job.setStatus("Failed")
-            job.setToolTip(error)
+            #job.setToolTip(error)
         else:
             job.setStatus("Done")
 
@@ -116,7 +116,8 @@ class JobManager(object):
             out = n.output
             if out == "":
                 out = "OK"
-            self.jobstatusW.output.setPlainText("Command:\n" + n.cmd + "\n\nOutput from command: \n" + out)
+            self.jobstatusW.output.clear()
+            self.jobstatusW.output.insertPlainText("Command:\n" + n.cmd + "\n\nOutput from command: \n" + out)
 #            cmd = n.cmd
 #            if len(n.cmd) > 130:
 #                cmd = n.cmd[0:130]+"..."

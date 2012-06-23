@@ -8,5 +8,9 @@ def Dialog(title, instruction, prefill):
         return result
     return None
 
+def YesNo(title, text):    
+    r = QtGui.QMessageBox.question(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.Cancel)
+    return r == int(QtGui.QMessageBox.Ok)
+
 def Message(title, text):
     QtGui.QMessageBox.warning(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton)

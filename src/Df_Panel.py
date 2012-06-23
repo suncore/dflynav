@@ -66,6 +66,7 @@ class Panel(object):
         self.controlMod = False
         self.hoverOldOppositeFolder = None
         self.findW.clicked.connect(self.find)
+        self.findMark = None
         
     def start(self):
         self.refreshCd()
@@ -299,6 +300,7 @@ class Panel(object):
         #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
         items = []
         self.nrItems = 0
+        findItem = None
         for i in ch:
             item  = [ i.name ]
             idx = 0
@@ -317,6 +319,9 @@ class Panel(object):
                 col += 1
             pi.setIcon(0, i.icon())
             pi.df_node = i
+            if self.findMark:
+                if not findItem and self.findMark == i.path():
+                    findItem = pi
             items.append(pi)
             self.nrItems += 1
             if i.bigIcon:
@@ -352,6 +357,9 @@ class Panel(object):
         for i in range(len(keys)):
             if i > 2:
                 self.treeW.header().showSection(i)
+        if findItem:
+            self.treeW.setCurrentItem(findItem)
+            self.findMark = None
                  
     def treeW_clearSelection(self):
         if not self.treeW_noClear:

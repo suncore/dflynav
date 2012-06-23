@@ -1,33 +1,35 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
-find-funktion
+konfig delete "are you sure?"
+kraschdump-insamling för felsökning
+nag-screen om trial-licens
+
 installationspaket pyinstaller
 RÃ¤tta buggar
 websida, $17
 DRM/licens
-link-knapp ska göra shortcuts på windows, inte cygwin-länkar
-funktion: kolla storlek på folders (typ du -sh)
 preview på png,gif etc.
-kraschdump-insamling för felsökning
-python -E (ignore python-variables)
+python -O -E (ignore python-variables)
 beskriv varför dragonfly togs fram - få andra att tro på samma sak
 kolla i koden för winscp hur de skaffar ikoner och beskrivning på filtyper
-browsa kameror/iphone bilder
 
 TODO Ã¶vrigt
 -----------
+browsa kameror/iphone bilder
 Applikationer-installerade
-Find
 AnvÃ¤ndardefinierade knappar
 Config: default packfunktion
 owner/group metadata Linux
 fixa start job knappen
+compare-funktion
 
 
 Buggar
 ------
 Nu
+Properties på desktop-foldern öppnar personilzation
+krasch om jobstatus fönstret öppet samtidigt som size på dirs
 Pack: Packar med absolutpath frÃ¥n root
 Alt-tab blir evig hover
 Testa packa upp tar.gz fil på windows på installerad df (ej från eclipse)

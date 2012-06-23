@@ -9,7 +9,9 @@ from PySide import QtGui
 import locale, datetime
 if platform.system() == 'Windows':
     import win32api, win32con
-import exif as exifreader
+    import ctypes
+    import ctypes.wintypes
+import Df_Exif as exifreader
 import tempfile, Df
 
 def JpegToPixmap(fn):
@@ -192,3 +194,39 @@ def genericPathToWindows(p):
 def windowsPathToGeneric(p):
     p = '/'.join(p.split('\\'))
     return p
+
+
+def WindowsOpenProperties(f):
+    
+    SEE_MASK_NOCLOSEPROCESS = 0x00000040
+    SEE_MASK_INVOKEIDLIST = 0x0000000C
+    
+    class SHELLEXECUTEINFO(ctypes.Structure):
+        _fields_ = (
+            ("cbSize",ctypes.wintypes.DWORD),
+            ("fMask",ctypes.c_ulong),
+            ("hwnd",ctypes.wintypes.HANDLE),
+            ("lpVerb",ctypes.c_char_p),
+            ("lpFile",ctypes.c_char_p),
+            ("lpParameters",ctypes.c_char_p),
+            ("lpDirectory",ctypes.c_char_p),
+            ("nShow",ctypes.c_int),
+            ("hInstApp",ctypes.wintypes.HINSTANCE),
+            ("lpIDList",ctypes.c_void_p),
+            ("lpClass",ctypes.c_char_p),
+            ("hKeyClass",ctypes.wintypes.HKEY),
+            ("dwHotKey",ctypes.wintypes.DWORD),
+            ("hIconOrMonitor",ctypes.wintypes.HANDLE),
+            ("hProcess",ctypes.wintypes.HANDLE),
+        )
+    
+    ShellExecuteEx = ctypes.windll.shell32.ShellExecuteEx
+    ShellExecuteEx.restype = ctypes.wintypes.BOOL
+    
+    sei = SHELLEXECUTEINFO()
+    sei.cbSize = ctypes.sizeof(sei)
+    sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_INVOKEIDLIST
+    sei.lpVerb = "properties"
+    sei.lpFile = f
+    sei.nShow = 1
+    ShellExecuteEx(ctypes.byref(sei))

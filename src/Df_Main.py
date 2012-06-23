@@ -22,6 +22,7 @@ import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
 
 if __name__ == '__main__':
+    iconFile = 'src/icons/dragonfly.png'
 
     # d is the only global variable, the base object that contains the entier application state
     d = Df_Dragonfly.DragonFly()
@@ -44,12 +45,16 @@ if __name__ == '__main__':
     d.g.mw = Df_Gui.MainWindow()
     #d.g.dia = Df_Gui.Dialog()
     d.g.config = Df_Gui.Config()
+    d.g.config.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.jobstatus = Df_Gui.Jobstatus()
+    d.g.jobstatus.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.help = Df_Gui.Help()
+    d.g.help.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.find = Df_Gui.Find()
+    d.g.find.setWindowIcon(QtGui.QIcon(iconFile))
     #d.g.preview = Df_Gui.Preview()
     #d.g.mw.showMaximized()
-    d.g.mw.setWindowIcon(QtGui.QIcon('src/icons/dragonfly.png'))
+    d.g.mw.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.mw.show()
     
     d.preview = Df_Preview.Preview(d.g.mw.left_preview_container, d.g.mw.right_preview_container, d.g.mw.left_preview_gv, d.g.mw.right_preview_gv, d.g.mw.left_preview_text, d.g.mw.right_preview_text, d.g.mw.left_tree, d.g.mw.right_tree)

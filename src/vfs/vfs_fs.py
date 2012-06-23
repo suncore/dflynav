@@ -85,7 +85,8 @@ class Fs(vfs_node.Node):
                      ( 'Rename', False, self.cb_rename ),
                      ( 'Delete', False, self.cb_delete ),
                      ( 'Link', True, self.cb_link ),
-                     ( 'Compare', True, self.cb_compare ),
+                     #( 'Compare', True, self.cb_compare ),
+                     ( 'Properties', True, self.cb_properties ),
                      ]
         self.wm = None
 
@@ -140,8 +141,6 @@ class Fs(vfs_node.Node):
         cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
         srcList2 = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList2)
-        #if len(srcs) > 130:
-        #    srcs = srcs[0:130]+"..."
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
@@ -166,8 +165,6 @@ class Fs(vfs_node.Node):
         cmd = [ '/bin/mv' ] + srcList + [ dstNode.fspath ]
         srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
-        if len(srcs) > 200:
-            srcs = srcs[0:200]+"..."
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: move %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
@@ -197,12 +194,12 @@ class Fs(vfs_node.Node):
         cmd = [ '/bin/rm', '-rf' ] + srcList
         srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
-        if len(srcs) > 200:
-            srcs = srcs[0:200]+"..."
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: delete %s' % (wd, srcs)
         args = cmd, wd
-        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+        r = Df_Dialog.YesNo("Confirm", "Are you sure you want to delete the following files in " + wd + "?\n" + srcs)
+        if r:
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_link(self):
         srcNodeList, dstNode = self.getSelectionAndDestination()
@@ -210,7 +207,22 @@ class Fs(vfs_node.Node):
             cmd = [ '/bin/ln', '-s' ] + [ i.fspath ] + [ dstNode.fspath ]
             cmdString = '$ link %s to %s' % (i.fspath, dstNode.fspath)
             args = cmd, None
-            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+            if platform.system() == 'Windows':
+                error = None
+                try:
+                    shell = win32com.client.Dispatch("WScript.Shell")
+                    shortcut = shell.CreateShortCut(genericPathToWindows(dstNode.fspath + '/' + i.name + '.lnk'))
+                    shortcut.Targetpath = genericPathToWindows(i.fspath)
+                    #shortcut.Arguments = 'http://mysite.com/auth/preauth.php'
+                    #shortcut.WorkingDirectory = r'C:\Program Files\Mozilla Firefox'
+                    shortcut.save()
+                except:
+                    t,error,tb = sys.exc_info()
+                if error:
+                    error = str(error)
+                Df.d.jobm.addJobDone(cmdString, error)
+            else: 
+                Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_pack(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
@@ -219,6 +231,25 @@ class Fs(vfs_node.Node):
             cmdString = '$ pack %s ' % i.fspath
             args = cmd, None
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+
+    def cb_dirsize(self):
+        srcNodeList, x_ = self.getSelectionAndDestination()
+        if not srcNodeList:
+            return
+        srcList = [x.fspath for x in srcNodeList]
+        cmd = [ '/bin/du', '-sh' ] + srcList
+        srcList = [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList)
+        wd = srcNodeList[0].parent.fspath
+        cmdString = '$ in %s: sizing %s' % (wd, srcs)
+        args = cmd, wd
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+
+    def cb_properties(self):
+        srcNodeList, x_ = self.getSelectionAndDestination()
+        if not srcNodeList:
+            return
+        WindowsOpenProperties(srcNodeList[0].fspath)
 
     def cb_unpack(self):
         srcNodeList, dstNode = self.getSelectionAndDestination()
@@ -240,6 +271,8 @@ class Fs(vfs_node.Node):
         
     def cb_openwith(self):
         srcList, dst = self.getSelectionAndDestination()
+        if not srcList:
+            return
         #Rundll32.exe shell32.dll, OpenAs_RunDLL C:\test.jpg
         p = srcList[0].fspath
         if platform.system() == 'Windows': 
@@ -268,6 +301,7 @@ class Directory(Fs):
             self.meta[0] = ('Size', '-', 0L)
             self.meta[4] = ('Size in bytes', '-', 0L)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
+        #self.actionButtonCallbacks.append(( 'Size', False, self.cb_dirsize ))
         self.stopAsync = False
         self.children_ = []
         self.asyncRunning = False
@@ -389,7 +423,7 @@ class Directory(Fs):
                     # todo configurable settings
                     #Df.d.config.win32_show_hidden
                     hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
-                    hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
+                    #hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
                 if not hide or Df.d.config.showHidden:
                     c.append(self.buildChild(f, stats))
         except:
