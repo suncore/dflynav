@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'find.ui'
 #
-# Created: Fri Jun 22 11:29:25 2012
+# Created: Sat Jun 23 07:36:46 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -29,6 +29,9 @@ class Ui_Find(object):
         self.gridLayout.addWidget(self.hitlist, 8, 0, 1, 1)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.start = QtGui.QPushButton(Find)
+        self.start.setObjectName("start")
+        self.horizontalLayout.addWidget(self.start)
         self.stop = QtGui.QPushButton(Find)
         self.stop.setObjectName("stop")
         self.horizontalLayout.addWidget(self.stop)
@@ -54,6 +57,7 @@ class Ui_Find(object):
         self.heading.setText(QtGui.QApplication.translate("Find", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
         self.recursive.setText(QtGui.QApplication.translate("Find", "Search sub-folders recursively", None, QtGui.QApplication.UnicodeUTF8))
         self.hitlist.headerItem().setText(0, QtGui.QApplication.translate("Find", "Object", None, QtGui.QApplication.UnicodeUTF8))
+        self.start.setText(QtGui.QApplication.translate("Find", "Start", None, QtGui.QApplication.UnicodeUTF8))
         self.stop.setText(QtGui.QApplication.translate("Find", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.instruction.setText(QtGui.QApplication.translate("Find", "Click on results below to navigate to the result", None, QtGui.QApplication.UnicodeUTF8))
         self.status.setText(QtGui.QApplication.translate("Find", "Status", None, QtGui.QApplication.UnicodeUTF8))
