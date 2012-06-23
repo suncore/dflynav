@@ -112,7 +112,7 @@ class Panel(object):
                 tail = text.split('/')[-1:][0]
                 c = self.setPathByString(head, False, False, True)
                 if not c:
-                    Df_Dialog.Message("Could not find parent directory", 'Could not find the parent directory\n"' + head + '"\nto create directory\n"' + tail + '"\nin.')
+                    Df_Dialog.MessageWarn("Could not find parent directory", 'Could not find the parent directory\n"' + head + '"\nto create directory\n"' + tail + '"\nin.')
                     self.refreshCd()
                     return
                 c.mkdir(tail)

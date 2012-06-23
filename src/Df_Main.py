@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # d is the only global variable, the base object that contains the entier application state
     d = Df_Dragonfly.DragonFly()
-    d.version = 1.0
+    d.version = "1.0"
     Df.d = d
 
     d.tempfile = tempfile.TemporaryFile()

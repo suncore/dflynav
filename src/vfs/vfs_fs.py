@@ -197,7 +197,9 @@ class Fs(vfs_node.Node):
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: delete %s' % (wd, srcs)
         args = cmd, wd
-        r = Df_Dialog.YesNo("Confirm", "Are you sure you want to delete the following files in " + wd + "?\n" + srcs)
+        r = True
+        if Df.d.config.confirmDelete:
+            r = Df_Dialog.YesNo("Confirm", "Are you sure you want to delete the following files in " + wd + "?\n" + srcs)
         if r:
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 

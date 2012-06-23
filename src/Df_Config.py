@@ -1,7 +1,8 @@
 from PySide.QtCore import *
 from PySide import QtGui
 from utils import *
-import Df, time, hashlib, sys
+import Df, time, hashlib, sys, Df_Dialog
+
 
 class Config():
     def __init__(self):
@@ -21,6 +22,7 @@ class Config():
         Df.d.rp.updateBookmarksMenu()
 
         s = "cm29sh5g9sxk24fg2.dr"
+        self.s = s
         ikey = self.settings.value("ikey", "") # Installation time key
         if ikey == "":
             if Df.d.bookmarks != []:
@@ -28,29 +30,32 @@ class Config():
             now = str(int(time.time()))
             h = hashlib.sha1(now+s).hexdigest()
             self.settings.setValue("ikey", now+','+h)
+            Df.d.gb.help()
         else:
             a = ikey.split(',')
             h = hashlib.sha1(a[0]+s).hexdigest()
             if h != a[1]:
+                Df_Dialog.MessageWarn("License", "Install key is invalid. Exiting.")
                 sys.exit(0) # Hacked key. No go.
 
+        Df.d.licenseKey = ""
         lkey = self.settings.value("lkey", "") # License key = email address + hash
         if lkey == "":
             ikey = self.settings.value("ikey", "") # Installation time key
             a = ikey.split(',')
             daysleft = 31-(time.time() - int(a[0]))/3600/24
             if daysleft < 0:
-                print "Trial period has expired"
+                Df_Dialog.MessageWarn("License", "Trial period has expired. Exiting.")
                 sys.exit(0)
-            print "You have " + str(int(daysleft)) + " days left on the trial. You can purchase a non-limited license here."
+            self.licenseNag("License", "You have " + str(int(daysleft)) + " days left on the trial.")
         else:
             a = lkey.split(',')
             h = hashlib.sha1(a[0]+s).hexdigest()[0:8]
             if h != a[1]:
-                print "License key invalid"
+                Df_Dialog.MessageWarn("License", "License key is invalid. Exiting.")
                 sys.exit(0) # Hacked registry key. No go.
             else:
-                print "License key ok"
+                Df.d.licenseKey = lkey
 
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:
@@ -87,6 +92,13 @@ class Config():
         else:
             self.configW.showIcons.setCheckState(Qt.Unchecked)
         self.configW.showIcons.stateChanged.connect(self.showIconsStateChanged)
+
+        self.confirmDelete = int(self.settings.value("confirmDelete", int(Qt.Checked)))
+        if self.confirmDelete == int(Qt.Checked):
+            self.configW.confirmDelete.setCheckState(Qt.Checked)
+        else:
+            self.configW.confirmDelete.setCheckState(Qt.Unchecked)
+        self.configW.confirmDelete.stateChanged.connect(self.confirmDeleteStateChanged)
 
         self.configW.useCurrentLeft.clicked.connect(self.useCurrentLeft)
         self.configW.useCurrentRight.clicked.connect(self.useCurrentRight)
@@ -127,6 +139,8 @@ class Config():
         self.settings.setValue("useInternalFileCopy", self.useInternalFileCopy)
         self.showIcons = int(self.configW.showIcons.checkState())
         self.settings.setValue("showIcons", self.showIcons)
+        self.confirmDelete = int(self.configW.confirmDelete.checkState())
+        self.settings.setValue("confirmDelete", self.confirmDelete)
                  
     def useCurrentLeft(self):
         self.configW.leftStartDir.setText(Df.d.lp.cd.path())
@@ -145,3 +159,41 @@ class Config():
 
     def showIconsStateChanged(self, state):
         self.showIcons = int(state)
+
+    def confirmDeleteStateChanged(self, state):
+        self.confirmDelete = int(state)
+
+    def licenseNag(self, title, text):    
+        msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, title, text)
+        msgBox.addButton("Try", QtGui.QMessageBox.AcceptRole)
+        msgBox.addButton("Buy", QtGui.QMessageBox.RejectRole)
+        msgBox.addButton("Enter key", QtGui.QMessageBox.ActionRole)
+        r = msgBox.exec_()
+        if r == 1:
+            error = None
+            try:
+                if platform.system() == 'Windows':
+                    os.startfile(genericPathToWindows("src/home.url"))
+                else:
+                    #os.chdir(self.parent.fspath)
+                    subprocess.call(["xdg-open", "src/home.url"]) # TODO should run completely async
+            except:
+                t,error,tb = sys.exc_info()
+            if error:
+                error = str(error)
+                print error
+        elif r == 2:
+            self.enterLicenseKey()
+
+    def enterLicenseKey(self):
+        lkey = Df_Dialog.Dialog("License", "Enter license key", "")
+        if not lkey:
+            return
+        a = lkey.split(',')
+        h = hashlib.sha1(a[0]+self.s).hexdigest()[0:8]
+        if len(h) != 2 or h != a[1]:
+            Df_Dialog.MessageWarn("License", "License key is invalid.")
+        else:
+            self.settings.setValue("lkey", lkey)
+            Df.d.licenseKey = lkey
+            
