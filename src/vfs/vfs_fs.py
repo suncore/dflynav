@@ -503,6 +503,13 @@ class PictureFile(File):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
+            
+    def preview(self):
+        (pixmap, info) = JpegToPixmap(self.fspath)
+        text = info
+        return (pixmap, text)
+
+    def icon(self):
         self.bigIcon = False
         if not Df.d.config.showThumbs:
             #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
@@ -516,13 +523,6 @@ class PictureFile(File):
                 self.bigIcon = True
                 self.iconData, self.icon_ = iconData
                 self.meta.append(("Taken", date, dateSecs))
-            
-    def preview(self):
-        (pixmap, info) = JpegToPixmap(self.fspath)
-        text = info
-        return (pixmap, text)
-
-    def icon(self):
         return self.icon_
     
     def hover(self, enter):
