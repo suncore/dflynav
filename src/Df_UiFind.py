@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'find.ui'
 #
-# Created: Sun Jun 24 17:59:02 2012
-#      by: pyside-uic 0.2.13 running on PySide 1.1.1
+# Created: Sun Jun 24 17:15:31 2012
+#      by: pyside-uic 0.2.14 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
