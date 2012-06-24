@@ -49,13 +49,12 @@ class Config():
                 sys.exit(0)
             self.licenseNag("License", "You have " + str(int(daysleft)) + " days left on the trial.")
         else:
-            a = lkey.split(',')
-            h = hashlib.sha1(a[0]+s).hexdigest()[0:8]
-            if h != a[1]:
-                Df_Dialog.MessageWarn("License", "License key is invalid. Exiting.")
-                sys.exit(0) # Hacked registry key. No go.
-            else:
+            r = self.licenseCheck(lkey)
+            if r:
                 Df.d.licenseKey = lkey
+            else:
+                Df_Dialog.MessageWarn("License", "License key is invalid. Exiting.")
+                sys.exit(0)
 
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:
@@ -185,15 +184,22 @@ class Config():
         elif r == 2:
             self.enterLicenseKey()
 
+    def licenseCheck(self, lkey):
+        try:
+            a = lkey.split(',')
+            h = hashlib.sha1(a[0]+a[1]+self.s).hexdigest()[0:8]
+            if h == a[2]:
+                return True
+        except:
+            pass
+        return False
+
     def enterLicenseKey(self):
         lkey = Df_Dialog.Dialog("License", "Enter license key", "")
-        if not lkey:
-            return
-        a = lkey.split(',')
-        h = hashlib.sha1(a[0]+self.s).hexdigest()[0:8]
-        if len(h) != 2 or h != a[1]:
-            Df_Dialog.MessageWarn("License", "License key is invalid.")
-        else:
+        r = self.licenseCheck(lkey)
+        if r:
             self.settings.setValue("lkey", lkey)
             Df.d.licenseKey = lkey
+        else:
+            Df_Dialog.MessageWarn("License", "License key is invalid.")
             
