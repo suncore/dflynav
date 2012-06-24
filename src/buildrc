@@ -1,4 +1,5 @@
 #!/bin/sh
+#export PATH=/cygdrive/c/python27/scripts:$PATH
 pyside-uic mainwin.ui  > Df_UiMainwin.py
 pyside-uic dialog.ui  > Df_UiDialog.py
 pyside-uic config.ui  > Df_UiConfig.py
