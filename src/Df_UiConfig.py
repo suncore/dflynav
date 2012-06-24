@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'config.ui'
 #
-# Created: Sat Jun 23 14:44:15 2012
+# Created: Sun Jun 24 10:21:59 2012
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
