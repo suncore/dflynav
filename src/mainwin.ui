@@ -129,6 +129,13 @@
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
+             <widget class="QPushButton" name="help">
+              <property name="text">
+               <string>Menu</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="configure">
               <property name="text">
                <string>Configure</string>
@@ -139,13 +146,6 @@
              <widget class="QPushButton" name="refresh">
               <property name="text">
                <string>Refresh</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="help">
-              <property name="text">
-               <string>Help</string>
               </property>
              </widget>
             </item>
