@@ -11,7 +11,6 @@ class GlobalButtons(object):
         mw.configure.clicked.connect(self.configure)
         #mw.help.clicked.connect(self.help)
         self.configW = configW
-        self.helpW = helpW
         self.helpMenu = QtGui.QMenu(mw)
         mw.help.setMenu(self.helpMenu)
         actions = []

@@ -18,4 +18,12 @@ def MessageWarn(title, text):
     
 def MessageInfo(title, text):
     QtGui.QMessageBox.information(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton)
-    
+
+def TextDialog(title, text=None, file=None): 
+    w = Df.d.g.help
+    self.helpW = helpW
+    f = open("src/res/helptext.html")
+    helptext = f.read()
+    f.close()
+    self.helpW.helpText.setHtml(helptext)
+    self.helpW.show()

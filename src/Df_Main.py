@@ -23,10 +23,33 @@ import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
 import sys, traceback
 
 def main():
+
+    
     iconFile = 'src/icons/dragonfly.png'
 
-    # d is the only global variable, the base object that contains the entier application state
+    # d is the only global variable, the base object that contains the entire application state
     d = Df_Dragonfly.DragonFly()
+    d.appdata = None
+    d.previousLog = None
+    d.logfile = None
+
+    try:
+        if platform.system() == 'Windows':
+            d.appdata = os.getenv('appdata') + '\\Dragonfly'
+        else:
+            d.appdata = os.getenv('HOME') + '/.config/Dragonfly'
+        if not os.path.exists(d.appdata):
+            os.mkdir(d.appdata)
+        d.logfile = os.path.join(d.appdata, "dragonfly_navigator.log")
+        if os.path.exists(d.logfile):
+            f = open(d.logfile, "r")
+            d.previousLog = f.read()
+            f.close()
+            os.remove(d.logfile)
+    except:
+        pass
+            
+    
     d.version = "1.0"
     Df.d = d
 
@@ -132,7 +155,12 @@ if __name__=="__main__":
         main()
     except:
         traceback.print_exc()
-        traceback.print_exc(file=open("errlog.txt","w"))
+        if d.logfile:
+            try:
+                file=open(Df.d.logfile,"w")
+                traceback.print_exc(file)
+            except:
+                pass
         sys.exit(1)
     sys.exit(0)
 
