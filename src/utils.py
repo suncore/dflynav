@@ -14,7 +14,7 @@ if platform.system() == 'Windows':
 import Df_Exif as exifreader
 import tempfile, Df
 
-def JpegToPixmap(fn):
+def ImageToPixmap(fn):
     im = Image.open(fn)
     exif = {}
     try:

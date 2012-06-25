@@ -326,6 +326,7 @@ class Directory(Fs):
     def buildChild(self, f, stats):
         (st,attrib) = stats
         ext = fsPathExt(f)
+
         if platform.system() == 'Windows':
             if ext == 'lnk':
                 linkTarget = self.getLinkTarget(path_join(self.fspath, f))
@@ -541,7 +542,7 @@ class PictureFile(File):
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
             
     def preview(self):
-        (pixmap, info) = JpegToPixmap(self.fspath)
+        (pixmap, info) = ImageToPixmap(self.fspath)
         text = info
         return (pixmap, text)
 

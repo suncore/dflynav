@@ -20,8 +20,9 @@ from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
+import sys, traceback
 
-if __name__ == '__main__':
+def main():
     iconFile = 'src/icons/dragonfly.png'
 
     # d is the only global variable, the base object that contains the entier application state
@@ -118,13 +119,22 @@ if __name__ == '__main__':
 
     d.config.load(d.g.config)
 
-
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
     d.config.save()
     d.tempfile.close()
-    sys.exit(r)
+    #sys.exit(r)
+
+
+if __name__=="__main__":
+    try:
+        main()
+    except:
+        traceback.print_exc()
+        traceback.print_exc(file=open("errlog.txt","w"))
+        sys.exit(1)
+    sys.exit(0)
 
 
 
