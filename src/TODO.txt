@@ -2,17 +2,16 @@
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
 kraschdump-insamling för felsökning
-gui för inlägg av licens
-gui för att läsa licensvillkor och kolla nyckel
 installationspaket pyinstaller
 RÃ¤tta buggar
 websida, $17
-DRM/licens
 preview på png,gif etc.
 python -O -E (ignore python-variables)
 beskriv varför dragonfly togs fram - få andra att tro på samma sak
 kolla i koden för winscp hur de skaffar ikoner och beskrivning på filtyper
 skriv res/license.html
+kodgranskning
+visa helptext första start
 
 TODO Ã¶vrigt
 -----------
