@@ -12,7 +12,11 @@ class Config():
         self.configW = configW
         pos = self.settings.value("pos", QPoint(100, 100))
         size = self.settings.value("size", QSize(400, 400))
-#        Df.d.g.mw.resize(size)
+        maximized = self.settings.value("maximized", 0)
+        if maximized == 1:
+            Df.d.g.mw.setWindowState(Qt.WindowMaximized)
+        else:
+            Df.d.g.mw.resize(size)
 #        Df.d.g.mw.move(pos)
 
         Df.d.bookmarks = self.settings.value("bookmarks", [ ])
@@ -121,6 +125,9 @@ class Config():
     def save(self):
         self.settings.setValue("pos", Df.d.g.mw.pos())
         self.settings.setValue("size", Df.d.g.mw.size())
+        state = Df.d.g.mw.windowState()
+        maximized = Df.d.g.mw.windowState() == Qt.WindowMaximized
+        self.settings.setValue("maximized", int(maximized))
         self.settings.setValue("bookmarks", Df.d.bookmarks)
         self.rememberStartDirs = self.configW.rememberStartFolders.isChecked()
         self.settings.setValue("rememberStartDirs", int(self.rememberStartDirs))

@@ -12,7 +12,7 @@ if platform.system() == 'Windows':
     import ctypes
     import ctypes.wintypes
 import Df_Exif as exifreader
-import tempfile, Df
+import tempfile, Df, traceback
 
 def ImageToPixmap(fn):
     im = Image.open(fn)
@@ -230,3 +230,13 @@ def WindowsOpenProperties(f):
     sei.lpFile = f
     sei.nShow = 1
     ShellExecuteEx(ctypes.byref(sei))
+
+def crash():
+    print "Crash dumping now", Df.d.logfile
+    traceback.print_exc()
+    try:
+        f=open(Df.d.logfile,"w")
+        traceback.print_exc(file=f)
+    except:
+        pass
+    os._exit(1)

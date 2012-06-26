@@ -20,17 +20,19 @@ from PySide import QtCore, QtGui
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
-import sys, traceback
+import sys, traceback, Df_Bugreport
+from utils import *
 
 def main():
 
+#if __name__=="__main__":
     
     iconFile = 'src/icons/dragonfly.png'
 
     # d is the only global variable, the base object that contains the entire application state
     d = Df_Dragonfly.DragonFly()
     d.appdata = None
-    d.previousLog = None
+    d.previousLog = ""
     d.logfile = None
 
     try:
@@ -45,7 +47,12 @@ def main():
             f = open(d.logfile, "r")
             d.previousLog = f.read()
             f.close()
-            os.remove(d.logfile)
+            #os.remove(d.logfile)
+        f = open(d.logfile, 'w') 
+        f.close()
+#        sys.stdout = f
+#        sys.stderr = f
+#        f = None
     except:
         pass
             
@@ -142,6 +149,8 @@ def main():
 
     d.config.load(d.g.config)
 
+    Df_Bugreport.CheckForCrashReport()
+
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
@@ -154,14 +163,9 @@ if __name__=="__main__":
     try:
         main()
     except:
-        traceback.print_exc()
-        if d.logfile:
-            try:
-                file=open(Df.d.logfile,"w")
-                traceback.print_exc(file)
-            except:
-                pass
-        sys.exit(1)
+        print "hello"
+        #traceback.print_exc()
+        crash()
     sys.exit(0)
 
 

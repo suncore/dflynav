@@ -67,43 +67,46 @@ class JobManager(object):
             job.setStatus("Done")
 
     def jobTask(self, dummy):
-        while True:
-            x = self.q.get(True)
-            while self.jobIndex < len(self.jobs):
-                job = self.jobs[self.jobIndex]
-                if job.processed:
-                    continue
-                job.processed = True
-                job.updateTime()
-                job.setStatus("Running")
-                self.updateJobStatusWindow(job)
-
-                job.runCmd = job.executer(job.args)
-                if job.runCmd.error:
-                    job.output += job.runCmd.error
-                    job.setStatus("Failed")
-                else:
-                    self.runningJob = job
-                    output = job.runCmd.readline()
-                    #print output
-                    while output:
-                        job.output += output
-                        self.updateJobStatusWindow(job)
-                        output = job.runCmd.readline()
-                        #print output
-                    status = job.runCmd.finish()
-                    self.runningJob = None
-                    job.output = job.output.rstrip()
-                    #print job.output
-                    if status != 0:
+        try:
+            while True:
+                x = self.q.get(True)
+                while self.jobIndex < len(self.jobs):
+                    #a = crashme()
+                    job = self.jobs[self.jobIndex]
+                    if job.processed:
+                        continue
+                    job.processed = True
+                    job.updateTime()
+                    job.setStatus("Running")
+                    self.updateJobStatusWindow(job)
+    
+                    job.runCmd = job.executer(job.args)
+                    if job.runCmd.error:
+                        job.output += job.runCmd.error
                         job.setStatus("Failed")
                     else:
-                        job.setStatus("Done")
-                #job.setToolTip(job.output)
-                job.updateTime()
-                self.updateJobStatusWindow(job)
-                self.jobIndex += 1
-
+                        self.runningJob = job
+                        output = job.runCmd.readline()
+                        #print output
+                        while output:
+                            job.output += output
+                            self.updateJobStatusWindow(job)
+                            output = job.runCmd.readline()
+                            #print output
+                        status = job.runCmd.finish()
+                        self.runningJob = None
+                        job.output = job.output.rstrip()
+                        #print job.output
+                        if status != 0:
+                            job.setStatus("Failed")
+                        else:
+                            job.setStatus("Done")
+                    #job.setToolTip(job.output)
+                    job.updateTime()
+                    self.updateJobStatusWindow(job)
+                    self.jobIndex += 1
+        except:
+            crash()
 
     def mouseButtonPressed(self, item):
         self.jobStatusWindowActive = True

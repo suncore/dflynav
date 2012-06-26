@@ -5,6 +5,7 @@ import win32file
 import win32event
 import win32con
 import thread
+from utils import *
 
 
 class Notify():
@@ -43,19 +44,22 @@ class Notify():
                 pass
 
     def notifyThread(self, dummy):
-        while 1:
-            if self.changeHandle:
-                try:
-                    result = win32event.WaitForSingleObject(self.changeHandle, 1000)
-                    if result == win32con.WAIT_OBJECT_0 and self.changeHandle:
-                        if self.cbfun: # and ((time.time() - self.startTime) > 0.1):
-                            self.startTime = time.time()
-                            self.cbfun()
-                        win32file.FindNextChangeNotification(self.changeHandle)
-                except:
-                    self.stop()
-            else:
-                time.sleep(1)
+        try:
+            while 1:
+                if self.changeHandle:
+                    try:
+                        result = win32event.WaitForSingleObject(self.changeHandle, 1000)
+                        if result == win32con.WAIT_OBJECT_0 and self.changeHandle:
+                            if self.cbfun: # and ((time.time() - self.startTime) > 0.1):
+                                self.startTime = time.time()
+                                self.cbfun()
+                            win32file.FindNextChangeNotification(self.changeHandle)
+                    except:
+                        self.stop()
+                else:
+                    time.sleep(1)
+        except:
+            crash()
 
 
 #class Notify():

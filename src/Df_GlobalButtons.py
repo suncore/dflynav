@@ -23,7 +23,7 @@ class GlobalButtons(object):
         action = QtGui.QAction("Enter license key", mw)
         action.triggered.connect(Df.d.config.enterLicenseKey)
         actions.append(action)
-        action = QtGui.QAction("Show license information", mw)
+        action = QtGui.QAction("License agreement", mw)
         action.triggered.connect(self.help_agreement)
         actions.append(action)
         action = QtGui.QAction("About", mw)
@@ -39,18 +39,10 @@ class GlobalButtons(object):
         self.configW.show()
         
     def help(self):
-        f = open("src/res/helptext.html")
-        helptext = f.read()
-        f.close()
-        self.helpW.helpText.setHtml(helptext)
-        self.helpW.show()
+        Df_Dialog.TextDialog("Help", None, "src/res/helptext.html")
 
     def help_agreement(self):
-        f = open("src/res/license.html")
-        helptext = f.read()
-        f.close()
-        self.helpW.helpText.setHtml(helptext)
-        self.helpW.show()
+        Df_Dialog.TextDialog("License", None, "src/res/helptext.html")
 
     def help_license(self):
         if Df.d.licenseKey == "":

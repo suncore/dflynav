@@ -21,9 +21,10 @@ def MessageInfo(title, text):
 
 def TextDialog(title, text=None, file=None): 
     w = Df.d.g.help
-    self.helpW = helpW
-    f = open("src/res/helptext.html")
-    helptext = f.read()
-    f.close()
-    self.helpW.helpText.setHtml(helptext)
-    self.helpW.show()
+    if not text:
+        f = open(file)
+        text = f.read()
+        f.close()
+    w.helpText.setHtml(text)
+    w.setWindowTitle(title)
+    w.show()

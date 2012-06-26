@@ -43,13 +43,16 @@ class Find():
                 self.findInNode(n, t, r)
 
     def findTask(self, dummy):
-        while True:
-            self.setStatus("Idle")
-            self.stop = False
-            cd,t,r = self.q.get(True)
-            self.setStatus("Running")
-            self.findInNode(cd, t, r)
-
+        try:
+            while True:
+                self.setStatus("Idle")
+                self.stop = False
+                cd,t,r = self.q.get(True)
+                self.setStatus("Running")
+                self.findInNode(cd, t, r)
+        except:
+            crash()
+            
     def itemClicked(self, item):
         #print item.text(0)
         self.panel.setPathByString(item.df_node.parent.path())

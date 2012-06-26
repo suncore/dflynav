@@ -14,13 +14,16 @@ class JobManager(object):
         self.q.put(fun)
     
     def jobTask(self, dummy):
-        if platform.system() == 'Windows':
-            try:
-                pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
-            except pythoncom.com_error:
-                #already initialized.
-                pass
-        while True:
-            fun = self.q.get(True)
-            fun()
+        try:
+            if platform.system() == 'Windows':
+                try:
+                    pythoncom.CoInitializeEx(pythoncom.COINIT_MULTITHREADED)
+                except pythoncom.com_error:
+                    #already initialized.
+                    pass
+            while True:
+                fun = self.q.get(True)
+                fun()
+        except:
+            crash()
 
