@@ -138,7 +138,7 @@ class Fs(vfs_node.Node):
         if not srcNodeList:
             return
         srcList = [x.fspath for x in srcNodeList]
-        cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
+        cmd = [ '/bin/sh','/bin/sleepy', '-drx' ] + srcList + [ dstNode.fspath ]
         srcList2 = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList2)
         wd = srcNodeList[0].parent.fspath
@@ -542,9 +542,7 @@ class PictureFile(File):
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
             
     def preview(self):
-        (pixmap, info) = ImageToPixmap(self.fspath)
-        text = info
-        return (pixmap, text)
+        return ImageToPixmap(self.fspath)
 
     def icon(self):
         self.bigIcon = False

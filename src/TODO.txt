@@ -24,9 +24,6 @@ compare-funktion
 Buggar
 ------
 Nu
-Felhantering ImageToPixmap() 
-stäng av ljud när QMEssageBox öppnar
-Properties på desktop-foldern öppnar personilzation
 krasch om jobstatus fönstret öppet samtidigt som size på dirs
 Pack: Packar med absolutpath frÃ¥n root
 Alt-tab blir evig hover
@@ -37,10 +34,12 @@ bredare help-fönster
 
 Sen
 refresh at resize
+Properties på desktop-foldern öppnar personilzation
 windows file notifications pÃ¥ nÃ¤tverksdiskar funkar inte alltid
 Open With...-knapp df_openwith pÃ¥ linux Ã¤r ej exekverbar
 stÃ¤da gamla kÃ¶rda jobb om Ã¶ver 100st
 Linux: starta med tom config, bookmarks fÃ¥r "tom" fÃ¶rsta entry
+stäng av ljud när QMEssageBox öppnar
 
 bygga installpackage:
 C:\pyinstaller>c:\Python27\python.exe pyinstaller.py -y -F -n DragonflyNavigator c:\Users\hch\git\ws\src\Df_Main.py

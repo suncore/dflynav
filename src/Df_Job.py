@@ -110,21 +110,18 @@ class JobManager(object):
 
     def mouseButtonPressed(self, item):
         self.jobStatusWindowActive = True
+        self.jobstatusW.output.clear()
+        out = n.output
+        if out == "" and n.statusString == "Done":
+            out = "OK"
+        self.jobstatusW.output.insertPlainText("Command:\n" + n.cmd + "\n\nOutput from command: \n" + out)
         self.updateJobStatusWindow(item.df_entry)
         self.jobstatusW.show()
         
     def updateJobStatusWindow(self, n):
         if self.jobStatusWindowActive:
             self.jobStatusWindowJob = n
-            out = n.output
-            if out == "":
-                out = "OK"
-            self.jobstatusW.output.clear()
-            self.jobstatusW.output.insertPlainText("Command:\n" + n.cmd + "\n\nOutput from command: \n" + out)
-#            cmd = n.cmd
-#            if len(n.cmd) > 130:
-#                cmd = n.cmd[0:130]+"..."
-#            self.jobstatusW.command.setText("Command: " + cmd)
+            self.jobstatusW.output.insertPlainText(n.output)
             self.jobstatusW.status.setText("Status: "+n.statusString)
             eq = n.statusString == "Queued"
             er = n.statusString == "Running"

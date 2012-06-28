@@ -17,7 +17,7 @@ class Config():
             Df.d.g.mw.setWindowState(Qt.WindowMaximized)
         else:
             Df.d.g.mw.resize(size)
-#        Df.d.g.mw.move(pos)
+        Df.d.g.mw.move(pos)
 
         Df.d.bookmarks = self.settings.value("bookmarks", [ ])
         if type(Df.d.bookmarks) != type([]):

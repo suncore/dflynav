@@ -15,7 +15,10 @@ import Df_Exif as exifreader
 import tempfile, Df, traceback
 
 def ImageToPixmap(fn):
-    im = Image.open(fn)
+    try:
+        im = Image.open(fn)
+    except:
+        return None
     exif = {}
     try:
         info = im._getexif()
@@ -28,9 +31,12 @@ def ImageToPixmap(fn):
     date = ''
     if 'DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
-        date = exif['DateTimeOriginal']
-        t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
-        date = time2str(t)
+        try:
+            date2 = exif['DateTimeOriginal']
+            t = time.strptime(date2,"%Y:%m:%d %H:%M:%S")
+            date = time2str(t)
+        except:
+            pass
     if 'Orientation' in exif:
         if exif['Orientation'] == 6:
             im = im.rotate(-90)
