@@ -2,7 +2,6 @@
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
 RÃ¤tta buggar
-kolla i koden för winscp hur de skaffar ikoner och beskrivning på filtyper
 
 installationspaket pyinstaller
 websida, $17
@@ -13,7 +12,7 @@ kodgranskning
 
 TODO Ã¶vrigt
 -----------
-browsa kameror/iphone bilder
+browsa kameror/iphone bilder pyusb, pyptp
 Applikationer-installerade
 AnvÃ¤ndardefinierade knappar
 Config: default packfunktion
@@ -34,10 +33,7 @@ Alt-tab blir evig hover
 Testa packa upp tar.gz fil på windows på installerad df (ej från eclipse)
 vue 10 går ej att starta efter unzip
 bredare help-fönster
-
-Om man har jobstatuswindow öppet får man ofta hängning/krasch och detta i konsollen:
-  QObject: Cannot create children for a parent that is in a different thread.
-  (Parent is QTextDocument(0x3144308), parent's thread is QThread(0x219e288), current thread is QThread(0x3144988)
+överpigg refresh på notify-event
 
 Sen
 refresh at resize
