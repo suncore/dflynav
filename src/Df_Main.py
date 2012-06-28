@@ -9,6 +9,9 @@
 #hicon, iicon, attr, display_name, type_name = info
 #print info
 #
+#from utils import *
+#print WindowsGetIconFilenameFromExt('pdf')
+#print WindowsGetIconFilenameFromExt('gif')
 #sys.exit(0)
 
 # Builder/main module

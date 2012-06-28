@@ -14,6 +14,7 @@ if platform.system() == 'Windows':
     import win32api
     import cStringIO
     import Image
+    from _winreg import  *
 
 def ImageToIcon(im):
     data = im.convert('RGBA').tostring('raw', 'BGRA')
@@ -72,33 +73,79 @@ class IconFactory(object):
             self.tempDirectory = os.getenv("temp")
             self.ico_x = win32api.GetSystemMetrics(win32con.SM_CXICON)
             self.ico_y = win32api.GetSystemMetrics(win32con.SM_CYICON)
+            self.aReg = ConnectRegistry(None, HKEY_CLASSES_ROOT)
+
+    def WindowsIconFromFilename(self, path, index=0):
+        try:
+            large, small = win32gui.ExtractIconEx(path,index)
+        except:
+            large = small = []
+        if len(small) > 0 and len(large) > 0:
+            win32gui.DestroyIcon(large[0])
+            hdc = win32ui.CreateDCFromHandle( win32gui.GetDC(0) )
+            hbmp = win32ui.CreateBitmap()
+            hbmp.CreateCompatibleBitmap(hdc, self.ico_x, self.ico_y)
+            hdc = hdc.CreateCompatibleDC()
+            hdc.SelectObject( hbmp )
+            hdc.FillSolidRect( (0,0, self.ico_x, self.ico_y), 0xffffff ) #TODO should use current background
+            hdc.DrawIcon( (0,0), small[0] )
+            #hdc.DeleteDC()
+            win32gui.DestroyIcon(small[0])
+            hbmp.SaveBitmapFile( hdc, self.tempDirectory + "\dfIcontemp.bmp")
+            im = Image.open(self.tempDirectory + "\dfIcontemp.bmp")
+            return ImageToIcon(im)
+        return None
+
+    def WindowsGetIconFilenameFromExt(self, ext):
+        default = os.getenv("systemroot") + "\\system32\\imageres.dll", -2
+        if ext == '':
+            return default
+        ext = '.' + str(ext)
+        try:
+            for mode in ( KEY_WOW64_64KEY, KEY_WOW64_32KEY ):
+                aKey = OpenKey(self.aReg, ext, 0, KEY_READ | mode)
+                val = QueryValue(aKey, None)
+                try:
+                    aKey2 = OpenKey(self.aReg, val+'\\CurVer', 0, KEY_READ | mode)
+                    val2 = QueryValue(aKey2, None)
+                    val = val2
+                except:
+                    pass
+                aKey = OpenKey(self.aReg, val+'\\DefaultIcon', 0, KEY_READ | mode)
+                val,type = QueryValueEx(aKey, "")
+                t = val.split(',')
+                fname = t[0]
+                if len(t) < 2:
+                    index = 0
+                else:
+                    index = int(t[1])
+                if fname[0:12] == "%SystemRoot%":
+                    return os.getenv("systemroot") + fname[12:], index
+                if fname == "%1" or fname == '"%1"':
+                    return default
+                if fname[1] != ":":
+                    return os.getenv("systemroot") + "\\system32\\" + fname, index
+                return fname, index
+        except:
+            return default
 
     def getFolderIcon(self):
         return self.folderIcon
     
     def getFileIcon(self, path):
-        if platform.system() == 'Windows' and Df.d.config.showIcons:
-            try:
-                large, small = win32gui.ExtractIconEx(path,0)
-            except:
-                large = small = []
-            if len(small) > 0 and len(large) > 0:
-                win32gui.DestroyIcon(small[0])
-                hdc = win32ui.CreateDCFromHandle( win32gui.GetDC(0) )
-                hbmp = win32ui.CreateBitmap()
-                hbmp.CreateCompatibleBitmap(hdc, self.ico_x, self.ico_y)
-                hdc = hdc.CreateCompatibleDC()
-                hdc.SelectObject( hbmp )
-                hdc.FillSolidRect( (0,0, self.ico_x, self.ico_y), 0xffffff ) #TODO should use current background
-                hdc.DrawIcon( (0,0), large[0] )
-                #hdc.DeleteDC()
-                win32gui.DestroyIcon(large[0])
-                hbmp.SaveBitmapFile( hdc, self.tempDirectory + "\dfIcontemp.bmp")
-                im = Image.open(self.tempDirectory + "\dfIcontemp.bmp")
-                (data, icon) = ImageToIcon(im)
-                #self.icons[path] = (data, icon) # TODO need to save data?
-                return icon
         ext = fsPathExt(path)
+        if platform.system() == 'Windows' and Df.d.config.showIcons:
+            r = self.WindowsIconFromFilename(path)
+            if r:
+                data, icon = r
+                return icon
+            r = self.WindowsGetIconFilenameFromExt(ext)
+            if r:
+                fname, index = r
+                r = self.WindowsIconFromFilename(fname, index)
+                if r:
+                    data, icon = r
+                    return icon
         if ext == '':
             return self.fileIcon
         e = ext[0]
