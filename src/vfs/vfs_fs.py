@@ -64,7 +64,7 @@ class Fs(vfs_node.Node):
             else:   
                 stats = self.statFile(path_join(parent.fspath, self.fsname))
         (self.stat, self.attrib) = stats
-        ext = fsPathExt(self.fspath)
+        ext = fsPathExt(self.fsname)
         if linkTarget:
             ext = 'link'
         if self.stat != None:
@@ -138,7 +138,7 @@ class Fs(vfs_node.Node):
         if not srcNodeList:
             return
         srcList = [x.fspath for x in srcNodeList]
-        cmd = [ '/bin/sh','/bin/sleepy', '-drx' ] + srcList + [ dstNode.fspath ]
+        cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
         srcList2 = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList2)
         wd = srcNodeList[0].parent.fspath
@@ -229,9 +229,10 @@ class Fs(vfs_node.Node):
     def cb_pack(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
         for i in srcNodeList:
-            cmd = [ 'zip', '-r' ] + [ i.fspath + '.zip' ] + [ i.fspath ]
-            cmdString = '$ pack %s ' % i.fspath
-            args = cmd, None
+            cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
+            wd = i.parent.fspath
+            cmdString = '$ in %s: pack %s' % (wd, i.fsname)
+            args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_dirsize(self):
