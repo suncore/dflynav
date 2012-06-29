@@ -26,6 +26,7 @@ import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
 import sys, traceback, Df_Bugreport
 from utils import *
 
+
 def main():
 
 #if __name__=="__main__":
@@ -104,6 +105,19 @@ def main():
     d.lp.other = d.rp
     d.rp.other = d.lp
     #d.mainw = Df_Mainwin.Mainwin(d.g.mw, d.lp, d.rp)
+    class Refresh(QObject):
+        refreshSig = Signal()
+    
+    def periodicTimer():
+        Df.d.lp.periodicRefresh()
+        Df.d.rp.periodicRefresh()
+
+    d.refresh = Refresh()
+    d.refresh.refreshSig.connect(periodicTimer)
+   
+#    d.timer = QtCore.QTimer()
+#    d.timer.timeout.connect(periodicTimer)
+#    d.timer.start(100)
     d.rp.start()
     d.lp.start()
     
@@ -130,13 +144,8 @@ def main():
     d.jobm = Df_Job.JobManager(d.g.mw.jobs, d.g.jobstatus)
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
-    def periodicTimer():
-        Df.d.lp.periodicRefresh()
-        Df.d.rp.periodicRefresh()
-   
-    d.timer = QtCore.QTimer()
-    d.timer.timeout.connect(periodicTimer)
-    d.timer.start(100)
+
+
     os.putenv('CYGWIN', 'nodosfilewarning')
     if platform.system() == 'Windows':
         path = os.getenv('PATH')
@@ -166,7 +175,6 @@ if __name__=="__main__":
     try:
         main()
     except:
-        print "hello"
         #traceback.print_exc()
         crash()
     sys.exit(0)

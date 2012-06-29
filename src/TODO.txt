@@ -24,7 +24,6 @@ compare-funktion
 Buggar
 ------
 Nu
-krasch om jobstatus fönstret öppet samtidigt som size på dirs
 Pack: Packar med absolutpath frÃ¥n root
 Alt-tab blir evig hover
 Testa packa upp tar.gz fil på windows på installerad df (ej från eclipse)

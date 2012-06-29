@@ -320,7 +320,7 @@ class Directory(Fs):
     def children(self, async=True):
         #print "1 ", self.childrenReady, self.children_
         if not async:
-            self.getChildrenAsync()
+            self.getChildrenAsync(async)
         return self.children_
 
     def buildChild(self, f, stats):
@@ -405,7 +405,7 @@ class Directory(Fs):
                 pass
         return None
     
-    def getChildrenAsync(self):
+    def getChildrenAsync(self, async=True):
         c = []
         #if True:
         try:
@@ -436,6 +436,8 @@ class Directory(Fs):
         self.childrenReady = True
         self.asyncRunning = False
         self.stopAsync = False
+        if async:
+            Df.d.refresh.refreshSig.emit()
  
     def startMonitor(self, index):
         Df.d.fsNotify[index].setNotify(self.fspath, self.changeNotify_)
@@ -443,6 +445,7 @@ class Directory(Fs):
     def changeNotify_(self):
         #print "change"
         self.changed = True
+        Df.d.refresh.refreshSig.emit()
 
 if platform.system() == 'Windows':
     class WinDrive(Directory):
@@ -496,7 +499,8 @@ if platform.system() == 'Windows':
         
         def startGetChildren(self):
             self.childrenReady = True
-    
+            Df.d.refresh.refreshSig.emit()
+   
         def childrenStop(self):
             pass
 

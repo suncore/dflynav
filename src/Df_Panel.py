@@ -259,10 +259,10 @@ class Panel(object):
                 self.backHistory = self.backHistory[0:100]
         self.cd = node
         self.cd.changed = False
-        self.cd.startGetChildren()
         self.waitingForChildren = True
         self.pathW.setText(self.cd.path())
         self.setStatus(0,0)
+        self.cd.startGetChildren()
         #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
         #self.firstSectionWidth = self.treeW.header().sectionSize(0)
 

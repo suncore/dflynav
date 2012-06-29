@@ -27,6 +27,8 @@ class Node(object):
 
     def startGetChildren(self):
         self.childrenReady = True
+        Df.d.refresh.refreshSig.emit()
+
 
     def children(self, async=True):
         return self.children_
