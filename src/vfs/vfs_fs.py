@@ -11,9 +11,10 @@ if platform.system() == 'Windows':
     from win32com.shell import shell, shellcon
 from . import vfs_node
 from utils import *
-import subprocess, Df_Job
+import subprocess, Df_Job, glob
 
-unpackCmds = [
+if platform.system() != 'Windows':
+    unpackCmds = [
     [ ['tar', 'xzf'],
       ['tar.gz', 'tgz'] ],
     [ ['tar', 'xjf'],
@@ -30,6 +31,23 @@ unpackCmds = [
       ['7z'] ],
     [ ['rar', 'x', '-o+'],
       ['rar', '001' ] ]
+    ]
+else:
+    unpackCmds = [
+    [ ['tar', 'xzf'],
+      ['tar.gz', 'tgz'] ],
+    [ ['tar', 'xjf'],
+      ['tar.bz2'] ],
+    [ ['tar', 'xf'],
+      ['tar'] ],
+    [ ['#default'],
+      ['zip', 'arj', 'cpio', 'deb', 'lzh', 'lha', 'lzma','rpm', 'cab', 'rar', '001', 'r00' ] ],
+    [ ['#default'],
+      ['gz'] ],
+    [ ['#default'],
+      ['bz2'] ],
+    [ ['#default'],
+      ['7z'] ]
     ]
 
 pictureTypes = [ 'jpg', 'png', 'gif', 'tif' ]
@@ -226,15 +244,6 @@ class Fs(vfs_node.Node):
             else: 
                 Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
-    def cb_pack(self):
-        srcNodeList, x_ = self.getSelectionAndDestination()
-        for i in srcNodeList:
-            cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
-            wd = i.parent.fspath
-            cmdString = '$ in %s: pack %s' % (wd, i.fsname)
-            args = cmd, wd
-            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
-
     def cb_dirsize(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
         if not srcNodeList:
@@ -254,6 +263,29 @@ class Fs(vfs_node.Node):
             return
         WindowsOpenProperties(srcNodeList[0].fspath)
 
+    def cb_pack(self):
+        srcNodeList, x_ = self.getSelectionAndDestination()
+        for i in srcNodeList:
+            if platform.system() == 'Windows':
+                cwd = os.getcwd()
+                files = []
+                try:
+                    os.chdir(i.fspath)
+                    files = glob.glob('*')
+                except:
+                    pass
+                os.chdir(cwd)
+                if files == []:
+                    continue
+                cmd = [ "src/res/7z.exe",  "a", "-bd", "-y", "-r" ] + [ i.fspath + '.zip' ] + files
+                wd = i.fspath
+            else:
+                wd = i.parent.fspath
+                cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
+            cmdString = '$ in %s: pack %s' % (wd, i.fsname)
+            args = cmd, wd
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+
     def cb_unpack(self):
         srcNodeList, dstNode = self.getSelectionAndDestination()
         for srcNode in srcNodeList:
@@ -262,7 +294,15 @@ class Fs(vfs_node.Node):
                 cmd, exts = i
                 for e in exts:
                     if ext == e:
-                        cmd = cmd + [ windows2cygwinpath(srcNode.fspath) ]
+                        if platform.system() == 'Windows':
+                            if cmd == ['#default']:
+                                a,b = os.path.splitext(srcNode.fsname)
+                                cmd = [ "src/res/7z.exe", "x", "-bd", "-y", "-o"+a ]
+                                cmd = cmd + [ srcNode.fspath ]
+                            else:
+                                cmd = cmd + [ windows2cygwinpath(srcNode.fspath) ]
+                        else:
+                            pass
                         cmdString = '$ unpack %s to %s' % (srcNode.fspath, dstNode.fspath)
                         wd = dstNode.fspath
                         args = cmd, wd
@@ -582,7 +622,7 @@ class Cmd(Df_Job.Cmd):
             if cmd[0][0] == '/':
                 cmd2 = p + cmd[0]
             else:
-                cmd2 = p + '/bin/' + cmd[0]
+                cmd2 = cmd[0]
             cmd = [cmd2] + cmd[1:]
             si = subprocess.STARTUPINFO()
             #si.dwFlags = subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW

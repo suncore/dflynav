@@ -78,8 +78,8 @@ class Panel(object):
         self.treeW.itemSelectionChanged.connect(self.treeW_selectionChanged)
         #self.treeW.itemActivated.connect(self.treeW_activated)
         self.treeW.setMouseTracking(True)
-#        self.treeW_leaveEventOrig = self.treeW.leaveEvent
-#        self.treeW.leaveEvent = self.treeW_leaveEvent
+        self.treeW_leaveEventOrig = self.treeW.leaveEvent
+        self.treeW.leaveEvent = self.treeW_leaveEvent
         self.treeW_keyPressEventOrig = self.treeW.keyPressEvent
         self.treeW.keyPressEvent = self.treeW_keyPressEvent
         self.treeW_keyReleaseEventOrig = self.treeW.keyReleaseEvent
@@ -137,6 +137,7 @@ class Panel(object):
 #            print i.df_node.fspath
             
     def treeW_leaveEvent(self, e):
+        #print "leave"
         self.stopMods()
         #self.treeW_leaveEventOrig(e)
             

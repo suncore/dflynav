@@ -12,6 +12,8 @@ class Notify():
     def __init__(self):
         self.path = None
         self.changeHandle = None
+        self.lastTrigger = time.time()
+        self.triggerWaiting = False
         thread.start_new_thread(self.notifyThread, (self,))
 
     def setNotify(self, path, cbfun):
@@ -19,17 +21,17 @@ class Notify():
         self.stop()
         self.path = path
         self.cbfun = cbfun
-        self.startTime = time.time()
+        #self.lastTrigger = time.time()
+        #self.triggerWaiting = False
         try:
             self.changeHandle = win32file.FindFirstChangeNotification(
               self.path,
               0,
               win32con.FILE_NOTIFY_CHANGE_FILE_NAME | 
-              win32con.FILE_NOTIFY_CHANGE_DIR_NAME 
-              #|
-              #win32con.FILE_NOTIFY_CHANGE_SIZE |
-              #win32con.FILE_NOTIFY_CHANGE_ATTRIBUTES |
-              #win32con.FILE_NOTIFY_CHANGE_LAST_WRITE
+              win32con.FILE_NOTIFY_CHANGE_DIR_NAME |
+              win32con.FILE_NOTIFY_CHANGE_SIZE |
+              win32con.FILE_NOTIFY_CHANGE_ATTRIBUTES |
+              win32con.FILE_NOTIFY_CHANGE_LAST_WRITE
               )
         except:
             self.changeHandle = None
@@ -49,11 +51,14 @@ class Notify():
                 if self.changeHandle:
                     try:
                         result = win32event.WaitForSingleObject(self.changeHandle, 1000)
+                        now = time.time()
                         if result == win32con.WAIT_OBJECT_0 and self.changeHandle:
-                            if self.cbfun: # and ((time.time() - self.startTime) > 0.1):
-                                self.startTime = time.time()
-                                self.cbfun()
+                            self.triggerWaiting = True
                             win32file.FindNextChangeNotification(self.changeHandle)
+                        if self.cbfun and self.triggerWaiting and ((now-self.lastTrigger) > 1):
+                            self.cbfun()
+                            self.lastTrigger = now
+                            self.triggerWaiting = False
                     except:
                         self.stop()
                 else:

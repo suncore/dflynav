@@ -33,7 +33,7 @@ head = """<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 It seems Dragonfly Navigator crashed...</FONT></FONT></H2>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt">Below
 is an error message from the program. Please copy the message and
-send it to <A HREF="mailto:info@dflynav.com">info@dflynav.com</A></FONT></FONT></P>
+send it to <A HREF="mailto:henrik@dflynav.com">henrik@dflynav.com</A></FONT></FONT></P>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt">Many
 thanks for your patience...</FONT></FONT></P>
 <P><FONT FACE="Arial, sans-serif"><FONT SIZE=4 STYLE="font-size: 16pt">Error

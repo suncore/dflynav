@@ -56,7 +56,6 @@ class Find():
     def itemClicked(self, item):
         #print item.text(0)
         self.panel.setPathByString(item.df_node.parent.path())
-        # TODO set selection on df_node
         self.setHeader()
         self.panel.findMark = item.df_node.path()
 

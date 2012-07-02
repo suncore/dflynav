@@ -42,7 +42,7 @@ class GlobalButtons(object):
         Df_Dialog.TextDialog("Help", None, "src/res/helptext.html")
 
     def help_agreement(self):
-        Df_Dialog.TextDialog("License", None, "src/res/helptext.html")
+        Df_Dialog.TextDialog("License", None, "src/res/license.html")
 
     def help_license(self):
         if Df.d.licenseKey == "":
