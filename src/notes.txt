@@ -1,0 +1,14 @@
+
+
+
+
+Pythoninstaller build error (side by side config incorrect)
+It turns out that the PIL-1.1.7 Windows installers (from effbot.org) for at least Python 2.6 and 2.7 incorrectly contain a manifest that references a Windows debug library. Specifically, _imagingft.pyd contains this:
+
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type="win32" name="Microsoft.VC90.DebugCRT" version="9.0.21022.8" processorArchitecture="x86" publicKeyToken="1fc8b3b9a1e18e3b"></assemblyIdentity>
+    </dependentAssembly>
+  </dependency>
+
+That's wrong: it should only have release-version VC90 libraries. I don't have the Debug libraries installed; I don't know if you wouldn't see this problem if you did have them installed.

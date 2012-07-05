@@ -1,7 +1,11 @@
 
 FÃ¶rsta windows-slÃ¤pp - mÃ¥sten
 -----------------------------
-installationspaket pyinstaller
+snabba upp listing av bildfiler
+prova vad som händer om 
+vid uppstart laddas defaultmässigt de gamla foldrarna, om det tar lång tid visa för användaren vad som händer
+köp knapp websida
+google analytics 
 websida, $17
 python -O -E (ignore python-variables)
 beskriv varför dragonfly togs fram - få andra att tro på samma sak
@@ -24,6 +28,7 @@ compare-funktion
 Buggar
 ------
 Nu
+ikas dator ta bort fil försöker köra c:/cygwin/bin/rm funkar ej
 Testa packa upp tar.gz fil på windows på installerad df (ej från eclipse)
 
 Sen

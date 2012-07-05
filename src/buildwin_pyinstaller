@@ -1,0 +1,13 @@
+#!/bin/sh -x
+cd /cygdrive/c/pyinstaller
+#mv /cygdrive/c/pyinstaller/DragonflyNavigator /cygdrive/c/pyinstaller/DragonflyNavigator.old
+rm -rf /cygdrive/c/pyinstaller/DragonflyNavigator
+/cygdrive/c/Python27/python.exe pyinstaller.py -y -w -n DragonflyNavigator 'c:\Users\hch\git\ws\src\Df_Main.py'
+cd /cygdrive/c/pyinstaller/DragonflyNavigator/dist/DragonflyNavigator
+mkdir -p src/icons
+cp /cygdrive/c/Users/hch/git/ws/src/icons/dragonfly.png src/icons
+cp /cygdrive/c/Users/hch/git/ws/src/icons/dragonfly.ico src/icons
+cp /cygdrive/c/Users/hch/git/ws/src/icons/Letters.png src/icons
+cp -r /cygdrive/c/Users/hch/git/ws/src/res src
+mkdir -p cygwin/bin
+cp /bin/cp /bin/mv /bin/rm /bin/*dll cygwin/bin

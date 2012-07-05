@@ -615,8 +615,8 @@ class Cmd(Df_Job.Cmd):
         self.error = None
         si = None
         if platform.system() == 'Windows':
-            if os.path.exists("src/cygwin"):
-                p = "src/cygwin"
+            if os.path.exists("cygwin"):
+                p = "cygwin"
             else:
                 p = "c:/cygwin"
             if cmd[0][0] == '/':
