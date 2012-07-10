@@ -10,4 +10,4 @@ cp /cygdrive/c/Users/hch/git/ws/src/icons/dragonfly.ico src/icons
 cp /cygdrive/c/Users/hch/git/ws/src/icons/Letters.png src/icons
 cp -r /cygdrive/c/Users/hch/git/ws/src/res src
 mkdir -p cygwin/bin
-cp /bin/cp /bin/mv /bin/rm /bin/*dll cygwin/bin
+cp /bin/cp /bin/mv /bin/rm /bin/mkdir /bin/*dll cygwin/bin

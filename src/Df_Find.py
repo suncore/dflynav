@@ -13,6 +13,7 @@ class Find():
         self.findW.close.clicked.connect(self.close)
         self.findW.stop.clicked.connect(self.stopNow)
         self.findW.start.clicked.connect(self.startFind)
+        self.findW.recursive.setCheckState(Qt.Checked)
         self.q = Queue()
         thread.start_new_thread(self.findTask, (self,))
         self.stop = False
@@ -35,10 +36,13 @@ class Find():
         for n in ch:
             if self.stop:
                 return
-            if string.find(n.name, t) != -1:
-                item = QtGui.QTreeWidgetItem( [ n.path() ] )
-                item.df_node = n
-                self.findW.hitlist.insertTopLevelItem(0, item)
+            try:
+                if string.find(n.name, t) != -1:
+                    item = QtGui.QTreeWidgetItem( [ n.path() ] )
+                    item.df_node = n
+                    self.findW.hitlist.insertTopLevelItem(0, item)
+            except:
+                pass
             if not n.leaf() and r:
                 self.findInNode(n, t, r)
 

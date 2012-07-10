@@ -42,7 +42,12 @@ class Panel(object):
         self.treeW.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
         self.panelIdx = index
-
+        f = self.treeW.font()
+        ps = self.treeW.font().pointSize()
+        f.setPointSize(ps * 1.2)
+        #f.setBold(True)
+        self.treeW.setFont(f)
+        self.pathW.setFont(f)
         self.waitingForChildren = False
         self.mirrorW = mirrorW
         self.historyW = historyW
