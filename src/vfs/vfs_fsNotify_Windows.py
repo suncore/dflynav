@@ -55,7 +55,7 @@ class Notify():
                         if result == win32con.WAIT_OBJECT_0 and self.changeHandle:
                             self.triggerWaiting = True
                             win32file.FindNextChangeNotification(self.changeHandle)
-                        if self.cbfun and self.triggerWaiting and ((now-self.lastTrigger) > 1):
+                        if self.cbfun and self.triggerWaiting and ((now-self.lastTrigger) > 2.0):
                             self.cbfun()
                             self.lastTrigger = now
                             self.triggerWaiting = False

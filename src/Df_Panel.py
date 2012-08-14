@@ -10,7 +10,8 @@ from PIL import Image
 class PanelItem(QtGui.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
     def __lt__(self, other):
-        col = self.treeWidget().sortColumn()
+        tw = self.treeWidget()
+        col = tw.sortColumn()
         if col == 0:
             ln = self.df_node
             rn = other.df_node
@@ -21,6 +22,9 @@ class PanelItem(QtGui.QTreeWidgetItem):
                     return True
             return ln.name_low < rn.name_low
         else:
+            if not tw.df_panel.refreshLocked:
+                tw.df_panel.refreshLocked = True
+                tw.df_panel.updateStatus()
             try:
                 (lk, ls, lv) = self.df_node.meta[col-1]
                 (rk, rs, rv) = other.df_node.meta[col-1]
@@ -32,6 +36,7 @@ class PanelItem(QtGui.QTreeWidgetItem):
 
 class Panel(object):
     def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW):
+        treeW.df_panel = self
         self.mainW = mainW
         self.treeW = treeW
         self.pathW = pathW
@@ -62,6 +67,7 @@ class Panel(object):
         self.bookmarksContextMenu = QtGui.QMenu(self.mainW)
         self.bookmarksContextMenu.addAction(QtGui.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
         self.bookmarksMenuHoverPath = None
+        self.refreshLocked = False
         self.backHistory = ['/']
         self.backW = backW
         self.treeW_noClear = False
@@ -91,6 +97,9 @@ class Panel(object):
         self.treeW.keyReleaseEvent = self.treeW_keyReleaseEvent
         self.treeW_mouseMoveEventOrig = self.treeW.mouseMoveEvent
         self.treeW.mouseMoveEvent = self.treeW_mouseMoveEvent
+#        self.treeW.viewport().setMouseTracking(True)
+#        self.treeW_mousePressEventOrig = self.treeW.viewport().mousePressEvent
+#        self.treeW.viewport().mousePressEvent = self.treeW_mousePressEvent
         self.upW.clicked.connect(self.upW_clicked)
         self.backW.clicked.connect(self.backW_clicked)
         self.treeW.setSortingEnabled(True)
@@ -174,6 +183,10 @@ class Panel(object):
             self.preview()
         self.treeW_mouseMoveEventOrig(e)
 
+    def treeW_mousePressEvent(self, e):
+        print "mbp"
+        self.treeW_mousePressEventOrig(e)
+
     def preview(self):
         pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
         i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
@@ -245,11 +258,12 @@ class Panel(object):
                 self.setPath2()
         else:
             if self.cd.changed:
-                if not self.treeW.selectedItems():
+                if not self.refreshLocked:
                     self.cd.changed = False
                     self.refreshCd()
 
     def setPath(self, node, addToBackHistory = True):
+        self.refreshLocked = False
         changed = False
         if node != self.cd:
             self.updateHistoryMenuBoth()
@@ -372,6 +386,7 @@ class Panel(object):
             self.treeW.clearSelection()
                     
     def treeW_selectionChanged(self):
+        self.refreshLocked = True
         self.treeW_noClear = True
         self.other.treeW_clearSelection()
         self.treeW_noClear = False
@@ -425,8 +440,13 @@ class Panel(object):
         return s, dest
 
     def setStatus(self, selectedItems, totalItems, selectedSize = None, freeFileSystemSize = None):
+        self.statusdata = (selectedItems, totalItems, selectedSize, freeFileSystemSize)
+        self.updateStatus()
+        
+    def updateStatus(self):
+        selectedItems, totalItems, selectedSize, freeFileSystemSize = self.statusdata
         if freeFileSystemSize:
-            self.statusW.setText("%d/%d = %s   Free: %s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize)))
+            self.statusW.setText("%d/%d = %s   Free: %s (%s)" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize), iff(self.refreshLocked,"L","U")))
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
 
