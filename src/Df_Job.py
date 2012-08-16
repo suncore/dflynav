@@ -46,7 +46,7 @@ class JobManager(object):
     def stopClicked(self):
         self.jobStatusWindowJob.processed = True
         self.jobStatusWindowJob.setStatus("Aborted")
-        if self.runningJob:
+        if self.runningJob == self.jobStatusWindowJob:
             self.runningJob.runCmd.stop()
 
     def addJob(self, executer, args, cmd):
@@ -69,6 +69,7 @@ class JobManager(object):
                 while self.jobIndex < len(self.jobs):
                     job = self.jobs[self.jobIndex]
                     if job.processed:
+                        self.jobIndex += 1
                         continue
                     job.processed = True
                     job.setStatus("Running")

@@ -21,10 +21,6 @@ copyas-knapp (eller copy-knappen känner av om dest.cd==src.cd)
 
 Buggar
 ------
-Om båda paneler visar samma folder, gör unpack på arkiv. Ena sidan gör inte auto-refresh (om den är låst)
-Blir det rätt med autorefresh om båda paneler visar samma folder?
-Om man stoppar ett köat jobb så dör ett tidigare running-jobb
-Efter stoppat ett jobb, kan inte ett nytt startas
 Om ett jobb går running, trycka på open... hänger
 går inte att skapa foldrar med åäö
 tryck open... på bild, sedan browse -> browse kommer aldrig upp, requestern kraschar?
@@ -33,6 +29,7 @@ refresh funkar inte på vä+hö samtidigt om foldrarna är samma
 om en fil är vald i en panel och man skapar en ny folder så kommer aldrig refreshen
 
 Low prio:
+?Om båda paneler visar samma folder, gör unpack på arkiv. Ena sidan gör inte auto-refresh (om den är låst)
 linuxkod för pack/unpack
 Properties på desktop-foldern öppnar personilzation
 windows file notifications pÃ¥ nÃ¤tverksdiskar funkar inte alltid
