@@ -386,11 +386,12 @@ class Panel(object):
             self.treeW.clearSelection()
                     
     def treeW_selectionChanged(self):
-        self.refreshLocked = True
         self.treeW_noClear = True
         self.other.treeW_clearSelection()
         self.treeW_noClear = False
         s = self.treeW.selectedItems()
+        if s:
+            self.refreshLocked = True
         self.setActionButtons(s)
         sum = 0
         for i in s:
@@ -420,12 +421,17 @@ class Panel(object):
                         cblist2.append(y)
                         break
             cblist = cblist2
+        def abcb(fun):
+            self.refreshLocked = False
+            self.other.refreshLocked = False
+            fun()
         for i in cblist:
             name, binary, callback = i
+            cb = lambda fun=callback: abcb(fun)
             if binary and s[0].df_node.binaryOpCompat(self.other.cd):
-                self.actionButtons.addButton(name, callback)
+                self.actionButtons.addButton(name, cb)
             elif not binary:
-                self.actionButtons.addButton(name, callback)
+                self.actionButtons.addButton(name, cb)
 
     def getSelectionAndDestination(self):
         s1 = self.treeW.selectedItems()

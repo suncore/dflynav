@@ -17,7 +17,7 @@ class JobManager(object):
                 except pythoncom.com_error:
                     #already initialized.
                     pass
-                fun()
+            fun()
         except:
             crash()
 
