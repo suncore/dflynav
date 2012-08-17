@@ -112,6 +112,7 @@ class Panel(object):
         Df.d.find.show(self)
         
     def pathW_returnPressed(self):
+        self.unlockRefresh()
         text = self.pathW.text()
         text = text.rstrip('/ ')
         c = self.setPathByString(text, False, False, True)
@@ -134,7 +135,7 @@ class Panel(object):
                 self.refreshCd()
 
     def mirrorW_clicked(self):
-        self.setPath(self.other.cd)
+        self.setPathByString(self.other.cd.path())
     
     def treeW_pressed(self, item):
         buttons = QtGui.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
@@ -398,7 +399,11 @@ class Panel(object):
             if i.df_node:
                 sum += i.df_node.size
         self.setStatus(len(s), self.nrItems, sum, self.cd.fsFree())
-        
+
+    def unlockRefresh(self):        
+        self.refreshLocked = False
+        self.other.refreshLocked = False
+
     def setActionButtons(self, s):
         if not s:
             return
@@ -422,8 +427,7 @@ class Panel(object):
                         break
             cblist = cblist2
         def abcb(fun):
-            self.refreshLocked = False
-            self.other.refreshLocked = False
+            self.unlockRefresh()
             fun()
         for i in cblist:
             name, binary, callback = i

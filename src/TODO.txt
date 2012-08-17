@@ -21,15 +21,11 @@ copyas-knapp (eller copy-knappen känner av om dest.cd==src.cd)
 
 Buggar
 ------
-Om ett jobb går running, trycka på open... hänger
-går inte att skapa foldrar med åäö
-tryck open... på bild, sedan browse -> browse kommer aldrig upp, requestern kraschar?
+medium prio:
 kopiera 10000 filer funkar inte (för lång kommandorad till cygwin)
-refresh funkar inte på vä+hö samtidigt om foldrarna är samma
 om en fil är vald i en panel och man skapar en ny folder så kommer aldrig refreshen
 
 Low prio:
-?Om båda paneler visar samma folder, gör unpack på arkiv. Ena sidan gör inte auto-refresh (om den är låst)
 linuxkod för pack/unpack
 Properties på desktop-foldern öppnar personilzation
 windows file notifications pÃ¥ nÃ¤tverksdiskar funkar inte alltid
@@ -37,6 +33,12 @@ Open With...-knapp df_openwith pÃ¥ linux Ã¤r ej exekverbar
 stÃ¤da gamla kÃ¶rda jobb om Ã¶ver 100st
 Linux: starta med tom config, bookmarks fÃ¥r "tom" fÃ¶rsta entry
 stäng av ljud när QMEssageBox öppnar
+
+Inte längre problem?
+?tryck open... på bild, sedan browse -> browse kommer aldrig upp, requestern kraschar?
+?går inte att skapa foldrar med åäö
+?Om båda paneler visar samma folder, gör unpack på arkiv. Ena sidan gör inte auto-refresh (om den är låst)
+"Om ett jobb går running, trycka på open... hänger
 
 bygga installpackage:
 C:\pyinstaller>c:\Python27\python.exe pyinstaller.py -y -F -n DragonflyNavigator c:\Users\hch\git\ws\src\Df_Main.py
