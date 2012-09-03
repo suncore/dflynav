@@ -10,6 +10,9 @@ class Config():
     
     def load(self, configW):
         self.configW = configW
+        if platform.system() != 'Windows':
+            self.configW.useInternalFileCopy.hide()
+            self.configW.showIcons.hide()
         pos = self.settings.value("pos", QPoint(100, 100))
         size = self.settings.value("size", QSize(400, 400))
         maximized = self.settings.value("maximized", 0)
@@ -49,7 +52,9 @@ class Config():
             a = ikey.split(',')
             daysleft = 31-(time.time() - int(a[0]))/3600/24
             if daysleft < 0:
-                Df_Dialog.MessageWarn("License", "Trial period has expired. Exiting.")
+                Df_Dialog.MessageWarn("License", "Trial period has expired. Press OK and enter license key.")
+                self.enterLicenseKey()
+                Df_Dialog.MessageWarn("License", "Please restart Dragonfly Navigator.")
                 sys.exit(0)
             self.licenseNag("License", "You have " + str(int(daysleft)) + " days left on the trial.")
         else:

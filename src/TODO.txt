@@ -1,11 +1,11 @@
 TODO
 ----
 snabba upp listing av bildfiler - multipass child build scanner (listdir, stats, ikoner)
-vid uppstart laddas defaultmässigt de gamla foldrarna, om det tar lång tid visa för användaren vad som händer
+vid uppstart laddas defaultmï¿½ssigt de gamla foldrarna, om det tar lï¿½ng tid visa fï¿½r anvï¿½ndaren vad som hï¿½nder
 python -O -E (ignore python-variables)
-save config oftare (när bookmarks läggs till)
+save config oftare (nï¿½r bookmarks lï¿½ggs till)
 mappa f5 till refresh
-elevate till admin-rättighet vid behov
+elevate till admin-rï¿½ttighet vid behov
 paypal ipn instant payment notification
 DF till wikipedia
 browsa kameror/iphone bilder pyusb, pyptp
@@ -16,29 +16,30 @@ owner/group metadata Linux
 fixa start job knappen
 compare-funktion
 refresh at resize
-bättre indikator än (L) och (U)?
-copyas-knapp (eller copy-knappen känner av om dest.cd==src.cd)
+bï¿½ttre indikator ï¿½n (L) och (U)?
+copyas-knapp (eller copy-knappen kï¿½nner av om dest.cd==src.cd)
+minska intensitet pÃ¥ gult i folder-ikonen
 
 Buggar
 ------
 medium prio:
-kopiera 10000 filer funkar inte (för lång kommandorad till cygwin)
-om en fil är vald i en panel och man skapar en ny folder så kommer aldrig refreshen
+kopiera 10000 filer funkar inte (fï¿½r lï¿½ng kommandorad till cygwin)
+om en fil ï¿½r vald i en panel och man skapar en ny folder sï¿½ kommer aldrig refreshen
 
 Low prio:
-linuxkod för pack/unpack
-Properties på desktop-foldern öppnar personilzation
+linuxkod fï¿½r pack/unpack
+Properties pï¿½ desktop-foldern ï¿½ppnar personilzation
 windows file notifications pÃ¥ nÃ¤tverksdiskar funkar inte alltid
 Open With...-knapp df_openwith pÃ¥ linux Ã¤r ej exekverbar
 stÃ¤da gamla kÃ¶rda jobb om Ã¶ver 100st
 Linux: starta med tom config, bookmarks fÃ¥r "tom" fÃ¶rsta entry
-stäng av ljud när QMEssageBox öppnar
+stï¿½ng av ljud nï¿½r QMEssageBox ï¿½ppnar
 
-Inte längre problem?
-?tryck open... på bild, sedan browse -> browse kommer aldrig upp, requestern kraschar?
-?går inte att skapa foldrar med åäö
-?Om båda paneler visar samma folder, gör unpack på arkiv. Ena sidan gör inte auto-refresh (om den är låst)
-"Om ett jobb går running, trycka på open... hänger
+Inte lï¿½ngre problem?
+?tryck open... pï¿½ bild, sedan browse -> browse kommer aldrig upp, requestern kraschar?
+?gï¿½r inte att skapa foldrar med ï¿½ï¿½ï¿½
+?Om bï¿½da paneler visar samma folder, gï¿½r unpack pï¿½ arkiv. Ena sidan gï¿½r inte auto-refresh (om den ï¿½r lï¿½st)
+"Om ett jobb gï¿½r running, trycka pï¿½ open... hï¿½nger
 
 bygga installpackage:
 C:\pyinstaller>c:\Python27\python.exe pyinstaller.py -y -F -n DragonflyNavigator c:\Users\hch\git\ws\src\Df_Main.py
