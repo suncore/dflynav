@@ -157,16 +157,20 @@ def seq2str(seq):
         s = s + ' ' + str(i)
     return s[1:]
 
-if platform.system() == 'Windows':
-    def time2str(t):
-        #return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
-        de = win32api.GetDateFormat(0, 0, t)
-        tm = win32api.GetTimeFormat(0, 0, t)
-        return de+' '+tm
-else:
-    def time2str(t):
-        return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
-        #return time.strftime("%y-%m-%d %H:%M:%S", t)
+
+def time2str(t):
+    return time.strftime(Df.d.config.formatTimeDate, t)
+
+#if platform.system() == 'Windows':
+#    def time2str(t):
+#        #return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
+#        de = win32api.GetDateFormat(0, 0, t)
+#        tm = win32api.GetTimeFormat(0, 0, t)
+#        return de+' '+tm
+#else:
+#    def time2str(t):
+#        return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
+#        #return time.strftime("%y-%m-%d %H:%M:%S", t)
 
 def timenow():
     return time.localtime(time.time())

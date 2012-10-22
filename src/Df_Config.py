@@ -7,6 +7,7 @@ import Df, time, hashlib, sys, Df_Dialog
 class Config():
     def __init__(self):
         self.settings = QSettings("Dragonfly", "Dragonfly Navigator")
+        self.formatTimeDate = ""
     
     def load(self, configW):
         self.configW = configW
@@ -73,40 +74,55 @@ class Config():
             self.configW.rememberStartFolders.setChecked(False)
             self.configW.startAtSpecifiedFolders.setChecked(True)
 
+        self.formatTime12h = int(self.settings.value("formatTime12h", int(Qt.Unchecked))) #TODO set according to locale
+        if self.formatTime12h == int(Qt.Checked):
+            self.configW.time12h.setCheckState(Qt.Checked)
+        else:
+            self.configW.time12h.setCheckState(Qt.Unchecked)
+
+        self.formatDate = int(self.settings.value("formatDate", 1)) #TODO set according to locale
+        self.configW.date_yymmdd.setChecked(False)
+        self.configW.date_ddmmyy.setChecked(False)
+        self.configW.date_mmddyy.setChecked(False)
+        if self.formatDate == 0:
+            self.configW.date_yymmdd.setChecked(True)
+        if self.formatDate == 1:
+            self.configW.date_ddmmyy.setChecked(True)
+        if self.formatDate == 2:
+            self.configW.date_mmddyy.setChecked(True)
+
+        self.formatDateSep = self.settings.value("formatDateSep", "-") #TODO set according to locale
+        self.configW.date_sep.setText(self.formatDateSep)
+
         self.showHidden = int(self.settings.value("showHidden", int(Qt.Unchecked)))
         if self.showHidden == int(Qt.Checked):
             self.configW.showHidden.setCheckState(Qt.Checked)
         else:
             self.configW.showHidden.setCheckState(Qt.Unchecked)
-        self.configW.showHidden.stateChanged.connect(self.showHiddenStateChanged)
 
         self.showThumbs = int(self.settings.value("showThumbs", int(Qt.Checked)))
         if self.showThumbs == int(Qt.Checked):
             self.configW.showThumbs.setCheckState(Qt.Checked)
         else:
             self.configW.showThumbs.setCheckState(Qt.Unchecked)
-        self.configW.showThumbs.stateChanged.connect(self.showThumbsStateChanged)
 
         self.useInternalFileCopy = int(self.settings.value("useInternalFileCopy", int(Qt.Unchecked)))
         if self.useInternalFileCopy == int(Qt.Checked):
             self.configW.useInternalFileCopy.setCheckState(Qt.Checked)
         else:
             self.configW.useInternalFileCopy.setCheckState(Qt.Unchecked)
-        self.configW.useInternalFileCopy.stateChanged.connect(self.useInternalFileCopyStateChanged)
 
         self.showIcons = int(self.settings.value("showIcons", int(Qt.Unchecked)))
         if self.showIcons == int(Qt.Checked):
             self.configW.showIcons.setCheckState(Qt.Checked)
         else:
             self.configW.showIcons.setCheckState(Qt.Unchecked)
-        self.configW.showIcons.stateChanged.connect(self.showIconsStateChanged)
 
         self.confirmDelete = int(self.settings.value("confirmDelete", int(Qt.Checked)))
         if self.confirmDelete == int(Qt.Checked):
             self.configW.confirmDelete.setCheckState(Qt.Checked)
         else:
             self.configW.confirmDelete.setCheckState(Qt.Unchecked)
-        self.configW.confirmDelete.stateChanged.connect(self.confirmDeleteStateChanged)
 
         self.configW.useCurrentLeft.clicked.connect(self.useCurrentLeft)
         self.configW.useCurrentRight.clicked.connect(self.useCurrentRight)
@@ -115,13 +131,14 @@ class Config():
         #self.configW.rememberStartFolders.clicked.connect(self.rememberStartFoldersClicked)
         #self.configW.startAtSpecifiedFolders.clicked.connect(self.startAtSpecifiedFoldersClicked)
 
+
         self.startDirLeft = self.settings.value("startDirLeft",'/')        
         self.startDirRight = self.settings.value("startDirRight",'/')        
-        Df.d.lp.setPathByString(self.startDirLeft)
-        Df.d.rp.setPathByString(self.startDirRight)
         self.configW.leftStartDir.setText(self.startDirLeft)
         self.configW.rightStartDir.setText(self.startDirRight)
-
+        self.save()
+        Df.d.lp.setPathByString(self.startDirLeft)
+        Df.d.rp.setPathByString(self.startDirRight)
 
     def accepted(self):
         self.save()
@@ -142,6 +159,21 @@ class Config():
         else:
             self.settings.setValue("startDirLeft", self.configW.leftStartDir.text())
             self.settings.setValue("startDirRight", self.configW.rightStartDir.text())
+        self.formatTime12h = int(self.configW.time12h.checkState())
+        self.settings.setValue("formatTime12h", self.formatTime12h)
+        if self.configW.date_yymmdd.isChecked():
+            self.formatDate = 0
+            timedate = "%y%m%d" 
+        elif self.configW.date_ddmmyy.isChecked():
+            self.formatDate = 1
+            timedate = "%d%m%y" 
+        elif self.configW.date_mmddyy.isChecked():
+            self.formatDate = 2
+            timedate = "%m%d%y" 
+        self.settings.setValue("formatDate", int(self.formatDate))
+        self.formatDateSep = self.configW.date_sep.text()
+        self.settings.setValue("formatDateSep", self.formatDateSep)
+
         self.showHidden = int(self.configW.showHidden.checkState())
         self.settings.setValue("showHidden", self.showHidden)
         self.showThumbs = int(self.configW.showThumbs.checkState())
@@ -152,6 +184,14 @@ class Config():
         self.settings.setValue("showIcons", self.showIcons)
         self.confirmDelete = int(self.configW.confirmDelete.checkState())
         self.settings.setValue("confirmDelete", self.confirmDelete)
+        
+        timedate = timedate[0:2] + self.formatDateSep + timedate[2:4] + self.formatDateSep + timedate[4:6]
+        if self.formatTime12h:
+            timedate = timedate + " %I:%M:%S %p"
+        else:
+            timedate = timedate + " %H:%M:%S"
+        
+        self.formatTimeDate = timedate
                  
     def useCurrentLeft(self):
         self.configW.leftStartDir.setText(Df.d.lp.cd.path())
@@ -159,21 +199,6 @@ class Config():
     def useCurrentRight(self):
         self.configW.rightStartDir.setText(Df.d.rp.cd.path())
         
-    def showHiddenStateChanged(self, state):
-        self.showHidden = int(state)
-
-    def showThumbsStateChanged(self, state):
-        self.showThumbs = int(state)
-
-    def useInternalFileCopyStateChanged(self, state):
-        self.useInternalFileCopy = int(state)
-
-    def showIconsStateChanged(self, state):
-        self.showIcons = int(state)
-
-    def confirmDeleteStateChanged(self, state):
-        self.confirmDelete = int(state)
-
     def licenseNag(self, title, text):    
         msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, title, text)
         msgBox.addButton("Try", QtGui.QMessageBox.AcceptRole)
