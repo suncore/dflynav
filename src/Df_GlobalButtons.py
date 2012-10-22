@@ -17,12 +17,12 @@ class GlobalButtons(object):
         action = QtGui.QAction("Help", mw)
         action.triggered.connect(self.help)
         actions.append(action)
-        action = QtGui.QAction("Show license key", mw)
-        action.triggered.connect(self.help_license)
-        actions.append(action)
-        action = QtGui.QAction("Enter license key", mw)
-        action.triggered.connect(Df.d.config.enterLicenseKey)
-        actions.append(action)
+        #action = QtGui.QAction("Show license key", mw)
+        #action.triggered.connect(self.help_license)
+        #actions.append(action)
+        #action = QtGui.QAction("Enter license key", mw)
+        #action.triggered.connect(Df.d.config.enterLicenseKey)
+        #actions.append(action)
         action = QtGui.QAction("License agreement", mw)
         action.triggered.connect(self.help_agreement)
         actions.append(action)
@@ -44,11 +44,11 @@ class GlobalButtons(object):
     def help_agreement(self):
         Df_Dialog.TextDialog("License", None, "src/res/license.html")
 
-    def help_license(self):
-        if Df.d.licenseKey == "":
-            Df_Dialog.MessageInfo("License", "No license key found.")
-        else:
-            Df_Dialog.MessageInfo("License", "License key (valid): " + Df.d.licenseKey)
+#    def help_license(self):
+#        if Df.d.licenseKey == "":
+#            Df_Dialog.MessageInfo("License", "No license key found.")
+#        else:
+#            Df_Dialog.MessageInfo("License", "License key (valid): " + Df.d.licenseKey)
 
     def help_about(self):
         Df_Dialog.MessageInfo("About", "Dragonfly Navigator " + Df.d.version + "\nCopyright 2012 Henrik Harmsen")

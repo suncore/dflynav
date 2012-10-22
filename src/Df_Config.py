@@ -29,42 +29,42 @@ class Config():
         Df.d.lp.updateBookmarksMenu()
         Df.d.rp.updateBookmarksMenu()
 
-        s = "cm29sh5g9sxk24fg2.dr"
-        self.s = s
-        ikey = self.settings.value("ikey", "") # Installation time key
-        if ikey == "":
-            if Df.d.bookmarks != []:
-                sys.exit(0) # Deleted key. No go.
-            now = str(int(time.time()))
-            h = hashlib.sha1(now+s).hexdigest()
-            self.settings.setValue("ikey", now+','+h)
-            Df.d.gb.help()
-        else:
-            a = ikey.split(',')
-            h = hashlib.sha1(a[0]+s).hexdigest()
-            if h != a[1]:
-                Df_Dialog.MessageWarn("License", "Install key is invalid. Exiting.")
-                sys.exit(0) # Hacked key. No go.
-
-        Df.d.licenseKey = ""
-        lkey = self.settings.value("lkey", "") # License key = email address + hash
-        if lkey == "":
-            ikey = self.settings.value("ikey", "") # Installation time key
-            a = ikey.split(',')
-            daysleft = 31-(time.time() - int(a[0]))/3600/24
-            if daysleft < 0:
-                Df_Dialog.MessageWarn("License", "Trial period has expired. Press OK and enter license key.")
-                self.enterLicenseKey()
-                Df_Dialog.MessageWarn("License", "Please restart Dragonfly Navigator.")
-                sys.exit(0)
-            self.licenseNag("License", "You have " + str(int(daysleft)) + " days left on the trial.")
-        else:
-            r = self.licenseCheck(lkey)
-            if r:
-                Df.d.licenseKey = lkey
-            else:
-                Df_Dialog.MessageWarn("License", "License key is invalid. Exiting.")
-                sys.exit(0)
+#        s = "cm29sh5g9sxk24fg2.dr"
+#        self.s = s
+#        ikey = self.settings.value("ikey", "") # Installation time key
+#        if ikey == "":
+#            if Df.d.bookmarks != []:
+#                sys.exit(0) # Deleted key. No go.
+#            now = str(int(time.time()))
+#            h = hashlib.sha1(now+s).hexdigest()
+#            self.settings.setValue("ikey", now+','+h)
+#            Df.d.gb.help()
+#        else:
+#            a = ikey.split(',')
+#            h = hashlib.sha1(a[0]+s).hexdigest()
+#            if h != a[1]:
+#                Df_Dialog.MessageWarn("License", "Install key is invalid. Exiting.")
+#                sys.exit(0) # Hacked key. No go.
+#
+#        Df.d.licenseKey = ""
+#        lkey = self.settings.value("lkey", "") # License key = email address + hash
+#        if lkey == "":
+#            ikey = self.settings.value("ikey", "") # Installation time key
+#            a = ikey.split(',')
+#            daysleft = 31-(time.time() - int(a[0]))/3600/24
+#            if daysleft < 0:
+#                Df_Dialog.MessageWarn("License", "Trial period has expired. Press OK and enter license key.")
+#                self.enterLicenseKey()
+#                Df_Dialog.MessageWarn("License", "Please restart Dragonfly Navigator.")
+#                sys.exit(0)
+#            self.licenseNag("License", "You have " + str(int(daysleft)) + " days left on the trial.")
+#        else:
+#            r = self.licenseCheck(lkey)
+#            if r:
+#                Df.d.licenseKey = lkey
+#            else:
+#                Df_Dialog.MessageWarn("License", "License key is invalid. Exiting.")
+#                sys.exit(0)
 
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:
@@ -199,44 +199,44 @@ class Config():
     def useCurrentRight(self):
         self.configW.rightStartDir.setText(Df.d.rp.cd.path())
         
-    def licenseNag(self, title, text):    
-        msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, title, text)
-        msgBox.addButton("Try", QtGui.QMessageBox.AcceptRole)
-        msgBox.addButton("Buy", QtGui.QMessageBox.RejectRole)
-        msgBox.addButton("Enter key", QtGui.QMessageBox.ActionRole)
-        r = msgBox.exec_()
-        if r == 1:
-            error = None
-            try:
-                if platform.system() == 'Windows':
-                    os.startfile(genericPathToWindows("src/home.url"))
-                else:
-                    #os.chdir(self.parent.fspath)
-                    subprocess.call(["xdg-open", "src/home.url"]) # TODO should run completely async
-            except:
-                t,error,tb = sys.exc_info()
-            if error:
-                error = str(error)
-                print error
-        elif r == 2:
-            self.enterLicenseKey()
-
-    def licenseCheck(self, lkey):
-        try:
-            a = lkey.split(',')
-            h = hashlib.sha1(a[0]+a[1]+self.s).hexdigest()[0:8]
-            if h == a[2]:
-                return True
-        except:
-            pass
-        return False
-
-    def enterLicenseKey(self):
-        lkey = Df_Dialog.Dialog("License", "Enter license key", "")
-        r = self.licenseCheck(lkey)
-        if r:
-            self.settings.setValue("lkey", lkey)
-            Df.d.licenseKey = lkey
-        else:
-            Df_Dialog.MessageWarn("License", "License key is invalid.")
+#    def licenseNag(self, title, text):    
+#        msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, title, text)
+#        msgBox.addButton("Try", QtGui.QMessageBox.AcceptRole)
+#        msgBox.addButton("Buy", QtGui.QMessageBox.RejectRole)
+#        msgBox.addButton("Enter key", QtGui.QMessageBox.ActionRole)
+#        r = msgBox.exec_()
+#        if r == 1:
+#            error = None
+#            try:
+#                if platform.system() == 'Windows':
+#                    os.startfile(genericPathToWindows("src/home.url"))
+#                else:
+#                    #os.chdir(self.parent.fspath)
+#                    subprocess.call(["xdg-open", "src/home.url"]) # TODO should run completely async
+#            except:
+#                t,error,tb = sys.exc_info()
+#            if error:
+#                error = str(error)
+#                print error
+#        elif r == 2:
+#            self.enterLicenseKey()
+#
+#    def licenseCheck(self, lkey):
+#        try:
+#            a = lkey.split(',')
+#            h = hashlib.sha1(a[0]+a[1]+self.s).hexdigest()[0:8]
+#            if h == a[2]:
+#                return True
+#        except:
+#            pass
+#        return False
+#
+#    def enterLicenseKey(self):
+#        lkey = Df_Dialog.Dialog("License", "Enter license key", "")
+#        r = self.licenseCheck(lkey)
+#        if r:
+#            self.settings.setValue("lkey", lkey)
+#            Df.d.licenseKey = lkey
+#        else:
+#            Df_Dialog.MessageWarn("License", "License key is invalid.")
             

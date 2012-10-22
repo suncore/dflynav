@@ -35,7 +35,7 @@ def main():
 
     # d is the only global variable, the base object that contains the entire application state
     d = Df_Dragonfly.DragonFly()
-    d.version = "1.0.3"
+    d.version = "1.0.4"
     d.appdata = None
     d.previousLog = ""
     d.logfile = None
