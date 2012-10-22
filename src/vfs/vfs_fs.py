@@ -453,7 +453,8 @@ class Directory(Fs):
             for f in os.listdir(self.fspath):
                 if self.stopAsync:
                     break
-                #f = f.decode('utf-8','replace')
+                if platform.system() != 'Windows':
+                    f = f.decode('utf-8','replace')
                 #f = str(fn)
                 try:
                     pj = path_join(self.fspath, f)

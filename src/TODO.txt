@@ -44,6 +44,10 @@ Inte l�ngre problem?
 bygga installpackage:
 C:\pyinstaller>c:\Python27\python.exe pyinstaller.py -y -F -n DragonflyNavigator c:\Users\hch\git\ws\src\Df_Main.py
 
+Linux beroenden paket
+---------------------
+pyside
+pyinotify 
 
 
 
