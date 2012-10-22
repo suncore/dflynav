@@ -80,7 +80,7 @@ class Config():
         else:
             self.configW.time12h.setCheckState(Qt.Unchecked)
 
-        self.formatDate = int(self.settings.value("formatDate", 1)) #TODO set according to locale
+        self.formatDate = int(self.settings.value("formatDate", 0)) #TODO set according to locale
         self.configW.date_yymmdd.setChecked(False)
         self.configW.date_ddmmyy.setChecked(False)
         self.configW.date_mmddyy.setChecked(False)
