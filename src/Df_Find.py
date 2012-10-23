@@ -31,13 +31,15 @@ class Find():
         self.findW.currentSearch.setText("Searching: " + text)
 
     def findInNode(self, node, t, r):
+        t = string.lower(t)
         self.setSearchingFor(node.path())
         ch = node.children(False)
         for n in ch:
             if self.stop:
                 return
             try:
-                if string.find(n.name, t) != -1:
+                name = string.lower(n.name)
+                if string.find(name, t) != -1:
                     item = QtGui.QTreeWidgetItem( [ n.path() ] )
                     item.df_node = n
                     self.findW.hitlist.insertTopLevelItem(0, item)

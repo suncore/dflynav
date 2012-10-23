@@ -1,5 +1,6 @@
 TODO
 ----
+bygge för linux
 snabba upp listing av bildfiler - multipass child build scanner (listdir, stats, ikoner)
 vid uppstart laddas defaultm�ssigt de gamla foldrarna, om det tar l�ng tid visa f�r anv�ndaren vad som h�nder
 python -O -E (ignore python-variables)
@@ -23,6 +24,7 @@ minska intensitet på gult i folder-ikonen
 Buggar
 ------
 medium prio:
+df_open för linux (open... with)
 kopiera 10000 filer funkar inte (f�r l�ng kommandorad till cygwin)
 om en fil �r vald i en panel och man skapar en ny folder s� kommer aldrig refreshen
 
