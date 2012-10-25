@@ -6,6 +6,7 @@ See http://www.dflynav.com
 The following instuctions are work in progress...
 
 How to develop for Linux
+------------------------
 Install python packages pyside and setuptools 
 Install eclipse and pydev
 Use Eclipse to clone git repo
@@ -14,6 +15,7 @@ Install qt-designer and use that to edit the UI (.ui files). Use buildrc to rebu
 (No build instructions for Linux yet since that doesn't work yet)
 
 How to develop for Windows
+--------------------------
 Install cygwin to c:/cygwin
 Install python 2.7 to c:/python27
 Install Python packages pyside and setuptools
@@ -23,6 +25,7 @@ Install and use Qt Creator to edit .ui files (User Interface files)
 Run buildrc (from cygwin terminal) to build python files from .ui files.
 
 Building for Windows
+--------------------
 Install pyinstaller and UPX
 Edit buildwin_pyinstaller so the paths work for you (to be parametrized any day now)
 Start cygwin terminal. Go to source directory. Run buildwin_pyinstaller.
