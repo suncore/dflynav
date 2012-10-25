@@ -15,10 +15,10 @@
     <ROW Property="ARPURLUPDATEINFO" Value="http://www.dflynav.com"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:7"/>
     <ROW Property="Manufacturer" Value="Dragonfly" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{F667FF45-2CF7-4B43-AEEB-A4774058E529} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{AD706864-FA6B-40BC-92A9-50BC2E84EEEC} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Dragonfly Navigator" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.2" Type="32"/>
+    <ROW Property="ProductVersion" Value="1.0.4" Type="32"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{0895F57D-CEC1-4157-9349-2FA21E703D81}"/>
     <ROW Property="WindowsType9X" MultiBuildValue="DefaultBuild:Windows 9x/ME" ValueLocId="-"/>

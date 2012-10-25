@@ -7,5 +7,5 @@ pyside-uic config.ui  > Df_UiConfig.py
 pyside-uic jobstatus.ui  > Df_UiJobstatus.py
 pyside-uic help.ui  > Df_UiHelp.py
 pyside-uic find.ui  > Df_UiFind.py
-pyside-rcc dragonfly.qrc  > dragonfly_rc.py
+#pyside-rcc dragonfly.qrc  > dragonfly_rc.py
 
