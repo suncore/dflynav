@@ -40,7 +40,6 @@ def main():
     d.previousLog = ""
     d.logfile = None
 
-
     try:
         if platform.system() == 'Windows':
             d.appdata = os.getenv('appdata') + '\\Dragonfly'
