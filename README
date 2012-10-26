@@ -7,7 +7,7 @@ The following instuctions are work in progress...
 
 How to develop for Linux
 ------------------------
-Install python packages pyside and setuptools 
+Install python packages pyside, pyside-tools and setuptools 
 Install eclipse and pydev
 Use Eclipse to clone git repo
 Install qt-designer and use that to edit the UI (.ui files). Use buildrc to rebuild python files from .ui files.

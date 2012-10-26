@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>766</width>
+    <width>879</width>
     <height>568</height>
    </rect>
   </property>
@@ -337,8 +337,6 @@
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="dragonfly.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'mainwin.ui'
 #
-# Created: Thu Oct 25 20:16:35 2012
-#      by: pyside-uic 0.2.14 running on PySide 1.1.1
+# Created: Fri Oct 26 09:10:00 2012
+#      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(766, 568)
+        MainWindow.resize(879, 568)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
@@ -219,4 +219,3 @@ class Ui_MainWindow(object):
         self.right_find.setText(QtGui.QApplication.translate("MainWindow", "Find", None, QtGui.QApplication.UnicodeUTF8))
         self.right_preview_text.setText(QtGui.QApplication.translate("MainWindow", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
 
-import dragonfly_rc
