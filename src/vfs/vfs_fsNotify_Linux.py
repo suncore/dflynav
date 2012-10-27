@@ -1,6 +1,6 @@
 
 import os
-import stat, time
+import stat, time, sys
 import pyinotify
 from pyinotify import WatchManager, Notifier, ProcessEvent, ThreadedNotifier
 
@@ -37,7 +37,7 @@ class Notify():
             self.wm.rm_watch(list(self.wdd.values()))
         self.path = path
         self.pe.cbfun = cbfun # ugly...
-        
+        #print sys.getfilesystemencoding()
         self.wdd = self.wm.add_watch(self.path, 
                           pyinotify.IN_CREATE | 
                           pyinotify.IN_DELETE |
