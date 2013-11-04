@@ -1,7 +1,9 @@
 Dragonfly Navigator
 
 A simple and efficient file manager for Windows and Linux. Licensed under GPLv3.
-See http://www.dflynav.com
+
+Currently the Windows build is probably slightly broken. No interest to keep it updated right now...
+Linux version is tested on kubuntu.
 
 The following instuctions are work in progress...
 

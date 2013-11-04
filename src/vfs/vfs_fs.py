@@ -448,18 +448,21 @@ class Directory(Fs):
     
     def getChildrenAsync(self, async=True):
         c = []
-        #if True:
-        try:
-            for f in os.listdir(self.fspath):
+        if True:
+        #try:
+            for f in os.listdir(unicode(self.fspath)):
                 if self.stopAsync:
                     break
+                #f = unicode(f)
                 if platform.system() != 'Windows':
-                    f = f.decode('utf-8','replace')
-                #f = str(fn)
-                try:
-                    pj = path_join(self.fspath, f)
-                except:
-                    continue
+                    f = f.decode('utf-8',errors='replace')
+                #print f, type(f)
+                ##f = str(fn)
+                pj = path_join(self.fspath, f)
+                #try:
+                #    pj = path_join(self.fspath, f)
+                #except:
+                #    continue
                 stats = self.statFile(pj)
                 #stats = self.statFile(os.path.join(self.fspath, f))
                 hide = f[0] == '.'
@@ -471,8 +474,8 @@ class Directory(Fs):
                     #hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
                 if not hide or Df.d.config.showHidden:
                     c.append(self.buildChild(f, stats))
-        except:
-            pass
+        #except:
+        #    pass
         self.children_ = c
         #print "2", self.children_
         self.childrenReady = True

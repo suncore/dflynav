@@ -61,9 +61,12 @@ def JpegThumbToIcon(fn):
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])
-        t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
-        dateSecs = time.mktime(t)
-        date = time2str(t)
+        try:
+            t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+            dateSecs = time.mktime(t)
+            date = time2str(t)
+        except:
+            date = ''
     if 'JPEGThumbnail' in exif:
         f = Df.d.tempfile
         f.truncate(0)
