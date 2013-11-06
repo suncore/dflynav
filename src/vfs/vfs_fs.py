@@ -454,9 +454,9 @@ class Directory(Fs):
                 if self.stopAsync:
                     break
                 #f = unicode(f)
-                if platform.system() != 'Windows':
-                    f = f.decode('utf-8',errors='replace')
                 #print f, type(f)
+                if platform.system() != 'Windows' and not isinstance(f, unicode):
+                    f = f.decode('utf-8',errors='replace')
                 ##f = str(fn)
                 pj = path_join(self.fspath, f)
                 #try:
