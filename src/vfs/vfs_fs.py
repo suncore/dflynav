@@ -633,7 +633,7 @@ class Cmd(Df_Job.Cmd):
             si.dwFlags = subprocess.STARTF_USESHOWWINDOW
             si.wShowWindow = subprocess.SW_HIDE
         try:
-            print cmd
+            #print cmd
             if workingDir:
                 self.pob = Popen(cmd, bufsize=1, stdout=PIPE, stderr=STDOUT, universal_newlines=True, cwd=workingDir, startupinfo=si)
             else:
