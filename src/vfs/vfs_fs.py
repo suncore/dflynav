@@ -233,8 +233,8 @@ class Fs(vfs_node.Node):
             wd = srcNodeList[0].parent.fspath
             cmdString = '$ in %s: link %s to %s' % (wd, srcs, dstNode.fspath)
             args = cmd, wd
-            print args
-            print cmdString
+            #print args
+            #print cmdString
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         else:
             srcNodeList, dstNode = self.getSelectionAndDestination()
