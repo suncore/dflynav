@@ -222,12 +222,26 @@ class Fs(vfs_node.Node):
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_link(self):
-        srcNodeList, dstNode = self.getSelectionAndDestination()
-        for i in srcNodeList:
-            cmd = [ '/bin/ln', '-s' ] + [ i.fspath ] + [ dstNode.fspath ]
-            cmdString = '$ link %s to %s' % (i.fspath, dstNode.fspath)
-            args = cmd, None
-            if platform.system() == 'Windows':
+        if platform.system() != 'Windows':
+            srcNodeList, dstNode = self.getSelectionAndDestination()
+            if not srcNodeList:
+                return
+            srcList = [x.fspath for x in srcNodeList]
+            cmd = [ '/bin/ln', '-s' ] + srcList + [ dstNode.fspath ]
+            srcList = [x.fsname for x in srcNodeList]
+            srcs = ', '.join(srcList)
+            wd = srcNodeList[0].parent.fspath
+            cmdString = '$ in %s: link %s to %s' % (wd, srcs, dstNode.fspath)
+            args = cmd, wd
+            print args
+            print cmdString
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+        else:
+            srcNodeList, dstNode = self.getSelectionAndDestination()
+            for i in srcNodeList:
+                cmd = [ '/bin/ln', '-s' ] + [ i.fspath ] + [ dstNode.fspath ]
+                cmdString = '$ link %s to %s' % (i.fspath, dstNode.fspath)
+                args = cmd, None
                 error = None
                 try:
                     shell = win32com.client.Dispatch("WScript.Shell")
@@ -241,8 +255,6 @@ class Fs(vfs_node.Node):
                 if error:
                     error = str(error)
                 Df.d.jobm.addJobDone(cmdString, error)
-            else: 
-                Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_dirsize(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
