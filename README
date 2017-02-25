@@ -1,6 +1,6 @@
 Dragonfly Navigator
 
-A simple and efficient file manager for Windows and Linux. Licensed under GPLv3.
+A simple and efficient file manager for Linux/KDE. Licensed under GPLv3.
 
 Linux version is tested on kubuntu.
 
@@ -21,7 +21,7 @@ Go to source directory. Run buildlinux
 Create .tar.gz package of the pyinstaller DragonflyNavigator/dist/DragonflyNavigator directory
 To Run: cd to installation directory and run DragonflyNavigator
 
-How to develop for Windows
+How to develop for Windows (unmaintained)
 --------------------------
 Install cygwin to c:/cygwin
 Install python 2.7 to c:/python27
