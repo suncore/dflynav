@@ -1,9 +1,9 @@
 import os, stat, time
-from PySide.QtCore import *
-from PySide import QtGui
-import thread
+from PyQt5.QtCore import *
+from PyQt5 import QtGui, QtWidgets
+import _thread
 from utils import *
-from Queue import Queue
+from queue import Queue
 
 
 class Cmd(object):
@@ -27,9 +27,9 @@ class JobManager(object):
         self.jobsW.setHeaderLabels( [ "Time", "Command", "Status" ] )
         self.jobsW.header().setStretchLastSection(False)
         self.jobsW.header().hide()
-        self.jobsW.header().setResizeMode(0, QtGui.QHeaderView.ResizeToContents)
-        self.jobsW.header().setResizeMode(1, QtGui.QHeaderView.Stretch)
-        self.jobsW.header().setResizeMode(2, QtGui.QHeaderView.ResizeToContents)
+        self.jobsW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        self.jobsW.header().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
+        self.jobsW.header().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
         self.jobsW.itemPressed.connect(self.mouseButtonPressed)
         self.jobstatusW.close.clicked.connect(self.closeClicked)
         self.jobstatusW.stop.clicked.connect(self.stopClicked)
@@ -37,7 +37,7 @@ class JobManager(object):
         self.runningJob = None
         self.jobStatusWindowJob = None
         self.jobstatusW.start.hide() # Can't start jobs prematurely yet
-        thread.start_new_thread(self.jobTask, (self,))
+        _thread.start_new_thread(self.jobTask, (self,))
 
     def closeClicked(self):
         self.jobStatusWindowActive = False
@@ -103,11 +103,11 @@ class JobManager(object):
         self.jobstatusW.show()
 
 class Communicate(QObject):
-    setStatus = Signal()
+    setStatus = pyqtSignal()
 
 class Entry(object):
     def __init__(self, cmd, jobManager):
-        item = QtGui.QTreeWidgetItem( [ '', cmd, "" ] )
+        item = QtWidgets.QTreeWidgetItem( [ '', cmd, "" ] )
         self.jobManager = jobManager
         self.jobManager.jobsW.insertTopLevelItem(0, item)
         self.item = item

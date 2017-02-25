@@ -1,6 +1,6 @@
 
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui
 from utils import *
 import Df
         
@@ -12,6 +12,6 @@ class Mainwin(object):
 
     
     def mainW_keyPressEvent(self, e):
-        print e
+        print(e)
         self.mainW_keyPressEventOrig(e)
 

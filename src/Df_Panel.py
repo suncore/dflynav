@@ -1,13 +1,13 @@
 
 import vfs, Df_Dialog
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui, QtWidgets
 from utils import *
 import Df
 import os, subprocess, platform
 from PIL import Image
 
-class PanelItem(QtGui.QTreeWidgetItem):
+class PanelItem(QtWidgets.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
     def __lt__(self, other):
         tw = self.treeWidget()
@@ -44,7 +44,7 @@ class Panel(object):
         self.statusW = statusW
         self.findW = findW
         self.other = None # Pointer to the other panel filled in by the builder
-        self.treeW.setSelectionMode(QtGui.QAbstractItemView.ExtendedSelection)
+        self.treeW.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
         self.panelIdx = index
         f = self.treeW.font()
@@ -57,15 +57,15 @@ class Panel(object):
         self.mirrorW = mirrorW
         self.historyW = historyW
         self.bookmarksW = bookmarksW
-        self.historyMenu = QtGui.QMenu(self.mainW)
-        self.bookmarksMenu = QtGui.QMenu(self.mainW)
+        self.historyMenu = QtWidgets.QMenu(self.mainW)
+        self.bookmarksMenu = QtWidgets.QMenu(self.mainW)
         self.cd = vfs.vfs_root.VfsRoot()
         self.historyW.setMenu(self.historyMenu)
         self.bookmarksW.setMenu(self.bookmarksMenu)
         self.bookmarksMenu.setContextMenuPolicy(Qt.CustomContextMenu)
         self.bookmarksMenu.customContextMenuRequested.connect(self.bookmarksContextMenuPopup)
-        self.bookmarksContextMenu = QtGui.QMenu(self.mainW)
-        self.bookmarksContextMenu.addAction(QtGui.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
+        self.bookmarksContextMenu = QtWidgets.QMenu(self.mainW)
+        self.bookmarksContextMenu.addAction(QtWidgets.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
         self.bookmarksMenuHoverPath = None
         self.refreshLocked = False
         self.backHistory = ['/']
@@ -138,7 +138,7 @@ class Panel(object):
         self.setPathByString(self.other.cd.path())
     
     def treeW_pressed(self, item):
-        buttons = QtGui.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
+        buttons = QtWidgets.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
         if buttons == Qt.RightButton:
             self.openItem(item)
 
@@ -146,7 +146,7 @@ class Panel(object):
         self.openItem(item)
 
 #    def treeW_activated(self, item):
-#        i = self.treeW.itemAt(item.treeWidget().mapFromGlobal(QtGui.QCursor.pos()))
+#        i = self.treeW.itemAt(item.treeWidget().mapFromGlobal(QtWidgets.QCursor.pos()))
 #        print "Item activated", item, i
 #        if i:
 #            print i.df_node.fspath
@@ -185,11 +185,11 @@ class Panel(object):
         self.treeW_mouseMoveEventOrig(e)
 
     def treeW_mousePressEvent(self, e):
-        print "mbp"
+        print("mbp")
         self.treeW_mousePressEventOrig(e)
 
     def preview(self):
-        pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
+        pos = QtWidgets.QCursor.pos() # e.globalPos()) in mouseMoveEvent
         i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
         if not i:
             return
@@ -284,7 +284,7 @@ class Panel(object):
         self.pathW.setText(self.cd.path())
         self.setStatus(0,0)
         self.cd.startGetChildren()
-        #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        #self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         #self.firstSectionWidth = self.treeW.header().sectionSize(0)
 
     def setPath2(self):
@@ -308,17 +308,17 @@ class Panel(object):
         self.treeW.setHeaderLabels(keys)
         #w = 
         #print self.treeW.header().sectionSizeFromContents(0)
-#        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+#        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
 #        w = self.treeW.header().sectionSize(0)
 #        print 'width'+str(w)
 
         #self.treeW.header().resizeSection(0, self.firstSectionWidth)
-        #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Interactive)
+        #self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive)
 
         #w = self.treeW.header().viewport().width()
         #print w
         
-        #self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        #self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
         items = []
         self.nrItems = 0
         findItem = None
@@ -335,7 +335,7 @@ class Panel(object):
             pi = PanelItem(item)
             col = 1
             for k,s,v in i.meta:
-                if type(1L) == type(v):
+                if type(1) == type(v):
                     pi.setTextAlignment(col, Qt.AlignCenter | Qt.AlignRight)
                 col += 1
             pi.setIcon(0, i.icon())
@@ -361,19 +361,17 @@ class Panel(object):
         #self.treeW.resizeColumnToContents(1)
         self.treeW.header().setStretchLastSection(False)
         self.highestCol = len(keys)
-        col = 1
-        for i in keys:
-            #self.treeW.header().setResizeMode(col, QtGui.QHeaderView.Interactive)
-            self.treeW.header().setResizeMode(col, QtGui.QHeaderView.ResizeToContents)
-            col += 1
+        for col in range(1,self.highestCol):
+            #self.treeW.header().setSectionResizeMode(col, QtWidgets.QHeaderView.Interactive)
+            self.treeW.header().setSectionResizeMode(col, QtWidgets.QHeaderView.ResizeToContents) # TODO problematic
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
         
         for i in range(len(keys)):
             if i > 2:
                 self.treeW.header().hideSection(i)
-        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Stretch)
+        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch) 
         firstSectionWidth = self.treeW.header().sectionSize(0)
-        self.treeW.header().setResizeMode(0, QtGui.QHeaderView.Interactive)
+        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive) 
         self.treeW.header().resizeSection(0, firstSectionWidth*.96)
         for i in range(len(keys)):
             if i > 2:
@@ -431,6 +429,8 @@ class Panel(object):
             fun()
         for i in cblist:
             name, binary, callback = i
+            if type(callback) is bool:
+                print("hej")
             cb = lambda fun=callback: abcb(fun)
             if binary and s[0].df_node.binaryOpCompat(self.other.cd):
                 self.actionButtons.addButton(name, cb)
@@ -481,7 +481,7 @@ class Panel(object):
         self.historyMenu.clear()
         actions = []
         for path in h:
-            action = QtGui.QAction(path, self.mainW)
+            action = QtWidgets.QAction(path, self.mainW)
             receiver = lambda path=path: self.gotoPath(path)
             action.triggered.connect(receiver)
             actions.append(action)
@@ -507,14 +507,14 @@ class Panel(object):
     def updateBookmarksMenu(self):
         self.bookmarksMenu.clear()
         actions = []
-        action = QtGui.QAction('Add bookmark', self.mainW)
+        action = QtWidgets.QAction('Add bookmark', self.mainW)
         action.triggered.connect(self.addBookmark)
         actions.append(action)
-        action = QtGui.QAction('', self.mainW)
+        action = QtWidgets.QAction('', self.mainW)
         action.setSeparator(True)
         actions.append(action)
         for path in Df.d.bookmarks:
-            action = QtGui.QAction(path, self.mainW)
+            action = QtWidgets.QAction(path, self.mainW)
             receiver = lambda path=path: self.gotoPath(path)
             action.triggered.connect(receiver)
             hover = lambda path=path: self.bookmarksMenuHoverPathSet(path)

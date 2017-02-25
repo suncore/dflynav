@@ -4,8 +4,8 @@ import os, stat, time, sys, platform
 from subprocess import *
 from PIL import Image
 from PIL.ExifTags import TAGS
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui
 import locale, datetime
 if platform.system() == 'Windows':
     import win32api, win32con
@@ -25,7 +25,7 @@ def ImageToPixmap(fn):
     except:
         info = None
     if info:
-        for tag, value in info.items():
+        for tag, value in list(info.items()):
             decoded = TAGS.get(tag, tag)
             exif[decoded] = value
     date = ''
@@ -45,10 +45,10 @@ def ImageToPixmap(fn):
         elif exif['Orientation'] == 8:
             im = im.rotate(90)
     data = im.convert('RGBA').tostring('raw', 'BGRA')
-    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+    image = QtWidgets.QImage(data, im.size[0], im.size[1], QtWidgets.QImage.Format_ARGB32)
     w,h = im.size
     size = str(w) + 'x' + str(h)
-    return ((data, QtGui.QPixmap(image)), date+'  '+size)
+    return ((data, QtWidgets.QPixmap(image)), date+'  '+size)
 
 def JpegThumbToIcon(fn):
     file=open(fn, 'rb')
@@ -94,8 +94,8 @@ def JpegThumbToIcon(fn):
         im2.paste(im, b)
         im=im2
         data = im.convert('RGBA').tostring('raw', 'BGRA')
-        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-        thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
+        image = QtWidgets.QImage(data, im.size[0], im.size[1], QtWidgets.QImage.Format_ARGB32)
+        thumb = (data, QtWidgets.QIcon(QtWidgets.QPixmap(image)))
     return (thumb, date, dateSecs)
 
 def iff(test_, then_, else_):
@@ -245,7 +245,7 @@ def WindowsOpenProperties(f):
     ShellExecuteEx(ctypes.byref(sei))
 
 def crash():
-    print "Crash dumping now", Df.d.logfile
+    print(("Crash dumping now", Df.d.logfile))
     traceback.print_exc()
     try:
         f=open(Df.d.logfile,"w")

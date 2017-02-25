@@ -1,5 +1,5 @@
 import sys
-from PySide import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets, QtWidgets
 
 from Df_UiMainwin import Ui_MainWindow
 #from Df_UiDialog import Ui_Dialog
@@ -15,37 +15,37 @@ import vfs
 class Gui():
     pass
 
-class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+        QtWidgets.QMainWindow.__init__(self, parent)
         self.setupUi(self)
 
-#class Dialog(QtGui.QDialog, Ui_Dialog):
+#class Dialog(QtWidgets.QDialog, Ui_Dialog):
 #    def __init__(self, parent=None):
-#        QtGui.QDialog.__init__(self, parent)
+#        QtWidgets.QDialog.__init__(self, parent)
 #        self.setupUi(self)
 
-class Config(QtGui.QDialog, Ui_Config):
+class Config(QtWidgets.QDialog, Ui_Config):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-class Help(QtGui.QDialog, Ui_Help):
+class Help(QtWidgets.QDialog, Ui_Help):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-class Find(QtGui.QDialog, Ui_Find):
+class Find(QtWidgets.QDialog, Ui_Find):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-class Jobstatus(QtGui.QDialog, Ui_Jobstatus):
+class Jobstatus(QtWidgets.QDialog, Ui_Jobstatus):
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
 
-#class Preview(QtGui.QDialog, Ui_Preview):
+#class Preview(QtWidgets.QDialog, Ui_Preview):
 #    def __init__(self, parent=None):
-#        QtGui.QDialog.__init__(self, parent)
+#        QtWidgets.QDialog.__init__(self, parent)
 #        self.setupUi(self)

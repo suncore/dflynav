@@ -2,50 +2,49 @@
 
 # Form implementation generated from reading ui file 'find.ui'
 #
-# Created: Fri Oct 26 09:10:00 2012
-#      by: pyside-uic 0.2.13 running on PySide 1.1.1
+# Created by: PyQt5 UI code generator 5.7
 #
 # WARNING! All changes made in this file will be lost!
 
-from PySide import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 class Ui_Find(object):
     def setupUi(self, Find):
         Find.setObjectName("Find")
         Find.resize(569, 390)
-        self.gridLayout = QtGui.QGridLayout(Find)
+        self.gridLayout = QtWidgets.QGridLayout(Find)
         self.gridLayout.setObjectName("gridLayout")
-        self.heading = QtGui.QLabel(Find)
+        self.heading = QtWidgets.QLabel(Find)
         self.heading.setObjectName("heading")
         self.gridLayout.addWidget(self.heading, 0, 0, 1, 1)
-        self.input = QtGui.QLineEdit(Find)
+        self.input = QtWidgets.QLineEdit(Find)
         self.input.setObjectName("input")
         self.gridLayout.addWidget(self.input, 1, 0, 1, 1)
-        self.recursive = QtGui.QCheckBox(Find)
+        self.recursive = QtWidgets.QCheckBox(Find)
         self.recursive.setObjectName("recursive")
         self.gridLayout.addWidget(self.recursive, 2, 0, 1, 1)
-        self.hitlist = QtGui.QTreeWidget(Find)
+        self.hitlist = QtWidgets.QTreeWidget(Find)
         self.hitlist.setObjectName("hitlist")
         self.gridLayout.addWidget(self.hitlist, 8, 0, 1, 1)
-        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.start = QtGui.QPushButton(Find)
+        self.start = QtWidgets.QPushButton(Find)
         self.start.setObjectName("start")
         self.horizontalLayout.addWidget(self.start)
-        self.stop = QtGui.QPushButton(Find)
+        self.stop = QtWidgets.QPushButton(Find)
         self.stop.setObjectName("stop")
         self.horizontalLayout.addWidget(self.stop)
         self.gridLayout.addLayout(self.horizontalLayout, 5, 0, 1, 1)
-        self.instruction = QtGui.QLabel(Find)
+        self.instruction = QtWidgets.QLabel(Find)
         self.instruction.setObjectName("instruction")
         self.gridLayout.addWidget(self.instruction, 6, 0, 1, 1)
-        self.status = QtGui.QLabel(Find)
+        self.status = QtWidgets.QLabel(Find)
         self.status.setObjectName("status")
         self.gridLayout.addWidget(self.status, 3, 0, 1, 1)
-        self.close = QtGui.QPushButton(Find)
+        self.close = QtWidgets.QPushButton(Find)
         self.close.setObjectName("close")
         self.gridLayout.addWidget(self.close, 9, 0, 1, 1)
-        self.currentSearch = QtGui.QLabel(Find)
+        self.currentSearch = QtWidgets.QLabel(Find)
         self.currentSearch.setObjectName("currentSearch")
         self.gridLayout.addWidget(self.currentSearch, 4, 0, 1, 1)
 
@@ -53,14 +52,15 @@ class Ui_Find(object):
         QtCore.QMetaObject.connectSlotsByName(Find)
 
     def retranslateUi(self, Find):
-        Find.setWindowTitle(QtGui.QApplication.translate("Find", "Find", None, QtGui.QApplication.UnicodeUTF8))
-        self.heading.setText(QtGui.QApplication.translate("Find", "TextLabel", None, QtGui.QApplication.UnicodeUTF8))
-        self.recursive.setText(QtGui.QApplication.translate("Find", "Search sub-folders recursively", None, QtGui.QApplication.UnicodeUTF8))
-        self.hitlist.headerItem().setText(0, QtGui.QApplication.translate("Find", "Object", None, QtGui.QApplication.UnicodeUTF8))
-        self.start.setText(QtGui.QApplication.translate("Find", "Start", None, QtGui.QApplication.UnicodeUTF8))
-        self.stop.setText(QtGui.QApplication.translate("Find", "Stop", None, QtGui.QApplication.UnicodeUTF8))
-        self.instruction.setText(QtGui.QApplication.translate("Find", "Click on results below to navigate to the result", None, QtGui.QApplication.UnicodeUTF8))
-        self.status.setText(QtGui.QApplication.translate("Find", "Status", None, QtGui.QApplication.UnicodeUTF8))
-        self.close.setText(QtGui.QApplication.translate("Find", "Close", None, QtGui.QApplication.UnicodeUTF8))
-        self.currentSearch.setText(QtGui.QApplication.translate("Find", "Current searching for", None, QtGui.QApplication.UnicodeUTF8))
+        _translate = QtCore.QCoreApplication.translate
+        Find.setWindowTitle(_translate("Find", "Find"))
+        self.heading.setText(_translate("Find", "TextLabel"))
+        self.recursive.setText(_translate("Find", "Search sub-folders recursively"))
+        self.hitlist.headerItem().setText(0, _translate("Find", "Object"))
+        self.start.setText(_translate("Find", "Start"))
+        self.stop.setText(_translate("Find", "Stop"))
+        self.instruction.setText(_translate("Find", "Click on results below to navigate to the result"))
+        self.status.setText(_translate("Find", "Status"))
+        self.close.setText(_translate("Find", "Close"))
+        self.currentSearch.setText(_translate("Find", "Current searching for"))
 

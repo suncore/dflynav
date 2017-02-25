@@ -1,8 +1,8 @@
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui
 from utils import *
-import Df, time, hashlib, sys, string, thread
-from Queue import Queue
+import Df, time, hashlib, sys, string, _thread
+from queue import Queue
 
 class Find():
     def __init__(self, findW):
@@ -15,7 +15,7 @@ class Find():
         self.findW.start.clicked.connect(self.startFind)
         self.findW.recursive.setCheckState(Qt.Checked)
         self.q = Queue()
-        thread.start_new_thread(self.findTask, (self,))
+        _thread.start_new_thread(self.findTask, (self,))
         self.stop = False
         self.panel = None # While hidden this is none
         self.setSearchingFor("")
@@ -40,7 +40,7 @@ class Find():
             try:
                 name = string.lower(n.name)
                 if string.find(name, t) != -1:
-                    item = QtGui.QTreeWidgetItem( [ n.path() ] )
+                    item = QtWidgets.QTreeWidgetItem( [ n.path() ] )
                     item.df_node = n
                     self.findW.hitlist.insertTopLevelItem(0, item)
             except:

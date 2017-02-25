@@ -1,5 +1,5 @@
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui
 from utils import *
 import Df, time, hashlib, sys, Df_Dialog
 
@@ -200,10 +200,10 @@ class Config():
         self.configW.rightStartDir.setText(Df.d.rp.cd.path())
         
 #    def licenseNag(self, title, text):    
-#        msgBox = QtGui.QMessageBox(QtGui.QMessageBox.Information, title, text)
-#        msgBox.addButton("Try", QtGui.QMessageBox.AcceptRole)
-#        msgBox.addButton("Buy", QtGui.QMessageBox.RejectRole)
-#        msgBox.addButton("Enter key", QtGui.QMessageBox.ActionRole)
+#        msgBox = QtWidgets.QMessageBox(QtWidgets.QMessageBox.Information, title, text)
+#        msgBox.addButton("Try", QtWidgets.QMessageBox.AcceptRole)
+#        msgBox.addButton("Buy", QtWidgets.QMessageBox.RejectRole)
+#        msgBox.addButton("Enter key", QtWidgets.QMessageBox.ActionRole)
 #        r = msgBox.exec_()
 #        if r == 1:
 #            error = None

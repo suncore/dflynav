@@ -1,7 +1,7 @@
 
 
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui, QtWidgets
 from utils import *
 from PIL import Image, ImageDraw
 import hashlib, random
@@ -12,12 +12,12 @@ if platform.system() == 'Windows':
     import win32gui
     import win32con
     import win32api
-    import cStringIO
+    import io
     import Image
-    from _winreg import  *
+    from winreg import  *
 
 def ImageToIcon(im):
-    data = im.convert('RGBA').tostring('raw', 'BGRA')
+    data = im.convert('RGBA').tobytes('raw', 'BGRA')
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
     return (data, QtGui.QIcon(QtGui.QPixmap(image)))
 
@@ -29,7 +29,7 @@ class IconFactory(object):
         #print os.getcwd()
         #self.bgim = Image.open('/a/proj/dragonfly/ws3/src/icons/Background1.png')
         #self.bgim = Image.open('src/icons/Background1.png')
-        self.allLettersIm = Image.open('src/icons/Letters.png')
+        self.allLettersIm = Image.open('icons/Letters.png')
         #im = colorize(im,0)
         #self.bgims = []
         self.bgimnum = 25
@@ -156,7 +156,7 @@ class IconFactory(object):
                 (532, 226, 'opqrstuvwxyz'))
         hs = 42 # hs = half of the total crop size
         deltay = 92.6
-        letterSize = (76*self.size[0])/100
+        letterSize = int((76*self.size[0])/100)
         if e <= 'n':
             col = cols[0]
             ix = ord(e)-ord('a')
@@ -168,7 +168,7 @@ class IconFactory(object):
         yi = int(y)
         im = self.allLettersIm.crop((x-hs,yi-hs,x+hs,yi+hs))
         im = im.resize((letterSize, letterSize))
-        h = hashlib.md5(ext).hexdigest()
+        h = hashlib.md5(ext.encode()).hexdigest()
         h = int(h[28:32], 16)
         coff = h/65536.0
         #bgim = colorize(self.bgim, coff*360.0)
@@ -178,7 +178,7 @@ class IconFactory(object):
 
         bgim = self.drawRectangle(self.size, self.bgimcols[idx][0], self.bgimcols[idx][1])
         
-        offs = (self.size[0]-letterSize)/2
+        offs = int((self.size[0]-letterSize)/2)
         bgim.paste(im, (offs,offs), im)
         #im = Image.composite(im, bgim, im)
 
@@ -195,10 +195,10 @@ class IconFactory(object):
     def drawRectangle(self, size, startFill, stopFill):
         width, height = size
         rectangle = Image.new('RGBA', size)
-        gradient = [ self.color(i, width, startFill, stopFill) for i in xrange(height) ]
+        gradient = [ self.color(i, width, startFill, stopFill) for i in range(height) ]
     
         modGrad = []
-        for i in xrange(height):
+        for i in range(height):
             modGrad += [gradient[i]] * width
         rectangle.putdata(modGrad)
     

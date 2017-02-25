@@ -289,7 +289,7 @@ class Fs(vfs_node.Node):
                 os.chdir(cwd)
                 if files == []:
                     continue
-                cmd = [ "src/res/7z.exe",  "a", "-bd", "-y", "-r" ] + [ i.fspath + '.zip' ] + files
+                cmd = [ "res/7z.exe",  "a", "-bd", "-y", "-r" ] + [ i.fspath + '.zip' ] + files
                 wd = i.fspath
             else:
                 wd = i.parent.fspath
@@ -309,7 +309,7 @@ class Fs(vfs_node.Node):
                         if platform.system() == 'Windows':
                             if cmd == ['#default']:
                                 a,b = os.path.splitext(srcNode.fsname)
-                                cmd = [ "src/res/7z.exe", "x", "-bd", "-y", "-o"+a ]
+                                cmd = [ "res/7z.exe", "x", "-bd", "-y", "-o"+a ]
                                 cmd = cmd + [ srcNode.fspath ]
                             else:
                                 cmd = cmd + [ windows2cygwinpath(srcNode.fspath) ]
@@ -334,7 +334,8 @@ class Fs(vfs_node.Node):
             p = genericPathToWindows(p)
             subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) # TODO exception handling
         else:
-            subprocess.call(["src/df_openwith", p]) # TODO use other path
+            raise
+            subprocess.call(["./df_openwith", p]) # TODO use other path
 
 #    def cb_open(self):
 #        srcList, dst = self.getSelectionAndDestination()
@@ -353,8 +354,8 @@ class Directory(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(Directory, self).__init__(parent, name, fsname, stats, linkTarget)
         if self.stat != None:
-            self.meta[0] = ('Size', '-', 0L)
-            self.meta[4] = ('Size in bytes', '-', 0L)
+            self.meta[0] = ('Size', '-', 0)
+            self.meta[4] = ('Size in bytes', '-', 0)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
         #self.actionButtonCallbacks.append(( 'Size', False, self.cb_dirsize ))
         self.stopAsync = False
@@ -462,12 +463,12 @@ class Directory(Fs):
         c = []
         if True:
         #try:
-            for f in os.listdir(unicode(self.fspath)):
+            for f in os.listdir(str(self.fspath)):
                 if self.stopAsync:
                     break
                 #f = unicode(f)
                 #print f, type(f)
-                if platform.system() != 'Windows' and not isinstance(f, unicode):
+                if platform.system() != 'Windows' and not isinstance(f, str):
                     f = f.decode('utf-8',errors='replace')
                 ##f = str(fn)
                 pj = path_join(self.fspath, f)
@@ -622,7 +623,7 @@ class PictureFile(File):
         return self.icon_
     
     def hover(self, enter):
-        print "Hover ", enter
+        print("Hover ", enter)
 
 
 class Cmd(Df_Job.Cmd):

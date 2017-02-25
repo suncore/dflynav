@@ -4,7 +4,7 @@ import os, time
 import win32file
 import win32event
 import win32con
-import thread
+import _thread
 from utils import *
 
 
@@ -14,7 +14,7 @@ class Notify():
         self.changeHandle = None
         self.lastTrigger = time.time()
         self.triggerWaiting = False
-        thread.start_new_thread(self.notifyThread, (self,))
+        _thread.start_new_thread(self.notifyThread, (self,))
 
     def setNotify(self, path, cbfun):
         #print 'setnotify ' + path

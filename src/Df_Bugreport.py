@@ -1,5 +1,5 @@
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui
 import Df, os, platform, subprocess, sys
 from utils import *
 import Df_Dialog, string

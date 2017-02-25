@@ -1,2 +1,60 @@
-#!/bin/sh
-src/df_openwith_kde $* &
+#!/usr/bin/env python3
+
+import sys
+
+from PyKDE4.kdecore import *
+from PyKDE4.kdeui import *
+from PyKDE4.kio import KIO
+from PyQt4.QtGui import QLabel
+import PyKDE4
+
+
+runner = True
+        
+helpText = ""        
+
+class MainWindow (KMainWindow):
+    def __init__ (self):
+        KMainWindow.__init__ (self)
+
+        self.resize (100, 100)
+        label = QLabel ("", self)
+        label.setGeometry (10, 10, 200, 20)
+
+#--------------- main ------------------
+if __name__ == '__main__':
+
+    appName     = "KApplication"
+    catalog     = ""
+    programName = ki18n ("KApplication")
+    version     = "1.0"
+    description = ki18n ("KApplication/KMainWindow/KAboutData example")
+    license     = KAboutData.License_GPL
+    copyright   = ki18n ("(c) 2007 Jim Bublitz")
+    text        = ki18n ("none")
+    homePage    = "www.riverbankcomputing.com"
+    bugEmail    = "jbublitz@nwinternet.com"
+    
+    aboutData   = KAboutData (appName, catalog, programName, version, description,
+                                license, copyright, text, homePage, bugEmail)
+
+    options = KCmdLineOptions()
+    options.add('+file')
+  
+    KCmdLineArgs.init (sys.argv, aboutData)
+    KCmdLineArgs.addCmdLineOptions(options)
+  
+    #args = kdecore.KCmdLineArgs.parsedArgs()
+    #count = args.count()
+    #files = []
+  
+        
+    #print sys.argv
+    app = KApplication ()
+    mainWindow = MainWindow ()
+    mainWindow.show ()
+    PyKDE4.kio.KRun.displayOpenWithDialog(KUrl.List(PyKDE4.kdecore.KUrl(sys.argv[1])), mainWindow)
+    mainWindow.close()
+    app.exec_ ()
+
+

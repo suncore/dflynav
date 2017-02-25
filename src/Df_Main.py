@@ -19,7 +19,7 @@
     
 import sys
 #, os
-from PySide import QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
@@ -72,7 +72,7 @@ def main():
     d.fsNotify[0] = vfs.Notify()
     d.fsNotify[1] = vfs.Notify()
     
-    d.qtapp = QtGui.QApplication(sys.argv)
+    d.qtapp = QtWidgets.QApplication(sys.argv)
     d.iconFactory = Df_Icon.IconFactory()
     #d.qtapp.setStyle("plastique")
     #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
@@ -106,7 +106,7 @@ def main():
     d.rp.other = d.lp
     #d.mainw = Df_Mainwin.Mainwin(d.g.mw, d.lp, d.rp)
     class Refresh(QObject):
-        refreshSig = Signal()
+        refreshSig = pyqtSignal()
     
     def periodicTimer():
         Df.d.lp.periodicRefresh()
@@ -121,13 +121,13 @@ def main():
     d.rp.start()
     d.lp.start()
     
-    d.g.mw.left_up.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowUp))
-    d.g.mw.right_up.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowUp))
-    d.g.mw.toright.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowForward))
-    d.g.mw.toleft.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowBack))
-    #d.g.mw.help.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_DialogHelpButton))
-    d.g.mw.left_back.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowBack))
-    d.g.mw.right_back.setIcon(d.g.mw.style().standardIcon(QtGui.QStyle.SP_ArrowBack))
+    d.g.mw.left_up.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowUp))
+    d.g.mw.right_up.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowUp))
+    d.g.mw.toright.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowForward))
+    d.g.mw.toleft.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowBack))
+    #d.g.mw.help.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_DialogHelpButton))
+    d.g.mw.left_back.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowBack))
+    d.g.mw.right_back.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowBack))
     
     d.g.mw.splitter.setSizes([8000,1])
     d.g.mw.splitter.setStretchFactor(0,1)
@@ -151,7 +151,7 @@ def main():
         path = os.getenv('PATH')
         if path[-1] != ";":
             path += ";"
-        if os.path.exists("src/cygwin"):
+        if os.path.exists("cygwin"):
             cwd = os.getcwd()
             path += cwd + "\\src\\cygwin\\bin" + ";" 
         else:
@@ -172,11 +172,15 @@ def main():
 
 
 if __name__=="__main__":
+    #main()
+    #sys.exit(0)
+    #print("Hello", file=sys.stderr)
     try:
         main()
     except:
         #traceback.print_exc()
         crash()
+        #raise
     sys.exit(0)
 
 
@@ -187,20 +191,20 @@ if __name__=="__main__":
 #import sys
 #import win32ui
 #import win32gui
-#from PySide import QtCore
-#from PySide import QtGui
+#from PyQt5 import QtCore
+#from PyQt5 import QtGui
 #
-#class testWindow(QtGui.QMainWindow):
+#class testWindow(QtWidgets.QMainWindow):
 #    def __init__(self):
 #        super(testWindow, self).__init__()
 #        self.setGeometry(180.0, 130.0, 280.0, 400.0)
-#        file = QtGui.QFileDialog.getOpenFileNames(self)
+#        file = QtWidgets.QFileDialog.getOpenFileNames(self)
 #        self.setMouseTracking(True)
 #
 #        large, small = win32gui.ExtractIconEx('C:/Program Files (x86)/Exact Audio Copy/eac.exe', 0)
 #        win32gui.DestroyIcon(small[0])
 #
-#        self.pixmap = QtGui.QPixmap.fromWinHBITMAP(self.bitmapFromHIcon(large[0]), 2)
+#        self.pixmap = QtWidgets.QPixmap.fromWinHBITMAP(self.bitmapFromHIcon(large[0]), 2)
 #    def bitmapFromHIcon(self, hIcon):
 #        hdc = win32ui.CreateDCFromHandle(win32gui.GetDC(0))
 #        hbmp = win32ui.CreateBitmap()
@@ -211,17 +215,17 @@ if __name__=="__main__":
 #        hdc.DeleteDC()
 #        return hbmp.GetHandle()
 #    def paintEvent(self, event):
-#        painter = QtGui.QPainter()
+#        painter = QtWidgets.QPainter()
 #        painter.begin(self)
-#        painter.setRenderHint(QtGui.QPainter.Antialiasing)
+#        painter.setRenderHint(QtWidgets.QPainter.Antialiasing)
 #        painter.setPen(QtCore.Qt.NoPen)
-#        painter.setBrush(QtGui.QBrush(QtGui.QColor(255.0, 255.0, 255.0, 255.0), QtCore.Qt.SolidPattern))
+#        painter.setBrush(QtWidgets.QBrush(QtWidgets.QColor(255.0, 255.0, 255.0, 255.0), QtCore.Qt.SolidPattern))
 #        painter.drawRect(QtCore.QRect(0.0, 0.0, 280.0, 400.0))
 #        painter.drawPixmap(QtCore.QRect(0.0, 0.0, 32.0, 32.0), self.pixmap)
 #        painter.end()
 #
 #if __name__ == "__main__":
-#    app = QtGui.QApplication(sys.argv)
+#    app = QtWidgets.QApplication(sys.argv)
 #    mainWindow = testWindow()
 #    mainWindow.show()
 #    app.exec_()

@@ -1,5 +1,5 @@
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui, QtWidgets
 from utils import *
 import Df
 
@@ -29,8 +29,8 @@ class Preview():
         self.textW[1] = rightTextW
         self.treeW[0] = leftTreeW
         self.treeW[1] = rightTreeW
-        self.scene[0] = QtGui.QGraphicsScene()
-        self.scene[1] = QtGui.QGraphicsScene()
+        self.scene[0] = QtWidgets.QGraphicsScene()
+        self.scene[1] = QtWidgets.QGraphicsScene()
         self.gvW[0].setScene(self.scene[0])
         self.gvW[1].setScene(self.scene[1])
         #self.size = self.gvW[0].size()

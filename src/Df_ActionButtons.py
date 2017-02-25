@@ -1,10 +1,10 @@
 
 # Actionbuttons are those buttons in the middle column that are dynamic, changing with selection
 
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui, QtWidgets
 
-class ActionButton(QtGui.QPushButton):
+class ActionButton(QtWidgets.QPushButton):
     # self.df_
     pass
 
@@ -19,7 +19,7 @@ class ActionButtons():
     def addButton(self, name, callback):
         button = ActionButton(self.mainW)
         self.layoutW.addWidget(button)
-        button.setText(QtGui.QApplication.translate("MainWindow", name, None, QtGui.QApplication.UnicodeUTF8))
+        button.setText(QtWidgets.QApplication.translate("MainWindow", name, None))
         button.clicked.connect(callback)
         self.buttons.append(button)
 

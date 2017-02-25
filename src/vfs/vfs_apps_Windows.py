@@ -6,7 +6,7 @@ import ctypes, win32file, win32api, win32wnet, win32con
 from . import vfs_node
 from utils import *
 import sys
-from _winreg import *
+from winreg import *
 
 class Apps(vfs_node.Node):
     def children(self, async=True):

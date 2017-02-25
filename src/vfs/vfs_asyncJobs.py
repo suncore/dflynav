@@ -1,13 +1,13 @@
 import os, stat, time
-import thread
+import _thread
 from utils import *
-from Queue import Queue
+from queue import Queue
 if platform.system() == 'Windows':
     import pythoncom
 
 class JobManager(object):
     def addJob(self, fun):
-        thread.start_new_thread(self.jobTask, (fun,))
+        _thread.start_new_thread(self.jobTask, (fun,))
     
     def jobTask(self, fun):
         try:

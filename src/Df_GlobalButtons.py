@@ -1,5 +1,5 @@
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui, QtWidgets
 import Df, os, platform, subprocess, sys
 from utils import *
 import Df_Dialog
@@ -11,22 +11,22 @@ class GlobalButtons(object):
         mw.configure.clicked.connect(self.configure)
         #mw.help.clicked.connect(self.help)
         self.configW = configW
-        self.helpMenu = QtGui.QMenu(mw)
+        self.helpMenu = QtWidgets.QMenu(mw)
         mw.help.setMenu(self.helpMenu)
         actions = []
-        action = QtGui.QAction("Help", mw)
+        action = QtWidgets.QAction("Help", mw)
         action.triggered.connect(self.help)
         actions.append(action)
-        #action = QtGui.QAction("Show license key", mw)
+        #action = QtWidgets.QAction("Show license key", mw)
         #action.triggered.connect(self.help_license)
         #actions.append(action)
-        #action = QtGui.QAction("Enter license key", mw)
+        #action = QtWidgets.QAction("Enter license key", mw)
         #action.triggered.connect(Df.d.config.enterLicenseKey)
         #actions.append(action)
-        action = QtGui.QAction("License agreement", mw)
+        action = QtWidgets.QAction("License agreement", mw)
         action.triggered.connect(self.help_agreement)
         actions.append(action)
-        action = QtGui.QAction("About", mw)
+        action = QtWidgets.QAction("About", mw)
         action.triggered.connect(self.help_about)
         actions.append(action)
         self.helpMenu.addActions(actions)
@@ -39,7 +39,7 @@ class GlobalButtons(object):
         self.configW.show()
         
     def help(self):
-        Df_Dialog.TextDialog("Help", None, "src/res/helptext.html")
+        Df_Dialog.TextDialog("Help", None, "res/helptext.html")
 
     def help_agreement(self):
         Df_Dialog.TextDialog("License", None, "src/res/license.html")

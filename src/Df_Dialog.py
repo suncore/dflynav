@@ -1,23 +1,23 @@
-from PySide.QtCore import *
-from PySide import QtGui
+from PyQt5.QtCore import *
+from PyQt5 import QtGui
 import Df, os, platform, subprocess, sys
 from utils import *
 
 def Dialog(title, instruction, prefill):    
-    result, ok = QtGui.QInputDialog.getText(Df.d.g.mw, title, instruction, QtGui.QLineEdit.Normal, prefill)
+    result, ok = QtWidgets.QInputDialog.getText(Df.d.g.mw, title, instruction, QtWidgets.QLineEdit.Normal, prefill)
     if ok and result != '':
         return result
     return None
 
 def YesNo(title, text):    
-    r = QtGui.QMessageBox.question(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.Cancel)
-    return r == int(QtGui.QMessageBox.Ok)
+    r = QtWidgets.QMessageBox.question(Df.d.g.mw, title, text, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Cancel)
+    return r == int(QtWidgets.QMessageBox.Ok)
 
 def MessageWarn(title, text):
-    QtGui.QMessageBox.warning(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton)
+    QtWidgets.QMessageBox.warning(Df.d.g.mw, title, text, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.NoButton)
     
 def MessageInfo(title, text):
-    QtGui.QMessageBox.information(Df.d.g.mw, title, text, QtGui.QMessageBox.Ok, QtGui.QMessageBox.NoButton)
+    QtWidgets.QMessageBox.information(Df.d.g.mw, title, text, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.NoButton)
 
 def TextDialog(title, text=None, file=None): 
     w = Df.d.g.help

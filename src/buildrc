@@ -1,11 +1,11 @@
 #!/bin/sh
-export PATH=/cygdrive/c/python27/scripts:/cygdrive/c/Python27/Lib/site-packages/PySide:$PATH
-pyside-uic mainwin.ui  > Df_UiMainwin.py
-#pyside-uic dialog.ui  > Df_UiDialog.py
-pyside-uic config.ui  > Df_UiConfig.py
-#pyside-uic preview.ui  > Df_UiPreview.py
-pyside-uic jobstatus.ui  > Df_UiJobstatus.py
-pyside-uic help.ui  > Df_UiHelp.py
-pyside-uic find.ui  > Df_UiFind.py
+# export PATH=/cygdrive/c/python27/scripts:/cygdrive/c/Python27/Lib/site-packages/PySide:$PATH
+pyuic5 mainwin.ui  > Df_UiMainwin.py
+#pyuic5 dialog.ui  > Df_UiDialog.py
+pyuic5 config.ui  > Df_UiConfig.py
+#pyuic5 preview.ui  > Df_UiPreview.py
+pyuic5 jobstatus.ui  > Df_UiJobstatus.py
+pyuic5 help.ui  > Df_UiHelp.py
+pyuic5 find.ui  > Df_UiFind.py
 #pyside-rcc dragonfly.qrc  > dragonfly_rc.py
 
