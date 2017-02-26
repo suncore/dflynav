@@ -156,6 +156,7 @@ class Config():
         if self.rememberStartDirs:
             self.settings.setValue("startDirLeft", Df.d.lp.cd.path())
             self.settings.setValue("startDirRight", Df.d.rp.cd.path())
+            #print(Df.d.lp.cd.path(), Df.d.rp.cd.path())
         else:
             self.settings.setValue("startDirLeft", self.configW.leftStartDir.text())
             self.settings.setValue("startDirRight", self.configW.rightStartDir.text())
@@ -192,6 +193,7 @@ class Config():
             timedate = timedate + " %H:%M:%S"
         
         self.formatTimeDate = timedate
+        self.settings.sync()
                  
     def useCurrentLeft(self):
         self.configW.leftStartDir.setText(Df.d.lp.cd.path())
