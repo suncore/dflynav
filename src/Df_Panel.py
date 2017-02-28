@@ -6,6 +6,7 @@ from utils import *
 import Df
 import os, subprocess, platform
 from PIL import Image
+import functools
 
 class PanelItem(QtWidgets.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
@@ -429,9 +430,8 @@ class Panel(object):
             fun()
         for i in cblist:
             name, binary, callback = i
-            if type(callback) is bool:
-                print("hej")
-            cb = lambda fun=callback: abcb(fun)
+            #cb = lambda func=callback: abcb(func)
+            cb = functools.partial(abcb, fun=callback)
             if binary and s[0].df_node.binaryOpCompat(self.other.cd):
                 self.actionButtons.addButton(name, cb)
             elif not binary:
@@ -482,7 +482,8 @@ class Panel(object):
         actions = []
         for path in h:
             action = QtWidgets.QAction(path, self.mainW)
-            receiver = lambda path=path: self.gotoPath(path)
+            #receiver = lambda path=path: self.gotoPath(path)
+            receiver = functools.partial(self.gotoPath, path=path)
             action.triggered.connect(receiver)
             actions.append(action)
         self.historyMenu.addActions(actions)
@@ -507,7 +508,7 @@ class Panel(object):
     def updateBookmarksMenu(self):
         self.bookmarksMenu.clear()
         actions = []
-        action = QtWidgets.QAction('Add bookmark', self.mainW)
+        action = QtWidgets.QAction('Add bookmark (right click on item to remove)', self.mainW)
         action.triggered.connect(self.addBookmark)
         actions.append(action)
         action = QtWidgets.QAction('', self.mainW)
@@ -515,9 +516,11 @@ class Panel(object):
         actions.append(action)
         for path in Df.d.bookmarks:
             action = QtWidgets.QAction(path, self.mainW)
-            receiver = lambda path=path: self.gotoPath(path)
+            #receiver = lambda path=path: self.gotoPath(path)
+            receiver = functools.partial(self.gotoPath, path=path)
             action.triggered.connect(receiver)
-            hover = lambda path=path: self.bookmarksMenuHoverPathSet(path)
+            #hover = lambda path=path: self.bookmarksMenuHoverPathSet(path)
+            hover = functools.partial(self.bookmarksMenuHoverPathSet, path=path)
             action.hovered.connect(hover)
             actions.append(action)
         self.bookmarksMenu.addActions(actions)

@@ -8,8 +8,6 @@ class ActionButton(QtWidgets.QPushButton):
     # self.df_
     pass
 
-
-
 class ActionButtons():
     def __init__(self, layoutW, mainW):
         self.layoutW = layoutW

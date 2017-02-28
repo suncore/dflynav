@@ -3,14 +3,14 @@ BASE=/a/proj/dragonfly
 SRC=$BASE/ws3/src
 cd $BASE/pyinstaller
 #rm -rf $BASE/pyinstaller/DragonflyNavigator
-python pyinstaller.py -y -n DragonflyNavigator $SRC/Df_Main.py
+python3 pyinstaller.py -y -n DragonflyNavigator $SRC/Df_Main.py
 cd $BASE/pyinstaller/DragonflyNavigator/dist/DragonflyNavigator
-mkdir -p src/icons src/res
-cp $SRC/icons/dragonfly.png src/icons
-cp $SRC/icons/dragonfly.ico src/icons
-cp $SRC/icons/Letters.png src/icons
-cp $SRC/res/*html src/res
+mkdir -p icons res
+cp $SRC/icons/dragonfly.png icons
+cp $SRC/icons/dragonfly.ico icons
+cp $SRC/icons/Letters.png icons
+cp $SRC/res/*html res
 # bug in pyinstaller (?): sys.getfilesystemencoding() returns None if we do not have the following two lines as workaround
-cp /usr/lib/python2.7/codecs.py .
-cp -r /usr/lib/python2.7/encodings .
+# cp /usr/lib/python2.7/codecs.py .
+# cp -r /usr/lib/python2.7/encodings .
 

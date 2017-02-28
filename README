@@ -8,9 +8,6 @@ Website: http://sourceforge.net/projects/dragonflynavigator/
 
 How to develop for Linux
 ------------------------
-Install python packages pyside, pyside-tools and setuptools 
-Install eclipse and pydev
-Use Eclipse to clone git repo
 Install qt-designer and use that to edit the UI (.ui files). Use buildrc to rebuild python files from .ui files.
 
 Building for Linux
@@ -20,22 +17,4 @@ Edit buildlinux so the paths work for you
 Go to source directory. Run buildlinux
 Create .tar.gz package of the pyinstaller DragonflyNavigator/dist/DragonflyNavigator directory
 To Run: cd to installation directory and run DragonflyNavigator
-
-How to develop for Windows (unmaintained)
---------------------------
-Install cygwin to c:/cygwin
-Install python 2.7 to c:/python27
-Install Python packages pyside and setuptools
-Install eclipse with pydev
-Use eclipse to clone git repo
-Install and use Qt Creator to edit .ui files (User Interface files)
-Run buildrc (from cygwin terminal) to build python files from .ui files.
-
-Building for Windows
---------------------
-Install pyinstaller and UPX
-Edit buildwin_pyinstaller so the paths work for you (to be parametrized any day now)
-Start cygwin terminal. Go to source directory. Run buildwin_pyinstaller.
-Install and use Advanced Installer to build. Use dragonfly.aip project file. Edit paths as necessary.
-
 

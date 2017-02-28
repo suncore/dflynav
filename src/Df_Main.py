@@ -31,7 +31,7 @@ def main():
 
 #if __name__=="__main__":
     
-    iconFile = 'src/icons/dragonfly.png'
+    iconFile = 'icons/dragonfly.png'
 
     # d is the only global variable, the base object that contains the entire application state
     d = Df_Dragonfly.DragonFly()

@@ -23,9 +23,9 @@ class GlobalButtons(object):
         #action = QtWidgets.QAction("Enter license key", mw)
         #action.triggered.connect(Df.d.config.enterLicenseKey)
         #actions.append(action)
-        action = QtWidgets.QAction("License agreement", mw)
-        action.triggered.connect(self.help_agreement)
-        actions.append(action)
+        #action = QtWidgets.QAction("License agreement", mw)
+        #action.triggered.connect(self.help_agreement)
+        #actions.append(action)
         action = QtWidgets.QAction("About", mw)
         action.triggered.connect(self.help_about)
         actions.append(action)
@@ -42,7 +42,7 @@ class GlobalButtons(object):
         Df_Dialog.TextDialog("Help", None, "res/helptext.html")
 
     def help_agreement(self):
-        Df_Dialog.TextDialog("License", None, "src/res/license.html")
+        Df_Dialog.TextDialog("License", None, "res/license.html")
 
 #    def help_license(self):
 #        if Df.d.licenseKey == "":
@@ -51,6 +51,6 @@ class GlobalButtons(object):
 #            Df_Dialog.MessageInfo("License", "License key (valid): " + Df.d.licenseKey)
 
     def help_about(self):
-        Df_Dialog.MessageInfo("About", "Dragonfly Navigator " + Df.d.version + "\nCopyright 2012 Henrik Harmsen")
+        Df_Dialog.MessageInfo("About", "Dragonfly Navigator " + Df.d.version + "\nCopyright 2017 Henrik Harmsen.\nLicense: GPLv3")
     
         
