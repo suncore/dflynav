@@ -7,10 +7,6 @@ from PIL.ExifTags import TAGS
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 import locale, datetime
-if platform.system() == 'Windows':
-    import win32api, win32con
-    import ctypes
-    import ctypes.wintypes
 import Df_Exif as exifreader
 import tempfile, Df, traceback
 

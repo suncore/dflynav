@@ -1,8 +1,12 @@
 from PyQt5.QtCore import *
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtWidgets
 from utils import *
 import Df, time, hashlib, sys, string, _thread
 from queue import Queue
+
+class Communicate(QObject):
+    signal = pyqtSignal()
+
 
 class Find():
     def __init__(self, findW):
@@ -15,9 +19,18 @@ class Find():
         self.findW.start.clicked.connect(self.startFind)
         self.findW.recursive.setCheckState(Qt.Checked)
         self.q = Queue()
-        _thread.start_new_thread(self.findTask, (self,))
+        self.q_sf = Queue()
+        self.q_st = Queue()
+        self.q_res = Queue()
         self.stop = False
         self.panel = None # While hidden this is none
+        self.c = Communicate()
+        self.c.signal.connect(self.addSearchResult)
+        self.c_sf = Communicate()
+        self.c_sf.signal.connect(self.setSearchingFor2)
+        self.c_st = Communicate()
+        self.c_st.signal.connect(self.setStatus2)
+        _thread.start_new_thread(self.findTask, (self,))
         self.setSearchingFor("")
 
     def startFind(self):
@@ -28,25 +41,38 @@ class Find():
         self.q.put((self.panel.cd, t, recurse))
 
     def setSearchingFor(self, text):
+        self.q_sf.put(text)
+        self.c_sf.signal.emit()
+
+    def setSearchingFor2(self): # Runs in GUI thread
+        text = self.q_sf.get(True)
         self.findW.currentSearch.setText("Searching: " + text)
 
     def findInNode(self, node, t, r):
-        t = string.lower(t)
+        t = t.lower() #string.lower(t)
         self.setSearchingFor(node.path())
         ch = node.children(False)
         for n in ch:
             if self.stop:
                 return
-            try:
-                name = string.lower(n.name)
-                if string.find(name, t) != -1:
-                    item = QtWidgets.QTreeWidgetItem( [ n.path() ] )
-                    item.df_node = n
-                    self.findW.hitlist.insertTopLevelItem(0, item)
-            except:
-                pass
+            if True: #try:
+                name = n.name.lower() #string.lower(n.name)
+                if name.find(t) != -1:
+                    #item = QtWidgets.QTreeWidgetItem( [ n.path() ] )
+                    #item.df_node = n
+                    self.q_res.put(n)
+                    self.c.signal.emit()
+                    #self.findW.hitlist.insertTopLevelItem(0, item)
+            #except:
+                #pass
             if not n.leaf() and r:
                 self.findInNode(n, t, r)
+
+    def addSearchResult(self): # Runs in GUI thread
+        n = self.q_res.get(True)
+        item = QtWidgets.QTreeWidgetItem( [ n.path() ] )
+        item.df_node = n
+        self.findW.hitlist.insertTopLevelItem(0, item)
 
     def findTask(self, dummy):
         try:
@@ -83,6 +109,11 @@ class Find():
         self.stop = True
 
     def setStatus(self, status):
+        self.q_st.put(status)
+        self.c_st.signal.emit()
+        
+    def setStatus2(self): # Runs in GUI thread
+        status = self.q_st.get(True)
         self.findW.stop.setEnabled(status != "Idle")
         self.findW.start.setEnabled(status == "Idle")
         if status == "Idle":

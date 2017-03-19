@@ -334,7 +334,6 @@ class Fs(vfs_node.Node):
             p = genericPathToWindows(p)
             subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) # TODO exception handling
         else:
-            raise
             subprocess.call(["./df_openwith", p]) # TODO use other path
 
 #    def cb_open(self):
@@ -505,81 +504,10 @@ class Directory(Fs):
         self.changed = True
         Df.d.refresh.refreshSig.emit()
 
-if platform.system() == 'Windows':
-    class WinDrive(Directory):
-        def __init__(self, parent, name, fsname):
-            super(WinDrive, self).__init__(parent, name, fsname)
-            self.actionButtonCallbacks = []
-            try:
-                free_bytes = ctypes.c_ulonglong(0)
-                total_bytes = ctypes.c_ulonglong(0)
-                ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(self.fspath), None, ctypes.pointer(total_bytes), ctypes.pointer(free_bytes))
-                drive= name+'\\'
-                dt=win32file.GetDriveType(drive)
-                netlabel = None
-                if dt == win32file.DRIVE_UNKNOWN:
-                    dts = ''
-                if dt == win32file.DRIVE_NO_ROOT_DIR:
-                    dts = ''
-                if dt == win32file.DRIVE_REMOVABLE:
-                    dts = 'Removable'
-                if dt == win32file.DRIVE_FIXED:
-                    dts = 'Fixed'
-                if dt == win32file.DRIVE_REMOTE:
-                    dts = 'Network'
-                    try:
-                        netlabel = win32wnet.WNetGetUniversalName(drive)
-                    except:
-                        pass
-                if dt == win32file.DRIVE_CDROM:
-                    dts = 'CD/DVD'
-                if dt == win32file.DRIVE_RAMDISK:
-                    dts = 'RAM'
-                info = ('','','','','')
-                try:
-                    info = win32api.GetVolumeInformation(drive)
-                except:
-                    pass
-                if netlabel:
-                    label = netlabel
-                else:
-                    label = info[0]
-                self.meta = [ ('Description', label, label), ('File System', info[4], info[4]), ('Type', dts, dts), ('Size', size2str(total_bytes.value), total_bytes.value), ('Free', size2str(free_bytes.value), free_bytes.value) ]
-            except:
-                pass
-
-    class WinNetworkServer(Directory):
-        def __init__(self, parent, name, fsname):
-            super(WinNetworkServer, self).__init__(parent, name, fsname)
-    
-        def childByName(self, name):
-            return WinNetworkRoot(self, name, name)
-        
-        def startGetChildren(self):
-            self.childrenReady = True
-            Df.d.refresh.refreshSig.emit()
-   
-        def childrenStop(self):
-            pass
-
-        def children(self, async=True):
-            return []
-    
-    class WinNetworkRoot(Directory):
-        def __init__(self, parent, name, fsname):
-            super(WinNetworkRoot, self).__init__(parent, name, fsname)
-
-        def childByName(self, name):
-            return Directory(self, name, name)
-
-else:
-    class RootDirectory(Directory):
-        def __init__(self, parent, name, fsname):
-            super(RootDirectory, self).__init__(parent, name, fsname)
-            self.actionButtonCallbacks = []
-
-
-
+class RootDirectory(Directory):
+    def __init__(self, parent, name, fsname):
+        super(RootDirectory, self).__init__(parent, name, fsname)
+        self.actionButtonCallbacks = []
 
 class File(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):

@@ -60,7 +60,7 @@ class Panel(object):
         self.bookmarksW = bookmarksW
         self.historyMenu = QtWidgets.QMenu(self.mainW)
         self.bookmarksMenu = QtWidgets.QMenu(self.mainW)
-        self.cd = vfs.vfs_root.VfsRoot()
+        self.cd = vfs.vfs_fs.Directory(None, '/', '/') # vfs.vfs_root.VfsRoot()
         self.historyW.setMenu(self.historyMenu)
         self.bookmarksW.setMenu(self.bookmarksMenu)
         self.bookmarksMenu.setContextMenuPolicy(Qt.CustomContextMenu)

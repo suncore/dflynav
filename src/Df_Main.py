@@ -118,6 +118,14 @@ def main():
 #    d.timer = QtCore.QTimer()
 #    d.timer.timeout.connect(periodicTimer)
 #    d.timer.start(100)
+
+
+    d.find = Df_Find.Find(d.g.find)    
+    d.jobm = Df_Job.JobManager(d.g.mw.jobs, d.g.jobstatus)
+    d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
+
+    d.config.load(d.g.config)
+
     d.rp.start()
     d.lp.start()
     
@@ -139,28 +147,7 @@ def main():
     d.g.mw.right_up.setToolTip("Up")
     d.g.mw.toleft.setToolTip("Set the left path to the same as the right path")
     d.g.mw.toright.setToolTip("Set the right path to the same as the left path")
-
-    d.find = Df_Find.Find(d.g.find)    
-    d.jobm = Df_Job.JobManager(d.g.mw.jobs, d.g.jobstatus)
-    d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
     
-
-
-    os.putenv('CYGWIN', 'nodosfilewarning')
-    if platform.system() == 'Windows':
-        path = os.getenv('PATH')
-        if path[-1] != ";":
-            path += ";"
-        if os.path.exists("cygwin"):
-            cwd = os.getcwd()
-            path += cwd + "\\src\\cygwin\\bin" + ";" 
-        else:
-            path += "c:\\cygwin\\bin;"
-        os.putenv('PATH', path)
-
-
-    d.config.load(d.g.config)
-
     Df_Bugreport.CheckForCrashReport()
 
     r = d.qtapp.exec_()
@@ -172,16 +159,25 @@ def main():
 
 
 if __name__=="__main__":
+    #print("Hello world")
+    #print("\n")
+    sys.stdout.flush()
     #main()
     #sys.exit(0)
     #print("Hello", file=sys.stderr)
-    try:
+    if os.environ.get("RELEASE") == "True":
+        #print("Release")
+        try:
+            main()
+        except:
+            #traceback.print_exc()
+            crash()
+            #raise
+    else:
+        #print("Debug")
+        #print("\n")
         main()
-    except:
-        #traceback.print_exc()
-        crash()
-        #raise
-    sys.exit(0)
+    #sys.exit(0)
 
 
 

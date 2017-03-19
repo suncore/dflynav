@@ -23,9 +23,9 @@ class Config():
             Df.d.g.mw.resize(size)
         Df.d.g.mw.move(pos)
 
-        Df.d.bookmarks = self.settings.value("bookmarks", [ ])
-        if type(Df.d.bookmarks) != type([]):
-            Df.d.bookmarks = [ Df.d.bookmarks ]
+        Df.d.bookmarks = self.settings.value("bookmarks", [ "None" ])
+        if Df.d.bookmarks == [ "None" ]:
+            Df.d.bookmarks = [ ]
         Df.d.lp.updateBookmarksMenu()
         Df.d.rp.updateBookmarksMenu()
 
@@ -150,7 +150,10 @@ class Config():
         state = Df.d.g.mw.windowState()
         maximized = Df.d.g.mw.windowState() == Qt.WindowMaximized
         self.settings.setValue("maximized", int(maximized))
-        self.settings.setValue("bookmarks", Df.d.bookmarks)
+        if Df.d.bookmarks == []:
+            self.settings.setValue("bookmarks", [ "None" ])
+        else:
+            self.settings.setValue("bookmarks", Df.d.bookmarks)
         self.rememberStartDirs = self.configW.rememberStartFolders.isChecked()
         self.settings.setValue("rememberStartDirs", int(self.rememberStartDirs))
         if self.rememberStartDirs:
