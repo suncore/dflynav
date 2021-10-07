@@ -5,12 +5,12 @@ from subprocess import *
 from PIL import Image
 from PIL.ExifTags import TAGS
 from PyQt5.QtCore import *
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtWidgets
 import locale, datetime
-import Df_Exif as exifreader
+import exifread
 import tempfile, Df, traceback
 
-def ImageToPixmap(fn):
+def ImageToPreview(fn):
     try:
         im = Image.open(fn)
     except:
@@ -30,30 +30,31 @@ def ImageToPixmap(fn):
         try:
             date2 = exif['DateTimeOriginal']
             t = time.strptime(date2,"%Y:%m:%d %H:%M:%S")
-            date = time2str(t)
+            date = 'Photo taken at: '+ time2str(t) + '  '
         except:
             pass
     if 'Orientation' in exif:
         if exif['Orientation'] == 6:
-            im = im.rotate(-90)
+            im = im.rotate(-90,expand=1)
         elif exif['Orientation'] == 3:
-            im = im.rotate(180)
+            im = im.rotate(180,expand=1)
         elif exif['Orientation'] == 8:
-            im = im.rotate(90)
-    data = im.convert('RGBA').tostring('raw', 'BGRA')
-    image = QtWidgets.QImage(data, im.size[0], im.size[1], QtWidgets.QImage.Format_ARGB32)
+            im = im.rotate(90,expand=1)
+    data = im.convert('RGBA').tobytes('raw', 'BGRA')
+    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
     w,h = im.size
     size = str(w) + 'x' + str(h)
-    return ((data, QtWidgets.QPixmap(image)), date+'  '+size)
+    return ((data, QtGui.QPixmap(image)), date + 'Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6))
 
 def JpegThumbToIcon(fn):
+    # print(fn)
     file=open(fn, 'rb')
-    exif = exifreader.process_file(file)
+    exif = exifread.process_file(file)
     file.close()
     date = ''
     dateSecs = 0
     thumb = None
-    #print exif
+    # print(exif)
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])
@@ -72,26 +73,28 @@ def JpegThumbToIcon(fn):
         im = Image.open(f)
         if 'Image Orientation' in exif:
             o = str(exif['Image Orientation'])
-            if o == '6':
-                im = im.rotate(-90)
+            # print(o)
+            if o == '6' or o == "Rotated 90 CW":
+                im = im.rotate(-90,expand=1)
             elif o == '3':
-                im = im.rotate(180)
-            elif o == '8':
-                im = im.rotate(90)
+                im = im.rotate(180,expand=1)
+            elif o == '8' or o == "Rotated 90 CCW":
+                im = im.rotate(90,expand=1)
         w,h = im.size
         if w > h:
             s = w
-            b = (0,((w-h)/2))
+            b = (0,int((w-h)/2))
         else:
             s = h
-            b = (((h-w)/2),0)
+            b = (int((h-w)/2),0)
         c = 128
         im2 = Image.new('RGBA', (s,s), (c,c,c,255))
+        #print(im.size,b)
         im2.paste(im, b)
         im=im2
-        data = im.convert('RGBA').tostring('raw', 'BGRA')
-        image = QtWidgets.QImage(data, im.size[0], im.size[1], QtWidgets.QImage.Format_ARGB32)
-        thumb = (data, QtWidgets.QIcon(QtWidgets.QPixmap(image)))
+        data = im.convert('RGBA').tobytes('raw', 'BGRA')
+        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+        thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
     return (thumb, date, dateSecs)
 
 def iff(test_, then_, else_):
@@ -189,56 +192,7 @@ def fsPathExt(path):
             ext = ''
         return ext
 
-def windows2cygwinpath(p):
-    p = windowsPathToGeneric(p)
-    if p[1] == ":":
-        d = p[0]
-        return "/cygdrive/" + d + '/' + p[2:]
-    return p
 
-def genericPathToWindows(p):
-    p = '\\'.join(p.split('/'))
-    return p
-
-def windowsPathToGeneric(p):
-    p = '/'.join(p.split('\\'))
-    return p
-
-
-def WindowsOpenProperties(f):
-    
-    SEE_MASK_NOCLOSEPROCESS = 0x00000040
-    SEE_MASK_INVOKEIDLIST = 0x0000000C
-    
-    class SHELLEXECUTEINFO(ctypes.Structure):
-        _fields_ = (
-            ("cbSize",ctypes.wintypes.DWORD),
-            ("fMask",ctypes.c_ulong),
-            ("hwnd",ctypes.wintypes.HANDLE),
-            ("lpVerb",ctypes.c_char_p),
-            ("lpFile",ctypes.c_char_p),
-            ("lpParameters",ctypes.c_char_p),
-            ("lpDirectory",ctypes.c_char_p),
-            ("nShow",ctypes.c_int),
-            ("hInstApp",ctypes.wintypes.HINSTANCE),
-            ("lpIDList",ctypes.c_void_p),
-            ("lpClass",ctypes.c_char_p),
-            ("hKeyClass",ctypes.wintypes.HKEY),
-            ("dwHotKey",ctypes.wintypes.DWORD),
-            ("hIconOrMonitor",ctypes.wintypes.HANDLE),
-            ("hProcess",ctypes.wintypes.HANDLE),
-        )
-    
-    ShellExecuteEx = ctypes.windll.shell32.ShellExecuteEx
-    ShellExecuteEx.restype = ctypes.wintypes.BOOL
-    
-    sei = SHELLEXECUTEINFO()
-    sei.cbSize = ctypes.sizeof(sei)
-    sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_INVOKEIDLIST
-    sei.lpVerb = "properties"
-    sei.lpFile = f
-    sei.nShow = 1
-    ShellExecuteEx(ctypes.byref(sei))
 
 def crash():
     print(("Crash dumping now", Df.d.logfile))

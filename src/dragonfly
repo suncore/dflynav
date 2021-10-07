@@ -3,7 +3,7 @@
 # styles plastique "default" motif gtk cleanlooks
 cd `dirname $0`
 export RELEASE=True
-python3 Df_Main.py 1>&2
+python3 -E Df_Main.py 1>&2
 #python -m cProfile -s time Df_Main.py 2>&1
 # | grep -v "Unable to retrieve Watch object"
 #-style cleanlooks 

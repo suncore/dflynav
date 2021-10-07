@@ -24,7 +24,6 @@ class Preview():
         self.gvW[1].resizeEvent = self.gvW_resizeEvent1
         self.gvW[0].showEvent = self.gvW_showEvent0
         self.gvW[1].showEvent = self.gvW_showEvent1
-        self.gvW[1] = rightGvW
         self.textW[0] = leftTextW
         self.textW[1] = rightTextW
         self.treeW[0] = leftTreeW
@@ -51,7 +50,7 @@ class Preview():
             #h = self.pixmap[i].height()
             #self.gvW[i].fitInView(w/2, h/2, 20,20, Qt.KeepAspectRatio)
             #self.gvW[i].fitInView(self.item[i], Qt.KeepAspectRatio)
-            size = self.gvW[i].viewport().size()
+            size = self.gvW[i].viewport().size() # TODO wrong when just exposed?
             vw = size.width()
             vh = size.height()
             pixmap = self.pixmap[i].scaled(QSize(vw,vh), Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -75,9 +74,9 @@ class Preview():
         else:
             i = 0
         (self.data[i], self.pixmap[i]) = pm
-        self.containerW[index].hide()
-        self.containerW[i].show()
+        #self.containerW[index].hide()
         self.treeW[i].hide()
+        self.containerW[i].show()
         self.textW[i].setText(text)
         #print self.pixmap[i].size()
         self.reShow(i)

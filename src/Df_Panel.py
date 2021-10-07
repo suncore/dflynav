@@ -7,6 +7,8 @@ import Df
 import os, subprocess, platform
 from PIL import Image
 import functools
+from queue import Queue
+import _thread
 
 class PanelItem(QtWidgets.QTreeWidgetItem):
     # self.df_node is pointer to node that belongs to this item
@@ -29,14 +31,27 @@ class PanelItem(QtWidgets.QTreeWidgetItem):
             try:
                 (lk, ls, lv) = self.df_node.meta[col-1]
                 (rk, rs, rv) = other.df_node.meta[col-1]
-                r = lv < rv
+                if col == 2 or col == 1 or col == 5: # Time and size should be sorted most recent first
+                    r = lv > rv
+                else:
+                    r = lv < rv
             except:
                 r = True
             return r 
 
+def PanelIconQueueTask(dummy):
+    while True:
+        (pi, i) = Df.d.panelIconQueue.get(True)
+        try:
+            pi.setIcon(0, i.icon(fast=True)) # If panel item has been deleted, this will raise an exception and we won't spend time on jpeg thumb loading
+            pi.setIcon(0, i.icon(fast=False))
+        except:
+            pass
+
+
 
 class Panel(object):
-    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW):
+    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW, terminalW):
         treeW.df_panel = self
         self.mainW = mainW
         self.treeW = treeW
@@ -44,14 +59,16 @@ class Panel(object):
         self.upW = upW
         self.statusW = statusW
         self.findW = findW
+        self.terminalW = terminalW
         self.other = None # Pointer to the other panel filled in by the builder
         self.treeW.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
         self.panelIdx = index
         f = self.treeW.font()
         ps = self.treeW.font().pointSize()
-        f.setPointSize(ps * 1.2)
-        #f.setBold(True)
+        f.setPointSize(ps * 1.1)
+        ##print("pointsize",self.statusW.height())
+        ##f.setBold(True)
         self.treeW.setFont(f)
         self.pathW.setFont(f)
         self.waitingForChildren = False
@@ -79,6 +96,7 @@ class Panel(object):
         self.hoverOldOppositeFolder = None
         self.findW.clicked.connect(self.find)
         self.findMark = None
+        self.terminalW.clicked.connect(self.terminal)
         
     def start(self):
         self.refreshCd()
@@ -111,7 +129,17 @@ class Panel(object):
     # Signal handlers ----------------------------------------------------------------------------------
     def find(self):
         Df.d.find.show(self)
-        
+
+    def terminal(self):
+        error = None
+        try:
+            subprocess.Popen(["konsole","--workdir",self.cd.fspath]) 
+        except:
+            t,error,tb = sys.exc_info()
+        if error:
+            error = str(error)
+        Df.d.jobm.addJobDone("$ konsole --workdir "+self.cd.fspath, error)
+      
     def pathW_returnPressed(self):
         self.unlockRefresh()
         text = self.pathW.text()
@@ -190,7 +218,7 @@ class Panel(object):
         self.treeW_mousePressEventOrig(e)
 
     def preview(self):
-        pos = QtWidgets.QCursor.pos() # e.globalPos()) in mouseMoveEvent
+        pos = QtGui.QCursor.pos() # e.globalPos()) in mouseMoveEvent
         i = self.treeW.itemAt(self.treeW.viewport().mapFromGlobal(pos))
         if not i:
             return
@@ -339,7 +367,9 @@ class Panel(object):
                 if type(1) == type(v):
                     pi.setTextAlignment(col, Qt.AlignCenter | Qt.AlignRight)
                 col += 1
-            pi.setIcon(0, i.icon())
+            pi.setIcon(0, i.icon(fast=True))
+            if type(i).__name__ == "PictureFile":
+                Df.d.panelIconQueue.put((pi,i))
             pi.df_node = i
             if self.findMark:
                 if not findItem and self.findMark == i.path():
@@ -353,9 +383,11 @@ class Panel(object):
         self.treeW.clearSelection()
         self.treeW.clear()
         if bigIcons > smallIcons:
-            self.treeW.setIconSize(QSize(40,40))
+            self.treeW.setIconSize(QSize(64,64)) # was 40,40
         else:
-            self.treeW.setIconSize(self.defaultIconSize)
+            # print(self.defaultIconSize)
+            # self.treeW.setIconSize(self.defaultIconSize)
+            self.treeW.setIconSize(QSize(20,20)) 
         self.setActionButtons(items)
         self.treeW.insertTopLevelItems(0, items)
         self.treeW.sortItems(0,Qt.AscendingOrder)
@@ -456,7 +488,7 @@ class Panel(object):
     def updateStatus(self):
         selectedItems, totalItems, selectedSize, freeFileSystemSize = self.statusdata
         if freeFileSystemSize:
-            self.statusW.setText("%d/%d = %s   Free: %s (%s)" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize), iff(self.refreshLocked,"L","U")))
+            self.statusW.setText("%d/%d = %s   Free: %s%s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize), iff(self.refreshLocked," (Paused)","")))
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
 

@@ -1,17 +1,33 @@
 Dragonfly Navigator
 
-A simple and efficient file manager for Linux/KDE. Licensed under GPLv3.
+A two pane file manager for Linux/KDE. Licensed under GPLv3.
 
-Linux version is tested on kubuntu.
+How to run on Linux
+-------------------
 
-Website: http://sourceforge.net/projects/dragonflynavigator/
+Prerequisites (ubuntu/debian):
+apt install python3-pyinotify python3-exifread
+
+Running:
+src/dragonfly
 
 How to develop for Linux
 ------------------------
-Install qt-designer and use that to edit the UI (.ui files). Use buildrc to rebuild python files from .ui files.
+Prerequisites (ubuntu/debian):
+apt install:
+pyqt5-dev-tools 
+qtcreator
+libkf5-dev
+libkdeframeworks5-dev
+libkf5widgetsaddons-dev
+libkf5xmlgui-dev
+libkf5textwidgets-dev
+libkf5kio-dev
+build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext
 
-Building for Linux
-------------------
+Install qt-creator and use that to edit the UI (.ui files). Use src/buildrc to rebuild python files from .ui files.
+
+Building:
 Install pyinstaller and UPX
 Edit buildlinux so the paths work for you
 Go to source directory. Run buildlinux

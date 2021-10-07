@@ -92,7 +92,7 @@ class Find():
         self.panel.findMark = item.df_node.path()
 
     def setHeader(self):
-        self.findW.heading.setText("Find in " + self.panel.cd.path() + "\nEnter part of object name to search for.")
+        self.findW.heading.setText("Find in " + self.panel.cd.path() + "\nEnter part of file name to search for.")
 
     def show(self, panel):
         self.panel = panel

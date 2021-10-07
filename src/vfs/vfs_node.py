@@ -16,7 +16,7 @@ class Node(object):
         self.linkTarget = None
         self.bigIcon = False
 
-    def icon(self):
+    def icon(self, fast):
         return Df.d.iconFactory.getFolderIcon()
 
     def leaf(self):
@@ -30,7 +30,7 @@ class Node(object):
         Df.d.refresh.refreshSig.emit()
 
 
-    def children(self, async=True):
+    def children(self, asynch=True):
         return self.children_
 
     def childrenStop(self):

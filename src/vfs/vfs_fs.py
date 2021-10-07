@@ -4,51 +4,29 @@
 import os, platform, shutil
 import stat, time
 import Df, fnmatch, Df_Dialog
-if platform.system() == 'Windows':
-    import ctypes, win32file, win32api, win32wnet, win32con
-    import sys
-    import win32com.client 
-    from win32com.shell import shell, shellcon
 from . import vfs_node
 from utils import *
 import subprocess, Df_Job, glob
+import pwd, grp
 
-if platform.system() != 'Windows':
-    unpackCmds = [
-    [ ['tar', 'xzf'],
-      ['tar.gz', 'tgz'] ],
-    [ ['tar', 'xjf'],
-      ['tar.bz2'] ],
-    [ ['tar', 'xf'],
-      ['tar'] ],
-    [ ['unzip', '-oqq'],
-      ['zip'] ],
-    [ ['gzip', '-d'],
-      ['gz'] ],
-    [ ['bzip2', '-d'],
-      ['bz2'] ],
-    [ ['7za', 'x'],
-      ['7z'] ],
-    [ ['rar', 'x', '-o+'],
-      ['rar', '001' ] ]
-    ]
-else:
-    unpackCmds = [
-    [ ['tar', 'xzf'],
-      ['tar.gz', 'tgz'] ],
-    [ ['tar', 'xjf'],
-      ['tar.bz2'] ],
-    [ ['tar', 'xf'],
-      ['tar'] ],
-    [ ['#default'],
-      ['zip', 'arj', 'cpio', 'deb', 'lzh', 'lha', 'lzma','rpm', 'cab', 'rar', '001', 'r00' ] ],
-    [ ['#default'],
-      ['gz'] ],
-    [ ['#default'],
-      ['bz2'] ],
-    [ ['#default'],
-      ['7z'] ]
-    ]
+unpackCmds = [
+[ ['tar', 'xzf'],
+    ['tar.gz', 'tgz'] ],
+[ ['tar', 'xjf'],
+    ['tar.bz2'] ],
+[ ['tar', 'xf'],
+    ['tar'] ],
+[ ['unzip', '-oqq'],
+    ['zip'] ],
+[ ['gzip', '-d'],
+    ['gz'] ],
+[ ['bzip2', '-d'],
+    ['bz2'] ],
+[ ['7za', 'x'],
+    ['7z'] ],
+[ ['rar', 'x', '-o+'],
+    ['rar', '001' ] ]
+]
 
 pictureTypes = [ 'jpg', 'png', 'gif', 'tif' ]
 
@@ -89,11 +67,19 @@ class Fs(vfs_node.Node):
             self.size = self.stat.st_size
             sizestr = size2str(self.stat.st_size)
             flags = mode2str(stats)
+            uidgid = str(self.stat.st_uid) + "." + str(self.stat.st_gid)
+            try:
+                self.owner = Df.d.uidgrpCache[uidgid]
+                # print("cache hit: " + uidgid + ":" + self.owner)
+            except:
+                Df.d.uidgrpCache[uidgid] = self.owner = pwd.getpwuid(self.stat.st_uid).pw_name + "." + grp.getgrgid(self.stat.st_gid).gr_name
+                # print("cache miss: " + uidgid + ":" + self.owner)
             self.meta = [ ('Size', sizestr, self.size), 
                       ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
                       ('Type', ext, ext),
                       ('Flags', flags, flags),
                       ('Size in bytes', str(self.size), self.size), 
+                      ('Owner.Group', str(self.owner), self.owner), 
                       ]
         if linkTarget:
             self.meta.append(('Link target', linkTarget, linkTarget))
@@ -104,7 +90,7 @@ class Fs(vfs_node.Node):
                      ( 'Delete', False, self.cb_delete ),
                      ( 'Link', True, self.cb_link ),
                      #( 'Compare', True, self.cb_compare ),
-                     ( 'Properties', True, self.cb_properties ),
+                     ( 'Size of', True, self.cb_properties ),
                      ]
         self.wm = None
 
@@ -131,20 +117,21 @@ class Fs(vfs_node.Node):
             return None
 
     def open(self):
+        # cmd = [ 'xdg-open', self.fspath ]
+        # wd = self.parent.fspath
+        # cmdString = '$ in %s: open %s' % (wd, self.fspath)
+        # args = cmd, wd
+        # Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         error = None
         try:
-            if platform.system() == 'Windows':
-                os.startfile(genericPathToWindows(self.fspath))
-            else:
-                #os.chdir(self.parent.fspath)
-                subprocess.call(["xdg-open", self.fspath]) # TODO should run completely async
+            #os.chdir(self.parent.fspath)
+            subprocess.Popen(["xdg-open", self.fspath]) 
         except:
             t,error,tb = sys.exc_info()
         if error:
             error = str(error)
-        Df.d.jobm.addJobDone("$ open: " + self.fspath, error)
+        Df.d.jobm.addJobDone("$ xdg-open " + self.fspath, error)
 
- 
     def ops_compare(self, src, dst):
         pass
     
@@ -162,15 +149,6 @@ class Fs(vfs_node.Node):
         wd = srcNodeList[0].parent.fspath
         cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
-        if platform.system() == 'Windows' and not Df.d.config.useInternalFileCopy:
-            Df.d.jobm.addJobDone(cmdString, None)
-            srcs = '\0'.join(srcList)
-            #flag = shellcon.FOF_RENAMEONCOLLISION
-            flag = 0
-            shell.SHFileOperation (
-              (0, shellcon.FO_COPY, genericPathToWindows(srcs), genericPathToWindows(dstNode.fspath), flag, None, None)
-            )
-            return
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         
 
@@ -256,44 +234,24 @@ class Fs(vfs_node.Node):
                     error = str(error)
                 Df.d.jobm.addJobDone(cmdString, error)
 
-    def cb_dirsize(self):
-        srcNodeList, x_ = self.getSelectionAndDestination()
-        if not srcNodeList:
-            return
-        srcList = [x.fspath for x in srcNodeList]
-        cmd = [ '/bin/du', '-sh' ] + srcList
-        srcList = [x.fsname for x in srcNodeList]
-        srcs = ', '.join(srcList)
-        wd = srcNodeList[0].parent.fspath
-        cmdString = '$ in %s: sizing %s' % (wd, srcs)
-        args = cmd, wd
-        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
-
     def cb_properties(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
         if not srcNodeList:
             return
-        WindowsOpenProperties(srcNodeList[0].fspath)
+        srcList = [x.fspath for x in srcNodeList]
+        cmd = [ '/bin/du', '-sch', '--apparent-size' ] + srcList
+        srcList = [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList)
+        wd = srcNodeList[0].parent.fspath
+        cmdString = '$ in %s: size of %s' % (wd, srcs)
+        args = cmd, wd
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString, True)
 
     def cb_pack(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
         for i in srcNodeList:
-            if platform.system() == 'Windows':
-                cwd = os.getcwd()
-                files = []
-                try:
-                    os.chdir(i.fspath)
-                    files = glob.glob('*')
-                except:
-                    pass
-                os.chdir(cwd)
-                if files == []:
-                    continue
-                cmd = [ "res/7z.exe",  "a", "-bd", "-y", "-r" ] + [ i.fspath + '.zip' ] + files
-                wd = i.fspath
-            else:
-                wd = i.parent.fspath
-                cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
+            wd = i.parent.fspath
+            cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
             cmdString = '$ in %s: pack %s' % (wd, i.fsname)
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
@@ -306,15 +264,7 @@ class Fs(vfs_node.Node):
                 cmd, exts = i
                 for e in exts:
                     if ext == e:
-                        if platform.system() == 'Windows':
-                            if cmd == ['#default']:
-                                a,b = os.path.splitext(srcNode.fsname)
-                                cmd = [ "res/7z.exe", "x", "-bd", "-y", "-o"+a ]
-                                cmd = cmd + [ srcNode.fspath ]
-                            else:
-                                cmd = cmd + [ windows2cygwinpath(srcNode.fspath) ]
-                        else:
-                            cmd = cmd + [ srcNode.fspath ]
+                        cmd = cmd + [ srcNode.fspath ]
                         cmdString = '$ unpack %s to %s' % (srcNode.fspath, dstNode.fspath)
                         wd = dstNode.fspath
                         args = cmd, wd
@@ -328,24 +278,14 @@ class Fs(vfs_node.Node):
         srcList, dst = self.getSelectionAndDestination()
         if not srcList:
             return
-        #Rundll32.exe shell32.dll, OpenAs_RunDLL C:\test.jpg
-        p = srcList[0].fspath
-        if platform.system() == 'Windows': 
-            p = genericPathToWindows(p)
-            subprocess.call(["Rundll32.exe", "shell32.dll", ",", "OpenAs_RunDLL", p]) # TODO exception handling
-        else:
-            subprocess.call(["./df_openwith", p]) # TODO use other path
+        p = "file://"+srcList[0].fspath
+        subprocess.call(["./openwith/build/openwith", p])
 
 #    def cb_open(self):
 #        srcList, dst = self.getSelectionAndDestination()
 #        try:
-#            if platform.system() == 'Windows':
-#                fspathL = [ genericPathToWindows(n.fspath) for n in srcList ]
-#                fspaths = ' '.join(fspathL)
-#                os.startfile(fspaths)
-#            else:
-#                os.chdir(self.parent.fspath)
-#                subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
+#            os.chdir(self.parent.fspath)
+#            subprocess.call(["xdg-open", self.fsname]) # TODO should run completely async
 #        except:
 #            pass
 
@@ -356,7 +296,6 @@ class Directory(Fs):
             self.meta[0] = ('Size', '-', 0)
             self.meta[4] = ('Size in bytes', '-', 0)
         self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
-        #self.actionButtonCallbacks.append(( 'Size', False, self.cb_dirsize ))
         self.stopAsync = False
         self.children_ = []
         self.asyncRunning = False
@@ -370,40 +309,25 @@ class Directory(Fs):
             self.childrenReady = False
             Df.d.vfsJobm.addJob(self.getChildrenAsync)
         
-    def children(self, async=True):
+    def children(self, asynch=True):
         #print "1 ", self.childrenReady, self.children_
-        if not async:
-            self.getChildrenAsync(async)
+        if not asynch:
+            self.getChildrenAsync(asynch)
         return self.children_
 
     def buildChild(self, f, stats):
         (st,attrib) = stats
         ext = fsPathExt(f)
 
-        if platform.system() == 'Windows':
-            if ext == 'lnk':
-                linkTarget = self.getLinkTarget(path_join(self.fspath, f))
-                #print linkTarget
-                linkTargetStat = self.statFile(linkTarget)
-                (linkTargetSt, linkTargetAttrib) = linkTargetStat
-                if linkTarget[0:2] == '\\\\':
-                    linkTarget = '/Network/'+windowsPathToGeneric(linkTarget)[2:]
-                else:
-                    linkTarget = '/Drives/'+windowsPathToGeneric(linkTarget)
-                if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
-                    return Directory(self, f[:-4], f, stats, linkTarget)
-                else:
-                    return File(self, f[:-4], f, stats, linkTarget)
-        else:
-            if st and stat.S_ISLNK(st.st_mode):
-                linkTarget = self.getLinkTarget(path_join(self.fspath, f))
-                linkTargetStat = self.statFile(linkTarget)
-                (linkTargetSt, linkTargetAttrib) = linkTargetStat
-                linkTarget = '/Files/Local'+linkTarget
-                if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
-                    return Directory(self, f, f, stats, linkTarget)
-                else:
-                    return File(self, f, f, stats, linkTarget)
+        if st and stat.S_ISLNK(st.st_mode):
+            linkTarget = self.getLinkTarget(path_join(self.fspath, f))
+            linkTargetStat = self.statFile(linkTarget)
+            (linkTargetSt, linkTargetAttrib) = linkTargetStat
+            #linkTarget = '/Files/Local'+linkTarget
+            if linkTargetSt and stat.S_ISDIR(linkTargetSt.st_mode):
+                return Directory(self, f, f, stats, linkTarget)
+            else:
+                return File(self, f, f, stats, linkTarget)
         if st and stat.S_ISDIR(st.st_mode):
             return Directory(self, f, f, stats)
         for i in unpackCmds:
@@ -433,11 +357,6 @@ class Directory(Fs):
         except:
             pass
         attrib = 0
-        try:
-            if platform.system() == 'Windows':
-                attrib = win32api.GetFileAttributes(path)
-        except:
-            pass
         return (st, attrib)
 
 
@@ -458,42 +377,44 @@ class Directory(Fs):
                 pass
         return None
     
-    def getChildrenAsync(self, async=True):
+    def getChildrenAsync(self, asynch=True):
         c = []
         if True:
-        #try:
-            for f in os.listdir(str(self.fspath)):
-                if self.stopAsync:
-                    break
-                #f = unicode(f)
-                #print f, type(f)
-                if platform.system() != 'Windows' and not isinstance(f, str):
-                    f = f.decode('utf-8',errors='replace')
-                ##f = str(fn)
-                pj = path_join(self.fspath, f)
-                #try:
-                #    pj = path_join(self.fspath, f)
-                #except:
-                #    continue
-                stats = self.statFile(pj)
-                #stats = self.statFile(os.path.join(self.fspath, f))
-                hide = f[0] == '.'
-                if platform.system() == 'Windows':
-                    (st, attrib) = stats
-                    # todo configurable settings
-                    #Df.d.config.win32_show_hidden
-                    hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
-                    #hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
-                if not hide or Df.d.config.showHidden:
-                    c.append(self.buildChild(f, stats))
-        #except:
-        #    pass
+            try:
+                for f in os.listdir(str(self.fspath)):
+                    if self.stopAsync:
+                        break
+                    #f = unicode(f)
+                    #print f, type(f)
+                    if platform.system() != 'Windows' and not isinstance(f, str):
+                        f = f.decode('utf-8',errors='replace')
+                    ##f = str(fn)
+                    pj = path_join(self.fspath, f)
+                    #try:
+                    #    pj = path_join(self.fspath, f)
+                    #except:
+                    #    continue
+                    stats = self.statFile(pj)
+                    #stats = self.statFile(os.path.join(self.fspath, f))
+                    hide = f[0] == '.'
+                    if platform.system() == 'Windows':
+                        (st, attrib) = stats
+                        # todo configurable settings
+                        #Df.d.config.win32_show_hidden
+                        hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
+                        #hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
+                    if not hide or Df.d.config.showHidden:
+                        c.append(self.buildChild(f, stats))
+            except Exception as e:
+                print("Exception trying to list " + str(self.fspath))
+                print(e)
+                pass
         self.children_ = c
         #print "2", self.children_
         self.childrenReady = True
         self.asyncRunning = False
         self.stopAsync = False
-        if async:
+        if asynch:
             Df.d.refresh.refreshSig.emit()
  
     def startMonitor(self, index):
@@ -503,6 +424,7 @@ class Directory(Fs):
         #print "change"
         self.changed = True
         Df.d.refresh.refreshSig.emit()
+        time.sleep(1)
 
 class RootDirectory(Directory):
     def __init__(self, parent, name, fsname):
@@ -515,7 +437,7 @@ class File(Fs):
         #self.actionButtonCallbacks.insert(0,( 'Open', False, self.cb_open ))
         self.actionButtonCallbacks.append(( 'Open...', False, self.cb_openwith ))
 
-    def icon(self):
+    def icon(self, fast):
         return Df.d.iconFactory.getFileIcon(self.fspath)
 
     def leaf(self):
@@ -529,23 +451,23 @@ class PackedFile(File):
 class PictureFile(File):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(PictureFile, self).__init__(parent, name, fsname, stats, linkTarget)
+        self.bigIcon = True
         self.actionButtonCallbacks.append(( 'Unpack', False, self.cb_unpack ))
             
     def preview(self):
-        return ImageToPixmap(self.fspath)
+        return ImageToPreview(self.fspath)
 
-    def icon(self):
-        self.bigIcon = False
-        if not Df.d.config.showThumbs:
+    def icon(self, fast):
+        if fast or (not Df.d.config.showThumbs):
             #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
-            self.icon_ = super(PictureFile, self).icon()
+            self.icon_ = super(PictureFile, self).icon(fast)
         else:
             (iconData, date, dateSecs) = JpegThumbToIcon(self.fspath)
             if not iconData:
                 #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
-                self.icon_ = super(PictureFile, self).icon()
+                self.icon_ = super(PictureFile, self).icon(fast)
             else:
-                self.bigIcon = True
+                # self.bigIcon = True
                 self.iconData, self.icon_ = iconData
                 self.meta.append(("Taken", date, dateSecs))
         return self.icon_
@@ -559,20 +481,6 @@ class Cmd(Df_Job.Cmd):
         cmd, workingDir = args
         self.error = None
         si = None
-        if platform.system() == 'Windows':
-            if os.path.exists("cygwin"):
-                p = "cygwin"
-            else:
-                p = "c:/cygwin"
-            if cmd[0][0] == '/':
-                cmd2 = p + cmd[0]
-            else:
-                cmd2 = cmd[0]
-            cmd = [cmd2] + cmd[1:]
-            si = subprocess.STARTUPINFO()
-            #si.dwFlags = subprocess.STARTF_USESTDHANDLES | subprocess.STARTF_USESHOWWINDOW
-            si.dwFlags = subprocess.STARTF_USESHOWWINDOW
-            si.wShowWindow = subprocess.SW_HIDE
         try:
             #print cmd
             if workingDir:

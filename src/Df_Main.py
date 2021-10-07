@@ -25,6 +25,8 @@ import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
 import sys, traceback, Df_Bugreport
 from utils import *
+from queue import Queue
+import _thread
 
 
 def main():
@@ -65,7 +67,7 @@ def main():
     Df.d = d
 
     d.tempfile = tempfile.TemporaryFile()
-    
+    d.uidgrpCache = {}
     d.config = Df_Config.Config()
     
     d.fsNotify = [ None, None ]
@@ -73,11 +75,11 @@ def main():
     d.fsNotify[1] = vfs.Notify()
     
     d.qtapp = QtWidgets.QApplication(sys.argv)
-    d.iconFactory = Df_Icon.IconFactory()
     #d.qtapp.setStyle("plastique")
     #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
     d.g = Df_Gui.Gui()
     d.g.mw = Df_Gui.MainWindow()
+    d.iconFactory = Df_Icon.IconFactory(d.g.mw.refresh.height())
     #d.g.dia = Df_Gui.Dialog()
     d.g.config = Df_Gui.Config()
     d.g.config.setWindowIcon(QtGui.QIcon(iconFile))
@@ -100,8 +102,10 @@ def main():
     
     d.history = []
     d.bookmarks = [ ]
-    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back, d.g.mw.left_find)
-    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back, d.g.mw.right_find)
+    d.panelIconQueue = Queue()
+    _thread.start_new_thread(Df_Panel.PanelIconQueueTask,("",))
+    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back, d.g.mw.left_find, d.g.mw.left_terminal)
+    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back, d.g.mw.right_find, d.g.mw.right_terminal)
     d.lp.other = d.rp
     d.rp.other = d.lp
     #d.mainw = Df_Mainwin.Mainwin(d.g.mw, d.lp, d.rp)

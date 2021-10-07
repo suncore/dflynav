@@ -49,11 +49,13 @@ class JobManager(object):
         if self.runningJob == self.jobStatusWindowJob:
             self.runningJob.runCmd.stop()
 
-    def addJob(self, executer, args, cmd):
+    def addJob(self, executer, args, cmd, showStatusNow=False):
         job = Job(args, executer, cmd, self)
         job.setStatus("Queued")
         self.jobs.append(job)
         self.q.put(1)
+        if showStatusNow:
+            self.showJobStatusWindow(job)
 
     def addJobDone(self, cmd, error):
         job = JobDone(cmd, error, self)
@@ -97,8 +99,11 @@ class JobManager(object):
             crash()
 
     def mouseButtonPressed(self, item):
+        self.showJobStatusWindow(item.df_entry)
+
+    def showJobStatusWindow(self, job):
         self.jobStatusWindowActive = True
-        self.jobStatusWindowJob = item.df_entry
+        self.jobStatusWindowJob = job
         self.jobStatusWindowJob.setStatus()
         self.jobstatusW.show()
 
@@ -137,7 +142,11 @@ class Entry(object):
             out = self.output
             if out == "" and self.statusString == "Done":
                 out = "OK"
-            jsw.output.insertPlainText("Command:\n" + self.cmd + "\n\nOutput from command: \n" + out)
+            try:
+                cmd = "\n\nCommand:\n" + self.args[1] + " $ " + ' '.join(self.args[0]) # self.args does not always exist
+            except:
+                cmd = ""
+            jsw.output.insertPlainText(self.cmd + "\n\nResult: \n" + out + cmd)
             jsw.status.setText("Status: "+self.statusString)
             eq = self.statusString == "Queued"
             er = self.statusString == "Running"

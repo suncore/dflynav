@@ -43,7 +43,7 @@
       <item row="1" column="0">
        <widget class="QCheckBox" name="showThumbs">
         <property name="text">
-         <string>Show photo thumbnails (may slow down listing of folders)</string>
+         <string>Show photo thumbnails (may slow down listing of directories)</string>
         </property>
         <property name="checked">
          <bool>true</bool>
@@ -56,7 +56,7 @@
       <item row="2" column="0">
        <widget class="QCheckBox" name="showIcons">
         <property name="text">
-         <string>Show file icons (may slow down listing of folders)</string>
+         <string>Show file icons (may slow down listing of directories)</string>
         </property>
        </widget>
       </item>
@@ -96,7 +96,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Left start folder</string>
+         <string>Left start directory</string>
         </property>
        </widget>
       </item>
@@ -106,7 +106,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Right start folder</string>
+         <string>Right start directory</string>
         </property>
        </widget>
       </item>

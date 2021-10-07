@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>879</width>
+    <width>1046</width>
     <height>568</height>
    </rect>
   </property>
@@ -75,7 +75,14 @@
             <item>
              <widget class="QPushButton" name="left_find">
               <property name="text">
-               <string>Find</string>
+               <string>Search</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="left_terminal">
+              <property name="text">
+               <string>Terminal</string>
               </property>
              </widget>
             </item>
@@ -131,14 +138,14 @@
             <item>
              <widget class="QPushButton" name="help">
               <property name="text">
-               <string>Menu</string>
+               <string>Help</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="configure">
               <property name="text">
-               <string>Configure</string>
+               <string>Settings</string>
               </property>
              </widget>
             </item>
@@ -275,7 +282,14 @@
             <item>
              <widget class="QPushButton" name="right_find">
               <property name="text">
-               <string>Find</string>
+               <string>Search</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="right_terminal">
+              <property name="text">
+               <string>Terminal</string>
               </property>
              </widget>
             </item>
@@ -320,7 +334,7 @@
        <property name="minimumSize">
         <size>
          <width>0</width>
-         <height>44</height>
+         <height>54</height>
         </size>
        </property>
        <property name="rootIsDecorated">
