@@ -126,7 +126,7 @@ class Ui_MainWindow(object):
         self.toright.setObjectName("toright")
         self.horizontalLayout_5.addWidget(self.toright)
         self.center.addLayout(self.horizontalLayout_5)
-        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         self.center.addItem(spacerItem)
         self.actionButtonsLayout = QtWidgets.QVBoxLayout()
         self.actionButtonsLayout.setObjectName("actionButtonsLayout")
