@@ -15,15 +15,11 @@ How to develop for Linux
 ------------------------
 Prerequisites (ubuntu/debian):
 apt install:
-pyqt5-dev-tools 
-qtcreator
-libkf5-dev
-libkdeframeworks5-dev
-libkf5widgetsaddons-dev
-libkf5xmlgui-dev
-libkf5textwidgets-dev
-libkf5kio-dev
-build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext
+pyqt5-dev-tools qtcreator libkf5-dev libkdeframeworks5-dev
+libkf5widgetsaddons-dev libkf5xmlgui-dev libkf5textwidgets-dev libkf5kio-dev
+build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev
+qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev
+libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext
 
 Install qt-creator and use that to edit the UI (.ui files). Use src/buildrc to rebuild python files from .ui files.
 

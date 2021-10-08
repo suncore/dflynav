@@ -43,10 +43,7 @@ def main():
     d.logfile = None
 
     try:
-        if platform.system() == 'Windows':
-            d.appdata = os.getenv('appdata') + '\\Dragonfly'
-        else:
-            d.appdata = os.getenv('HOME') + '/.config/Dragonfly'
+        d.appdata = os.getenv('HOME') + '/.config/Dragonfly'
         if not os.path.exists(d.appdata):
             os.mkdir(d.appdata)
         d.logfile = os.path.join(d.appdata, "dragonfly_navigator.log")

@@ -11,9 +11,8 @@ class Config():
     
     def load(self, configW):
         self.configW = configW
-        if platform.system() != 'Windows':
-            self.configW.useInternalFileCopy.hide()
-            self.configW.showIcons.hide()
+        self.configW.useInternalFileCopy.hide()
+        self.configW.showIcons.hide()
         pos = self.settings.value("pos", QPoint(100, 100))
         size = self.settings.value("size", QSize(400, 400))
         maximized = self.settings.value("maximized", 0)
@@ -28,43 +27,6 @@ class Config():
             Df.d.bookmarks = [ ]
         Df.d.lp.updateBookmarksMenu()
         Df.d.rp.updateBookmarksMenu()
-
-#        s = "cm29sh5g9sxk24fg2.dr"
-#        self.s = s
-#        ikey = self.settings.value("ikey", "") # Installation time key
-#        if ikey == "":
-#            if Df.d.bookmarks != []:
-#                sys.exit(0) # Deleted key. No go.
-#            now = str(int(time.time()))
-#            h = hashlib.sha1(now+s).hexdigest()
-#            self.settings.setValue("ikey", now+','+h)
-#            Df.d.gb.help()
-#        else:
-#            a = ikey.split(',')
-#            h = hashlib.sha1(a[0]+s).hexdigest()
-#            if h != a[1]:
-#                Df_Dialog.MessageWarn("License", "Install key is invalid. Exiting.")
-#                sys.exit(0) # Hacked key. No go.
-#
-#        Df.d.licenseKey = ""
-#        lkey = self.settings.value("lkey", "") # License key = email address + hash
-#        if lkey == "":
-#            ikey = self.settings.value("ikey", "") # Installation time key
-#            a = ikey.split(',')
-#            daysleft = 31-(time.time() - int(a[0]))/3600/24
-#            if daysleft < 0:
-#                Df_Dialog.MessageWarn("License", "Trial period has expired. Press OK and enter license key.")
-#                self.enterLicenseKey()
-#                Df_Dialog.MessageWarn("License", "Please restart Dragonfly Navigator.")
-#                sys.exit(0)
-#            self.licenseNag("License", "You have " + str(int(daysleft)) + " days left on the trial.")
-#        else:
-#            r = self.licenseCheck(lkey)
-#            if r:
-#                Df.d.licenseKey = lkey
-#            else:
-#                Df_Dialog.MessageWarn("License", "License key is invalid. Exiting.")
-#                sys.exit(0)
 
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:

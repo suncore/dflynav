@@ -110,25 +110,11 @@ def mode2strp(mode):
     return iff(r, R_STR, Z_STR) + iff(w, W_STR, Z_STR) + iff(x, X_STR, Z_STR) + ' '
 
 
-if platform.system() == 'Windows':
-    def mode2str(stats):
-        mode, attrib = stats
-        s = ''
-        if win32con.FILE_ATTRIBUTE_HIDDEN & attrib:
-            s += 'H'
-        if win32con.FILE_ATTRIBUTE_SYSTEM & attrib:
-            s += 'S'
-        if win32con.FILE_ATTRIBUTE_READONLY & attrib:
-            s += 'R'
-        if win32con.FILE_ATTRIBUTE_ARCHIVE & attrib:
-            s += 'A'
-        return s
-else:
-    def mode2str(stats):
-        st, attrib = stats
-        mode = int(st.st_mode)
-        u, g, o = mode >> 6 & 0x7, mode >> 3 & 0x7, mode & 0x7
-        return mode2strp(u) + mode2strp(g) + mode2strp(o)
+def mode2str(stats):
+    st, attrib = stats
+    mode = int(st.st_mode)
+    u, g, o = mode >> 6 & 0x7, mode >> 3 & 0x7, mode & 0x7
+    return mode2strp(u) + mode2strp(g) + mode2strp(o)
 
 def size2str(size):
     kb = 1024.0
@@ -152,27 +138,14 @@ def toutf8(name):
                 name = name[0:i] + '?' + name[i+1:]
         return name
 
-
 def seq2str(seq):
     s = ''
     for i in seq:
         s = s + ' ' + str(i)
     return s[1:]
 
-
 def time2str(t):
     return time.strftime(Df.d.config.formatTimeDate, t)
-
-#if platform.system() == 'Windows':
-#    def time2str(t):
-#        #return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
-#        de = win32api.GetDateFormat(0, 0, t)
-#        tm = win32api.GetTimeFormat(0, 0, t)
-#        return de+' '+tm
-#else:
-#    def time2str(t):
-#        return time.strftime(locale.nl_langinfo(locale.D_T_FMT), t)
-#        #return time.strftime("%y-%m-%d %H:%M:%S", t)
 
 def timenow():
     return time.localtime(time.time())
@@ -191,8 +164,6 @@ def fsPathExt(path):
         if len(ext) > 4:
             ext = ''
         return ext
-
-
 
 def crash():
     print(("Crash dumping now", Df.d.logfile))

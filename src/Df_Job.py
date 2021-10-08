@@ -42,6 +42,7 @@ class JobManager(object):
     def closeClicked(self):
         self.jobStatusWindowActive = False
         self.jobstatusW.hide()
+        self.jobsW.clearSelection()
 
     def stopClicked(self):
         self.jobStatusWindowJob.processed = True
@@ -133,8 +134,15 @@ class Entry(object):
         self.item.setText(0, time2str(timenow()))
         self.item.setText(2, self.statusString)
         if self.statusString == "Failed":
-            self.item.setBackground(2, Qt.red)
+            self.item.setBackground(2, QtGui.QColor('#500000'))
             self.item.setForeground(2, Qt.white)
+        elif self.statusString == "Done":
+            self.item.setBackground(2, QtGui.QColor('#005000'))
+            self.item.setForeground(2, Qt.white)
+        elif self.statusString == "Running":
+            self.item.setBackground(2, QtGui.QColor('#505000'))
+            self.item.setForeground(2, Qt.white)
+
 
         if self.jobManager.jobStatusWindowActive and self == self.jobManager.jobStatusWindowJob:
             jsw = self.jobManager.jobstatusW

@@ -105,21 +105,15 @@ class Fs(vfs_node.Node):
         
     def fsFree(self):
         try:
-            if platform.system() == 'Windows':
-                free_bytes = ctypes.c_ulonglong(0)
-                total_bytes = ctypes.c_ulonglong(0)
-                ctypes.windll.kernel32.GetDiskFreeSpaceExW(ctypes.c_wchar_p(self.fspath), None, ctypes.pointer(total_bytes), ctypes.pointer(free_bytes))
-                return free_bytes.value
-            else:
-                stat = os.statvfs(self.fspath)
-                return stat.f_bavail * stat.f_bsize
+            stat = os.statvfs(self.fspath)
+            return stat.f_bavail * stat.f_bsize
         except:
             return None
 
     def open(self):
         # cmd = [ 'xdg-open', self.fspath ]
         # wd = self.parent.fspath
-        # cmdString = '$ in %s: open %s' % (wd, self.fspath)
+        # cmdString = '%s $ open %s' % (wd, self.fspath)
         # args = cmd, wd
         # Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         error = None
@@ -147,7 +141,7 @@ class Fs(vfs_node.Node):
         srcList2 = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList2)
         wd = srcNodeList[0].parent.fspath
-        cmdString = '$ in %s: copy %s to %s' % (wd, srcs, dstNode.fspath)
+        cmdString = '%s $ copy %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         
@@ -162,7 +156,7 @@ class Fs(vfs_node.Node):
         srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
         wd = srcNodeList[0].parent.fspath
-        cmdString = '$ in %s: move %s to %s' % (wd, srcs, dstNode.fspath)
+        cmdString = '%s $ move %s to %s' % (wd, srcs, dstNode.fspath)
         args = cmd, wd
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
@@ -178,7 +172,7 @@ class Fs(vfs_node.Node):
             wd = src.parent.fspath
             newpath = path_join(wd, newname)
             cmd = ['/bin/mv', src.fspath, newpath]
-            cmdString = '$ in %s: rename %s to %s' % (wd, src.fsname, newname)
+            cmdString = '%s $ rename %s to %s' % (wd, src.fsname, newname)
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
@@ -191,7 +185,7 @@ class Fs(vfs_node.Node):
         srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
         wd = srcNodeList[0].parent.fspath
-        cmdString = '$ in %s: delete %s' % (wd, srcs)
+        cmdString = '%s $ delete %s' % (wd, srcs)
         args = cmd, wd
         r = True
         if Df.d.config.confirmDelete:
@@ -200,39 +194,19 @@ class Fs(vfs_node.Node):
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_link(self):
-        if platform.system() != 'Windows':
-            srcNodeList, dstNode = self.getSelectionAndDestination()
-            if not srcNodeList:
-                return
-            srcList = [x.fspath for x in srcNodeList]
-            cmd = [ '/bin/ln', '-s' ] + srcList + [ dstNode.fspath ]
-            srcList = [x.fsname for x in srcNodeList]
-            srcs = ', '.join(srcList)
-            wd = srcNodeList[0].parent.fspath
-            cmdString = '$ in %s: link %s to %s' % (wd, srcs, dstNode.fspath)
-            args = cmd, wd
-            #print args
-            #print cmdString
-            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
-        else:
-            srcNodeList, dstNode = self.getSelectionAndDestination()
-            for i in srcNodeList:
-                cmd = [ '/bin/ln', '-s' ] + [ i.fspath ] + [ dstNode.fspath ]
-                cmdString = '$ link %s to %s' % (i.fspath, dstNode.fspath)
-                args = cmd, None
-                error = None
-                try:
-                    shell = win32com.client.Dispatch("WScript.Shell")
-                    shortcut = shell.CreateShortCut(genericPathToWindows(dstNode.fspath + '/' + i.name + '.lnk'))
-                    shortcut.Targetpath = genericPathToWindows(i.fspath)
-                    #shortcut.Arguments = 'http://mysite.com/auth/preauth.php'
-                    #shortcut.WorkingDirectory = r'C:\Program Files\Mozilla Firefox'
-                    shortcut.save()
-                except:
-                    t,error,tb = sys.exc_info()
-                if error:
-                    error = str(error)
-                Df.d.jobm.addJobDone(cmdString, error)
+        srcNodeList, dstNode = self.getSelectionAndDestination()
+        if not srcNodeList:
+            return
+        srcList = [x.fspath for x in srcNodeList]
+        cmd = [ '/bin/ln', '-s' ] + srcList + [ dstNode.fspath ]
+        srcList = [x.fsname for x in srcNodeList]
+        srcs = ', '.join(srcList)
+        wd = srcNodeList[0].parent.fspath
+        cmdString = '%s $ link %s to %s' % (wd, srcs, dstNode.fspath)
+        args = cmd, wd
+        #print args
+        #print cmdString
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_properties(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
@@ -243,7 +217,7 @@ class Fs(vfs_node.Node):
         srcList = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList)
         wd = srcNodeList[0].parent.fspath
-        cmdString = '$ in %s: size of %s' % (wd, srcs)
+        cmdString = '%s $ size of %s' % (wd, srcs)
         args = cmd, wd
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString, True)
 
@@ -252,7 +226,7 @@ class Fs(vfs_node.Node):
         for i in srcNodeList:
             wd = i.parent.fspath
             cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
-            cmdString = '$ in %s: pack %s' % (wd, i.fsname)
+            cmdString = '%s $ pack %s' % (wd, i.fsname)
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
@@ -361,20 +335,10 @@ class Directory(Fs):
 
 
     def getLinkTarget(self,f):                
-        #if True:
-        if platform.system() == 'Windows':
-            try:
-                shell = win32com.client.Dispatch("WScript.Shell")
-                shortcut = shell.CreateShortCut(genericPathToWindows(f))
-                return shortcut.Targetpath
-            except:
-                pass
-        else:
-            try:
-                #target = os.readlink(f)
-                return os.path.realpath(f)
-            except:
-                pass
+        try:
+            return os.path.realpath(f)
+        except:
+            pass
         return None
     
     def getChildrenAsync(self, asynch=True):
@@ -384,25 +348,11 @@ class Directory(Fs):
                 for f in os.listdir(str(self.fspath)):
                     if self.stopAsync:
                         break
-                    #f = unicode(f)
-                    #print f, type(f)
-                    if platform.system() != 'Windows' and not isinstance(f, str):
+                    if not isinstance(f, str):
                         f = f.decode('utf-8',errors='replace')
-                    ##f = str(fn)
                     pj = path_join(self.fspath, f)
-                    #try:
-                    #    pj = path_join(self.fspath, f)
-                    #except:
-                    #    continue
                     stats = self.statFile(pj)
-                    #stats = self.statFile(os.path.join(self.fspath, f))
                     hide = f[0] == '.'
-                    if platform.system() == 'Windows':
-                        (st, attrib) = stats
-                        # todo configurable settings
-                        #Df.d.config.win32_show_hidden
-                        hide = hide or win32con.FILE_ATTRIBUTE_HIDDEN & attrib
-                        #hide = hide or win32con.FILE_ATTRIBUTE_SYSTEM & attrib
                     if not hide or Df.d.config.showHidden:
                         c.append(self.buildChild(f, stats))
             except Exception as e:
@@ -410,7 +360,6 @@ class Directory(Fs):
                 print(e)
                 pass
         self.children_ = c
-        #print "2", self.children_
         self.childrenReady = True
         self.asyncRunning = False
         self.stopAsync = False
@@ -501,8 +450,7 @@ class Cmd(Df_Job.Cmd):
 
     def stop(self):
         self.pob.terminate()
-        if platform.system() != 'Windows':
-            time.sleep(2) # Ugly but good enough
-            self.pob.kill()
+        time.sleep(2) # Ugly but good enough
+        self.pob.kill()
         
     
