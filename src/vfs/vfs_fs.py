@@ -253,7 +253,7 @@ class Fs(vfs_node.Node):
         if not srcList:
             return
         p = "file://"+srcList[0].fspath
-        subprocess.call(["./openwith/build/openwith", p])
+        subprocess.call(["./openwith/openwith", p])
 
 #    def cb_open(self):
 #        srcList, dst = self.getSelectionAndDestination()
