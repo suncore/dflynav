@@ -59,7 +59,7 @@ class IconFactory(object):
             return self.fileIcon
         e = ext[0]
         if ext in self.icons:
-            (data, icon) = self.icons[ext]
+            (_, icon) = self.icons[ext]
             return icon
         cols = ((212, 151, 'abcdefghijklmn'),
                 (532, 226, 'opqrstuvwxyz'))

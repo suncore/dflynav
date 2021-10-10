@@ -18,6 +18,10 @@ class ActionButtons():
         button = ActionButton(self.mainW)
         self.layoutW.addWidget(button)
         button.setText(QtWidgets.QApplication.translate("MainWindow", name, None))
+        if name == "Delete":
+            #button.setStyleSheet('QPushButton {background-color: #700000; color: white;}')
+            #button.setStyleSheet('QPushButton {color: #700000;}')
+            button.setIcon(button.style().standardIcon(QtWidgets.QStyle.SP_DialogDiscardButton))
         button.clicked.connect(callback)
         self.buttons.append(button)
 

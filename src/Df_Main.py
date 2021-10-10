@@ -137,6 +137,7 @@ def main():
     #d.g.mw.help.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_DialogHelpButton))
     d.g.mw.left_back.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowBack))
     d.g.mw.right_back.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_ArrowBack))
+    d.g.mw.refresh.setIcon(d.g.mw.style().standardIcon(QtWidgets.QStyle.SP_BrowserReload))
     
     d.g.mw.splitter.setSizes([8000,1])
     d.g.mw.splitter.setStretchFactor(0,1)

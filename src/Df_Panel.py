@@ -15,9 +15,9 @@ class PanelItem(QtWidgets.QTreeWidgetItem):
     def __lt__(self, other):
         tw = self.treeWidget()
         col = tw.sortColumn()
-        if col == 0:
-            ln = self.df_node
-            rn = other.df_node
+        ln = self.df_node
+        rn = other.df_node
+        if col == 0: # File name column
             if ln.leaf() != rn.leaf():
                 if ln.leaf():
                     return False
@@ -29,15 +29,17 @@ class PanelItem(QtWidgets.QTreeWidgetItem):
             #     tw.df_panel.refreshLocked = True
             #     tw.df_panel.updateStatus()
             try:
-                (lk, ls, lv) = self.df_node.meta[col-1]
-                (rk, rs, rv) = other.df_node.meta[col-1]
+                (_, _, lv) = ln.meta[col-1]
+                (_, _, rv) = rn.meta[col-1]
+                if lv == rv:
+                    return ln.name_low < rn.name_low
                 if col == 2 or col == 1 or col == 5: # Time and size should be sorted most recent first
-                    r = lv > rv
+                    return lv > rv
                 else:
-                    r = lv < rv
+                    return lv < rv
             except:
-                r = True
-            return r 
+                pass
+            return True
 
 def PanelIconQueueTask(dummy):
     while True:
@@ -435,6 +437,7 @@ class Panel(object):
                 self.treeW.header().showSection(i)
         if findItem:
             self.treeW.scrollToBottom() 
+            self.treeW.scrollToItem(findItem)
             self.treeW.setCurrentItem(findItem)
             self.findMark = None
         # lastPi = self.treeW.itemAt(QPoint(0,0))
@@ -517,7 +520,7 @@ class Panel(object):
     def updateStatus(self):
         selectedItems, totalItems, selectedSize, freeFileSystemSize = self.statusdata
         if freeFileSystemSize:
-            self.statusW.setText("%d/%d = %s   Free: %s%s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize), iff(self.refreshLocked," (Paused)","")))
+            self.statusW.setText("%d/%d = %s   Free: %s%s" % (selectedItems, totalItems, size2str(selectedSize), size2str(freeFileSystemSize), iff(self.refreshLocked,"  (Updates paused)","")))
         else:
             self.statusW.setText("%d/%d" % (selectedItems, totalItems))
 

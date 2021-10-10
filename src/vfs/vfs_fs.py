@@ -85,8 +85,9 @@ class Fs(vfs_node.Node):
             self.meta.append(('Link target', linkTarget, linkTarget))
         self.actionButtonCallbacks = [ 
                      ( 'Copy', True, self.cb_copy ),
+                     ( 'Copy As...', True, self.cb_copyas ),
                      ( 'Move', True, self.cb_move ),
-                     ( 'Rename', False, self.cb_rename ),
+                     ( 'Rename...', False, self.cb_rename ),
                      ( 'Delete', False, self.cb_delete ),
                      ( 'Link', True, self.cb_link ),
                      #( 'Compare', True, self.cb_compare ),
@@ -145,7 +146,20 @@ class Fs(vfs_node.Node):
         args = cmd, wd
         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
         
-
+    def cb_copyas(self):
+        srcList, dst = self.getSelectionAndDestination()
+        for src in srcList:
+            suggested = src.fsname
+            newname = Df_Dialog.Dialog("Copy As", "Enter destination name                                                                                                                                       ", 
+                                       suggested)
+            if newname == None:
+                return
+            newname = path_join(dst.fspath, newname)
+            wd = src.parent.fspath
+            cmd = [ '/bin/cp', '-drx', src.fspath, newname ]
+            cmdString = '%s $ copyas %s to %s' % (wd, src.fsname, newname)
+            args = cmd, wd
+            Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_move(self):
         srcNodeList, dstNode = self.getSelectionAndDestination()
@@ -226,7 +240,7 @@ class Fs(vfs_node.Node):
         for i in srcNodeList:
             wd = i.parent.fspath
             cmd = [ 'zip', '-r' ] + [ i.fsname + '.zip' ] + [ i.fsname ]
-            cmdString = '%s $ pack %s' % (wd, i.fsname)
+            cmdString = '%s $ zip %s' % (wd, i.fsname)
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
@@ -269,7 +283,7 @@ class Directory(Fs):
         if self.stat != None:
             self.meta[0] = ('Size', '-', 0)
             self.meta[4] = ('Size in bytes', '-', 0)
-        self.actionButtonCallbacks.append(( 'Pack', False, self.cb_pack ))
+        self.actionButtonCallbacks.append(( 'Zip', False, self.cb_pack ))
         self.stopAsync = False
         self.children_ = []
         self.asyncRunning = False
@@ -384,7 +398,7 @@ class File(Fs):
     def __init__(self, parent, name, fsname, stats=None, linkTarget=None):
         super(File, self).__init__(parent, name, fsname, stats, linkTarget)
         #self.actionButtonCallbacks.insert(0,( 'Open', False, self.cb_open ))
-        self.actionButtonCallbacks.append(( 'Open...', False, self.cb_openwith ))
+        self.actionButtonCallbacks.append(( 'Open With...', False, self.cb_openwith ))
 
     def icon(self, fast):
         return Df.d.iconFactory.getFileIcon(self.fspath)
