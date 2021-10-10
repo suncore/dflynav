@@ -25,9 +25,9 @@ class PanelItem(QtWidgets.QTreeWidgetItem):
                     return True
             return ln.name_low < rn.name_low
         else:
-            if not tw.df_panel.refreshLocked:
-                tw.df_panel.refreshLocked = True
-                tw.df_panel.updateStatus()
+            # if not tw.df_panel.refreshLocked:
+            #     tw.df_panel.refreshLocked = True
+            #     tw.df_panel.updateStatus()
             try:
                 (lk, ls, lv) = self.df_node.meta[col-1]
                 (rk, rs, rv) = other.df_node.meta[col-1]
@@ -97,7 +97,11 @@ class Panel(object):
         self.findW.clicked.connect(self.find)
         self.findMark = None
         self.terminalW.clicked.connect(self.terminal)
-        
+        self.sortColumn = 0
+        # self.treeW.header().setClickable(True)
+        # self.treeW.header().clicked.connect(self.treeWheaderClicked)
+        self.treeW.sortItems(0,Qt.AscendingOrder)
+
     def start(self):
         self.refreshCd()
         self.updateHistoryMenuBoth()
@@ -127,6 +131,7 @@ class Panel(object):
         self.pathW.returnPressed.connect(self.pathW_returnPressed)
         
     # Signal handlers ----------------------------------------------------------------------------------
+
     def find(self):
         Df.d.find.show(self)
 
@@ -214,7 +219,6 @@ class Panel(object):
         self.treeW_mouseMoveEventOrig(e)
 
     def treeW_mousePressEvent(self, e):
-        print("mbp")
         self.treeW_mousePressEventOrig(e)
 
     def preview(self):
@@ -293,8 +297,14 @@ class Panel(object):
                     self.refreshCd()
 
     def setPath(self, node, addToBackHistory = True):
+        self.sortColumn = self.treeW.sortColumn()
+        self.sortOrder = self.treeW.header().sortIndicatorOrder()
+        # i = self.treeW.header().sortIndicatorSection()
+        # print(self.sortColumn,self.sortOrder,i)
+        # print(self.sortColumn)
         self.refreshLocked = False
         changed = False
+        self.verticalPosition = None
         if node != self.cd:
             self.updateHistoryMenuBoth()
             self.cd.childrenStop()
@@ -307,6 +317,13 @@ class Panel(object):
             if addToBackHistory:
                 self.backHistory.insert(0,node.path())
                 self.backHistory = self.backHistory[0:100]
+        else:
+            # Make sure we display at the same location as before in the vertical scroll in the panel
+            self.verticalPosition = self.treeW.itemAt(QPoint(0,0))
+            # try:
+            #     print(self.verticalPosition.df_node.fspath)
+            # except:
+            #     pass
         self.cd = node
         self.cd.changed = False
         self.waitingForChildren = True
@@ -351,6 +368,7 @@ class Panel(object):
         items = []
         self.nrItems = 0
         findItem = None
+        scrollToPi = None
         for i in ch:
             item  = [ i.name ]
             idx = 0
@@ -380,6 +398,11 @@ class Panel(object):
                 bigIcons += 1
             else:
                 smallIcons += 1
+            try:
+                if self.verticalPosition.df_node.fspath == i.fspath:
+                    scrollToPi = pi
+            except:
+                pass
         self.treeW.clearSelection()
         self.treeW.clear()
         if bigIcons > smallIcons:
@@ -390,7 +413,8 @@ class Panel(object):
             self.treeW.setIconSize(QSize(20,20)) 
         self.setActionButtons(items)
         self.treeW.insertTopLevelItems(0, items)
-        self.treeW.sortItems(0,Qt.AscendingOrder)
+        self.treeW.sortItems(self.sortColumn,self.sortOrder) #Qt.AscendingOrder)
+        # print(self.sortColumn)
         #self.treeW.resizeColumnToContents(1)
         self.treeW.header().setStretchLastSection(False)
         self.highestCol = len(keys)
@@ -410,8 +434,13 @@ class Panel(object):
             if i > 2:
                 self.treeW.header().showSection(i)
         if findItem:
+            self.treeW.scrollToBottom() 
             self.treeW.setCurrentItem(findItem)
             self.findMark = None
+        # lastPi = self.treeW.itemAt(QPoint(0,0))
+        elif scrollToPi:
+            self.treeW.scrollToBottom() 
+            self.treeW.scrollToItem(scrollToPi)
                  
     def treeW_clearSelection(self):
         if not self.treeW_noClear:

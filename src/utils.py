@@ -87,7 +87,7 @@ def JpegThumbToIcon(fn):
         else:
             s = h
             b = (int((h-w)/2),0)
-        c = 128
+        c = 0
         im2 = Image.new('RGBA', (s,s), (c,c,c,255))
         #print(im.size,b)
         im2.paste(im, b)
