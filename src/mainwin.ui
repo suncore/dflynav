@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1046</width>
-    <height>568</height>
+    <width>1489</width>
+    <height>761</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,10 +24,28 @@
        <layout class="QHBoxLayout" name="mainHoriz">
         <item>
          <layout class="QGridLayout" name="left">
+          <property name="horizontalSpacing">
+           <number>0</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>4</number>
+          </property>
           <item row="4" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QPushButton" name="left_back">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -47,6 +65,45 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="left_reload">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="left_terminal">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="left_find">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="left_history">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -56,6 +113,9 @@
               </property>
               <property name="text">
                <string>History</string>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -70,19 +130,8 @@
               <property name="text">
                <string>Bookmarks</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="left_find">
-              <property name="text">
-               <string>Search</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="left_terminal">
-              <property name="text">
-               <string>Terminal</string>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -98,16 +147,28 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0">
-           <widget class="QLineEdit" name="left_path"/>
-          </item>
           <item row="7" column="0">
            <widget class="QWidget" name="left_preview_container" native="true">
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item row="1" column="0">
               <widget class="QGraphicsView" name="left_preview_gv"/>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="left_preview_text">
                <property name="text">
                 <string>TextLabel</string>
@@ -116,6 +177,20 @@
              </item>
             </layout>
            </widget>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <widget class="QLineEdit" name="left_path"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="left_mkdir">
+              <property name="text">
+               <string>MkDir</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
           <item row="9" column="0">
            <widget class="QTreeWidget" name="left_tree">
@@ -133,6 +208,9 @@
         </item>
         <item>
          <layout class="QVBoxLayout" name="center">
+          <property name="spacing">
+           <number>0</number>
+          </property>
           <item>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
@@ -146,13 +224,6 @@
              <widget class="QPushButton" name="configure">
               <property name="text">
                <string>Settings</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="refresh">
-              <property name="text">
-               <string>Refresh</string>
               </property>
              </widget>
             </item>
@@ -224,6 +295,43 @@
         </item>
         <item>
          <layout class="QGridLayout" name="right">
+          <property name="horizontalSpacing">
+           <number>0</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>4</number>
+          </property>
+          <item row="6" column="0">
+           <widget class="QWidget" name="right_preview_container" native="true">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QGraphicsView" name="right_preview_gv"/>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="right_preview_text">
+               <property name="text">
+                <string>TextLabel</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
           <item row="2" column="0" colspan="2">
            <widget class="QLabel" name="right_status">
             <property name="text">
@@ -238,6 +346,12 @@
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
              <widget class="QPushButton" name="right_back">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -257,6 +371,45 @@
              </widget>
             </item>
             <item>
+             <widget class="QPushButton" name="right_reload">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="right_terminal">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="right_find">
+              <property name="minimumSize">
+               <size>
+                <width>40</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QPushButton" name="right_history">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -266,6 +419,9 @@
               </property>
               <property name="text">
                <string>History</string>
+              </property>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -280,19 +436,22 @@
               <property name="text">
                <string>Bookmarks</string>
               </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="right_find">
-              <property name="text">
-               <string>Search</string>
+              <property name="flat">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
+           </layout>
+          </item>
+          <item row="5" column="0" colspan="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QPushButton" name="right_terminal">
+             <widget class="QLineEdit" name="right_path"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="right_mkdir">
               <property name="text">
-               <string>Terminal</string>
+               <string>MkDir</string>
               </property>
              </widget>
             </item>
@@ -308,25 +467,6 @@
               <string notr="true">1</string>
              </property>
             </column>
-           </widget>
-          </item>
-          <item row="5" column="0">
-           <widget class="QLineEdit" name="right_path"/>
-          </item>
-          <item row="6" column="0">
-           <widget class="QWidget" name="right_preview_container" native="true">
-            <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0">
-              <widget class="QGraphicsView" name="right_preview_gv"/>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="right_preview_text">
-               <property name="text">
-                <string>TextLabel</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
            </widget>
           </item>
          </layout>

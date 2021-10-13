@@ -1,6 +1,6 @@
 Dragonfly Navigator
 
-A two pane file manager for Linux/KDE. Licensed under GPLv2 or later.
+A two pane file manager for Linux/KDE. Licensed under GPLv3.
 
 How to run on Linux
 -------------------
@@ -8,7 +8,7 @@ How to run on Linux
 Prerequisites (ubuntu/debian):
 apt install python3-pyinotify python3-exifread
 
-Running:
+Running: (prerequisite is that the openwith binary has been built)
 src/dragonfly
 
 How to develop for Linux

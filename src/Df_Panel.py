@@ -53,7 +53,7 @@ def PanelIconQueueTask(dummy):
 
 
 class Panel(object):
-    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW, terminalW):
+    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW, terminalW, reloadW, mkdirW):
         treeW.df_panel = self
         self.mainW = mainW
         self.treeW = treeW
@@ -62,6 +62,8 @@ class Panel(object):
         self.statusW = statusW
         self.findW = findW
         self.terminalW = terminalW
+        self.reloadW = reloadW
+        self.mkdirW = mkdirW
         self.other = None # Pointer to the other panel filled in by the builder
         self.treeW.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons
@@ -96,9 +98,11 @@ class Panel(object):
         self.defaultIconSize = self.treeW.iconSize()
         self.controlMod = False
         self.hoverOldOppositeFolder = None
-        self.findW.clicked.connect(self.find)
+        self.findW.clicked.connect(self.findW_clicked)
         self.findMark = None
-        self.terminalW.clicked.connect(self.terminal)
+        self.terminalW.clicked.connect(self.terminalW_clicked)
+        self.reloadW.clicked.connect(self.refreshCd)
+        self.mkdirW.clicked.connect(self.mkdirW_clicked)
         self.sortColumn = 0
         # self.treeW.header().setClickable(True)
         # self.treeW.header().clicked.connect(self.treeWheaderClicked)
@@ -134,10 +138,13 @@ class Panel(object):
         
     # Signal handlers ----------------------------------------------------------------------------------
 
-    def find(self):
+    def findW_clicked(self):
         Df.d.find.show(self)
 
-    def terminal(self):
+    def mkdirW_clicked(self):
+        self.cd.mkdirDialog()
+
+    def terminalW_clicked(self):
         error = None
         try:
             subprocess.Popen(["konsole","--workdir",self.cd.fspath]) 

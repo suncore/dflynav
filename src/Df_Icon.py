@@ -29,7 +29,7 @@ class IconFactory(object):
         for i in range(self.bgimnum):
             h = i/float(self.bgimnum-1) # random.uniform(0,1)
             r1,g1,b1 = colorsys.hsv_to_rgb(h,.95,0.8)
-            h += .05
+            h += .07
             if h > 1:
                 h -= 1
             r2,g2,b2 = colorsys.hsv_to_rgb(h,1,0.5)
@@ -41,13 +41,21 @@ class IconFactory(object):
             b2 = int(255*b2)
             self.bgimcols.append(((r1,g1,b1),(r2,g2,b2)))
 
-        im = self.drawRectangle(self.size, (255,241,19), (255,204,1))
+        # 720,660 coordinates to / in letters.png
+        x = 752
+        y = 698
+        hs = 42 # hs = half of the total crop size
+        letterSize = int((76*self.size[0])/100)
+        im = self.allLettersIm.crop((x-hs,y-hs,x+hs,y+hs))
+        im = im.resize((letterSize, letterSize))
+        bgim = self.drawRectangle(self.size, (255,241,19), (255,204,1))
+        offs = int((self.size[0]-letterSize)/2)
+        bgim.paste(im, (offs,offs), im)
+        self.folderImageData, self.folderIcon = ImageToIcon(bgim)
 
-        self.folderImageData, self.folderIcon = ImageToIcon(im)
-        im = self.drawRectangle(self.size, self.bgimcols[-1][0], self.bgimcols[-1][1])
-        self.bgimnum -= 1
+        im = self.drawRectangle(self.size, self.bgimcols[13][0], self.bgimcols[13][1])
+        #self.bgimnum -= 1
         self.fileImageData, self.fileIcon = ImageToIcon(im)
-
         self.icons = {}
 
     def getFolderIcon(self):
@@ -57,12 +65,20 @@ class IconFactory(object):
         ext = fsPathExt(path)
         if ext == '':
             return self.fileIcon
-        e = ext[0]
         if ext in self.icons:
             (_, icon) = self.icons[ext]
             return icon
-        cols = ((212, 151, 'abcdefghijklmn'),
-                (532, 226, 'opqrstuvwxyz'))
+        e = ext[0]
+        c1 = 'abcdefghijklmn'
+        c2 = 'opqrstuvwxyz'
+        if not e in c1+c2:
+            if len(ext) >= 2:
+                e = ext[1]
+            else:
+                return self.fileIcon
+        # It's ok if e is not one of the letters now, it will just be a blank foreground
+        cols = ((212, 151, c1),
+                (532, 226, c2))
         hs = 42 # hs = half of the total crop size
         deltay = 92.6
         letterSize = int((76*self.size[0])/100)
@@ -82,7 +98,6 @@ class IconFactory(object):
         coff = h/65536.0
         idx = int(coff*(self.bgimnum-0.0001))
         bgim = self.drawRectangle(self.size, self.bgimcols[idx][0], self.bgimcols[idx][1])
-        
         offs = int((self.size[0]-letterSize)/2)
         bgim.paste(im, (offs,offs), im)
         (data, icon) = ImageToIcon(bgim)

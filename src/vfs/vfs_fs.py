@@ -85,7 +85,7 @@ class Fs(vfs_node.Node):
             self.meta.append(('Link target', linkTarget, linkTarget))
         self.actionButtonCallbacks = [ 
                      ( 'Copy', True, self.cb_copy ),
-                     ( 'Copy As...', True, self.cb_copyas ),
+                     ( '   Copy As...   ', True, self.cb_copyas ),
                      ( 'Move', True, self.cb_move ),
                      ( 'Rename...', False, self.cb_rename ),
                      ( 'Delete', False, self.cb_delete ),
@@ -97,7 +97,14 @@ class Fs(vfs_node.Node):
 
     def binaryOpCompat(self, obj):
         return isinstance(obj, Fs)
-    
+
+    def mkdirDialog(self):
+        newname = Df_Dialog.Dialog("Make Directory", "Enter name of new directory                                                                                                                                      ", 
+                                    "")
+        if newname == None:
+            return
+        self.mkdir(newname)
+
     def mkdir(self, dir):
         cmd = ['/bin/mkdir', path_join(self.fspath, dir)]
         cmdString = '$ mkdir %s' % path_join(self.fspath, dir)
@@ -189,6 +196,7 @@ class Fs(vfs_node.Node):
             cmdString = '%s $ rename %s to %s' % (wd, src.fsname, newname)
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
+
 
     def cb_delete(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
