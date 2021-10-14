@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw
 import hashlib, random
 import colorsys
 
-def ImageToIcon(im):
+def PILImageToIcon(im):
     data = im.convert('RGBA').tobytes('raw', 'BGRA')
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
     return (data, QtGui.QIcon(QtGui.QPixmap(image)))
@@ -51,11 +51,11 @@ class IconFactory(object):
         bgim = self.drawRectangle(self.size, (255,241,19), (255,204,1))
         offs = int((self.size[0]-letterSize)/2)
         bgim.paste(im, (offs,offs), im)
-        self.folderImageData, self.folderIcon = ImageToIcon(bgim)
+        self.folderImageData, self.folderIcon = PILImageToIcon(bgim)
 
         im = self.drawRectangle(self.size, self.bgimcols[13][0], self.bgimcols[13][1])
         #self.bgimnum -= 1
-        self.fileImageData, self.fileIcon = ImageToIcon(im)
+        self.fileImageData, self.fileIcon = PILImageToIcon(im)
         self.icons = {}
 
     def getFolderIcon(self):
@@ -100,7 +100,7 @@ class IconFactory(object):
         bgim = self.drawRectangle(self.size, self.bgimcols[idx][0], self.bgimcols[idx][1])
         offs = int((self.size[0]-letterSize)/2)
         bgim.paste(im, (offs,offs), im)
-        (data, icon) = ImageToIcon(bgim)
+        (data, icon) = PILImageToIcon(bgim)
         self.icons[ext] = (data, icon)
         return icon
 

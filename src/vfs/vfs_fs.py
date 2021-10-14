@@ -28,7 +28,7 @@ unpackCmds = [
     ['rar', '001' ] ]
 ]
 
-pictureTypes = [ 'jpg', 'png', 'gif', 'tif' ]
+pictureTypes = [ 'jpg', 'png', 'gif', 'tif', 'heic' ]
 
 def path_join(a,b):
     if a[-1] == '/':
@@ -433,14 +433,14 @@ class PictureFile(File):
             #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
             self.icon_ = super(PictureFile, self).icon(fast)
         else:
-            (iconData, date, dateSecs) = JpegThumbToIcon(self.fspath)
+            (iconData, date, dateSecs) = ImageToIcon(self.fspath)
             if not iconData:
                 #self.icon_ = Df.d.iconFactory.getFileIcon(self.fspath)
                 self.icon_ = super(PictureFile, self).icon(fast)
             else:
                 # self.bigIcon = True
                 self.iconData, self.icon_ = iconData
-                self.meta.append(("Taken", date, dateSecs))
+                self.meta.append(("Taken", date, dateSecs)) # TODO This is too late, the panel has already iterated over all children to find all meta...
         return self.icon_
     
     def hover(self, enter):

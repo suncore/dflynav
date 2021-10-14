@@ -1,19 +1,33 @@
 #!/usr/bin/env python
 
-import os, stat, time, sys, platform
+import os, time, io
 from subprocess import *
 from PIL import Image
 from PIL.ExifTags import TAGS
 from PyQt5.QtCore import *
 from PyQt5 import QtGui, QtWidgets
-import locale, datetime
-import exifread
-import tempfile, Df, traceback
+import exifread, pyheif
+import Df, traceback
 
 def ImageToPreview(fn):
     try:
         im = Image.open(fn)
     except:
+        im = None
+    if not im:
+        try:
+            heifimage = pyheif.read_heif(fn)
+            im = Image.frombytes(
+                heifimage.mode, 
+                heifimage.size, 
+                heifimage.data,
+                "raw",
+                heifimage.mode,
+                heifimage.stride,
+                )
+        except:
+            im = None
+    if not im:
         return None
     exif = {}
     try:
@@ -46,15 +60,22 @@ def ImageToPreview(fn):
     size = str(w) + 'x' + str(h)
     return ((data, QtGui.QPixmap(image)), date + 'Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6))
 
-def JpegThumbToIcon(fn):
+def ImageToIcon(fn):
     # print(fn)
+    heifimage = None
     file=open(fn, 'rb')
+    if fsPathExt(fn) == 'heic':
+        heifimage = pyheif.read_heif(file)
+        for metadata in heifimage.metadata or []:
+            if metadata['type'] == 'Exif':
+                file.close()
+                file = io.BytesIO(metadata['data'][6:]) 
     exif = exifread.process_file(file)
     file.close()
     date = ''
     dateSecs = 0
     thumb = None
-    # print(exif)
+    # print(fn,exif)
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])
@@ -88,10 +109,23 @@ def JpegThumbToIcon(fn):
             s = h
             b = (int((h-w)/2),0)
         c = 0
-        im2 = Image.new('RGBA', (s,s), (c,c,c,255))
+        im2 = Image.new('RGBA', (s,s), (c,c,c,0))
         #print(im.size,b)
         im2.paste(im, b)
         im=im2
+        data = im.convert('RGBA').tobytes('raw', 'BGRA')
+        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+        thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
+    elif heifimage:
+        im = Image.frombytes(
+            heifimage.mode, 
+            heifimage.size, 
+            heifimage.data,
+            "raw",
+            heifimage.mode,
+            heifimage.stride,
+            )
+        im.thumbnail((128,128), Image.ANTIALIAS)
         data = im.convert('RGBA').tobytes('raw', 'BGRA')
         image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
         thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
@@ -161,7 +195,7 @@ def fsPathExt(path):
             if p[-1] == 'bz2':
                 return 'tar.bz2'
         ext = p[-1]
-        if len(ext) > 4:
+        if len(ext) > 8:
             ext = ''
         return ext
 

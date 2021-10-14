@@ -46,9 +46,9 @@ def PanelIconQueueTask(dummy):
         (pi, i) = Df.d.panelIconQueue.get(True)
         try:
             pi.setIcon(0, i.icon(fast=True)) # If panel item has been deleted, this will raise an exception and we won't spend time on jpeg thumb loading
-            pi.setIcon(0, i.icon(fast=False))
         except:
-            pass
+            return
+        pi.setIcon(0, i.icon(fast=False))
 
 
 
@@ -101,7 +101,7 @@ class Panel(object):
         self.findW.clicked.connect(self.findW_clicked)
         self.findMark = None
         self.terminalW.clicked.connect(self.terminalW_clicked)
-        self.reloadW.clicked.connect(self.refreshCd)
+        self.reloadW.clicked.connect(self.refresh)
         self.mkdirW.clicked.connect(self.mkdirW_clicked)
         self.sortColumn = 0
         # self.treeW.header().setClickable(True)
@@ -109,7 +109,7 @@ class Panel(object):
         self.treeW.sortItems(0,Qt.AscendingOrder)
 
     def start(self):
-        self.refreshCd()
+        self.refresh()
         self.updateHistoryMenuBoth()
         self.updateBookmarksMenuBoth()
         #self.treeW.pressed.connect(self.treeW_pressed)
@@ -171,11 +171,11 @@ class Panel(object):
                 c = self.setPathByString(head, False, False, True)
                 if not c:
                     Df_Dialog.MessageWarn("Could not find parent directory", 'Could not find the parent directory\n"' + head + '"\nto create directory\n"' + tail + '"\nin.')
-                    self.refreshCd()
+                    self.refresh()
                     return
                 c.mkdir(tail)
             else:
-                self.refreshCd()
+                self.refresh()
 
     def mirrorW_clicked(self):
         self.setPathByString(self.other.cd.path())
@@ -290,7 +290,7 @@ class Panel(object):
             self.setPath(c, addToBackHistory)
         return c
 
-    def refreshCd(self):
+    def refresh(self):
         self.setPath(self.cd)
 
     def periodicRefresh(self):
@@ -303,7 +303,7 @@ class Panel(object):
             if self.cd.changed:
                 if not self.refreshLocked:
                     self.cd.changed = False
-                    self.refreshCd()
+                    self.refresh()
 
     def setPath(self, node, addToBackHistory = True):
         self.sortColumn = self.treeW.sortColumn()
@@ -354,12 +354,14 @@ class Panel(object):
             mastermeta = ch[0].meta
             metalen = 0
             for i in ch:
+                # print(i.path())
                 l = len(i.meta)
                 if metalen < l:
                     mastermeta = i.meta
                     metalen = l
             k = [ k for (k,s,v) in mastermeta ]
             keys = keys + k
+            # print(keys)
         self.treeW.setHeaderLabels(keys)
         #w = 
         #print self.treeW.header().sectionSizeFromContents(0)

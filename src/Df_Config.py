@@ -104,7 +104,8 @@ class Config():
 
     def accepted(self):
         self.save()
-        Df.d.gb.refresh()
+        Df.d.lp.refresh()
+        Df.d.rp.refresh()
         
     def save(self):
         self.settings.setValue("pos", Df.d.g.mw.pos())
