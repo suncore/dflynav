@@ -4,7 +4,7 @@ from utils import *
 import Df
 
 class Preview():
-    def __init__(self, leftContainerW, rightContainerW, leftGvW, rightGvW, leftTextW, rightTextW, leftTreeW, rightTreeW):
+    def __init__(self, leftContainerW, rightContainerW, leftGvW, rightGvW, leftTextW, rightTextW, leftTreeW, rightTreeW, leftTextBrowserW, rightTextBrowserW):
         self.containerW = [0,0]
         self.gvW = [0,0]
         self.textW = [0,0]
@@ -13,11 +13,15 @@ class Preview():
         self.item = [None, None]
         self.data = [0,0]
         self.pixmap = [0,0]
+        self.textBrowserW = [0,0]
 
         self.containerW[0] = leftContainerW
         self.containerW[1] = rightContainerW
         self.gvW[0] = leftGvW
         self.gvW[1] = rightGvW
+        self.textBrowserW[0] = leftTextBrowserW
+        self.textBrowserW[1] = rightTextBrowserW
+
         #self.gvW[0].origresizeEvent = self.gvW[0].resizeEvent
         #self.gvW[1].origresizeEvent = self.gvW[1].resizeEvent
         self.gvW[0].resizeEvent = self.gvW_resizeEvent0
@@ -45,7 +49,7 @@ class Preview():
 
     def reShow(self, i):
         #self.gvW[i].fitInView(100000,100000,1,1)
-        if self.pixmap[i]:
+        if self.previewType == 'image' and self.pixmap[i]:
             #w = self.pixmap[i].width()
             #h = self.pixmap[i].height()
             #self.gvW[i].fitInView(w/2, h/2, 20,20, Qt.KeepAspectRatio)
@@ -65,25 +69,42 @@ class Preview():
             self.gvW[i].setSceneRect(QRectF(x,y,vw,vh))
             self.scene[i].clear()
             self.item[i] = self.scene[i].addPixmap(pixmap)
-        #print self.pixmap[i].size()
+        elif self.previewType == 'text':
+            pass
 
     def show(self, index, qv):
-        (pm, text) = qv
-        if index == 0:
-            i = 1
-        else:
-            i = 0
-        (self.data[i], self.pixmap[i]) = pm
-        #self.containerW[index].hide()
-        self.treeW[i].hide()
-        self.containerW[i].show()
-        self.textW[i].setText(text)
-        #print self.pixmap[i].size()
-        self.reShow(i)
+        qvtype, qvd = qv
+        self.previewType = qvtype
+        if qvtype == 'image':
+            pm, text = qvd
+            if index == 0:
+                i = 1
+            else:
+                i = 0
+            (self.data[i], self.pixmap[i]) = pm
+            #self.containerW[index].hide()
+            self.treeW[i].hide()
+            self.containerW[i].show()
+            self.textBrowserW[i].hide()
+            self.textW[i].setText(text)
+            #print self.pixmap[i].size()
+            self.reShow(i)
+        if qvtype == 'text':
+            if index == 0:
+                i = 1
+            else:
+                i = 0
+            self.treeW[i].hide()
+            self.containerW[i].hide()
+            self.textBrowserW[i].show()
+            self.textBrowserW[i].setText(qvd)
+            self.reShow(i)
         
     def hide(self):
         self.containerW[0].hide()
         self.containerW[1].hide()
         self.treeW[0].show()
         self.treeW[1].show()
+        self.textBrowserW[0].hide()
+        self.textBrowserW[1].hide()
 

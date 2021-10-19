@@ -1,21 +1,22 @@
 from PyQt5.QtCore import *
 from PyQt5 import QtGui
 from utils import *
-import Df, time, hashlib, sys, Df_Dialog
+import Df, time, hashlib, sys, Df_Dialog, os, locale
 
 
 class Config():
     def __init__(self):
         self.settings = QSettings("Dragonfly", "Dragonfly Navigator")
-        self.formatTimeDate = ""
+        locale.setlocale(locale.LC_TIME, '')
+        self.formatTimeDate = '%x %X'
     
     def load(self, configW):
         self.configW = configW
-        self.configW.useInternalFileCopy.hide()
-        self.configW.showIcons.hide()
+        Df.d.startCount = int(self.settings.value("startCount", 0))+1
+
         pos = self.settings.value("pos", QPoint(100, 100))
-        size = self.settings.value("size", QSize(400, 400))
-        maximized = self.settings.value("maximized", 0)
+        size = self.settings.value("size", QSize(1024, 768))
+        maximized = self.settings.value("maximized", 1)
         if maximized == 1:
             Df.d.g.mw.setWindowState(Qt.WindowMaximized)
         else:
@@ -42,26 +43,6 @@ class Config():
             self.configW.rememberStartFolders.setChecked(False)
             self.configW.startAtSpecifiedFolders.setChecked(True)
 
-        self.formatTime12h = int(self.settings.value("formatTime12h", int(Qt.Unchecked))) #TODO set according to locale
-        if self.formatTime12h == int(Qt.Checked):
-            self.configW.time12h.setCheckState(Qt.Checked)
-        else:
-            self.configW.time12h.setCheckState(Qt.Unchecked)
-
-        self.formatDate = int(self.settings.value("formatDate", 0)) #TODO set according to locale
-        self.configW.date_yymmdd.setChecked(False)
-        self.configW.date_ddmmyy.setChecked(False)
-        self.configW.date_mmddyy.setChecked(False)
-        if self.formatDate == 0:
-            self.configW.date_yymmdd.setChecked(True)
-        if self.formatDate == 1:
-            self.configW.date_ddmmyy.setChecked(True)
-        if self.formatDate == 2:
-            self.configW.date_mmddyy.setChecked(True)
-
-        self.formatDateSep = self.settings.value("formatDateSep", "-") #TODO set according to locale
-        self.configW.date_sep.setText(self.formatDateSep)
-
         self.showHidden = int(self.settings.value("showHidden", int(Qt.Unchecked)))
         if self.showHidden == int(Qt.Checked):
             self.configW.showHidden.setCheckState(Qt.Checked)
@@ -73,18 +54,6 @@ class Config():
             self.configW.showThumbs.setCheckState(Qt.Checked)
         else:
             self.configW.showThumbs.setCheckState(Qt.Unchecked)
-
-        self.useInternalFileCopy = int(self.settings.value("useInternalFileCopy", int(Qt.Unchecked)))
-        if self.useInternalFileCopy == int(Qt.Checked):
-            self.configW.useInternalFileCopy.setCheckState(Qt.Checked)
-        else:
-            self.configW.useInternalFileCopy.setCheckState(Qt.Unchecked)
-
-        self.showIcons = int(self.settings.value("showIcons", int(Qt.Unchecked)))
-        if self.showIcons == int(Qt.Checked):
-            self.configW.showIcons.setCheckState(Qt.Checked)
-        else:
-            self.configW.showIcons.setCheckState(Qt.Unchecked)
 
         self.confirmDelete = int(self.settings.value("confirmDelete", int(Qt.Checked)))
         if self.confirmDelete == int(Qt.Checked):
@@ -99,9 +68,9 @@ class Config():
         #self.configW.rememberStartFolders.clicked.connect(self.rememberStartFoldersClicked)
         #self.configW.startAtSpecifiedFolders.clicked.connect(self.startAtSpecifiedFoldersClicked)
 
-
-        self.startDirLeft = self.settings.value("startDirLeft",'/')        
-        self.startDirRight = self.settings.value("startDirRight",'/')        
+        homedir = os.getenv('HOME')
+        self.startDirLeft = self.settings.value("startDirLeft",homedir)        
+        self.startDirRight = self.settings.value("startDirRight",homedir)        
         self.configW.leftStartDir.setText(self.startDirLeft)
         self.configW.rightStartDir.setText(self.startDirRight)
         self.save()
@@ -117,6 +86,7 @@ class Config():
     def save(self):
         self.settings.setValue("pos", Df.d.g.mw.pos())
         self.settings.setValue("size", Df.d.g.mw.size())
+        self.settings.setValue("startCount", Df.d.startCount)
         state = Df.d.g.mw.windowState()
         maximized = Df.d.g.mw.windowState() == Qt.WindowMaximized
         self.settings.setValue("maximized", int(maximized))
@@ -137,39 +107,14 @@ class Config():
         else:
             self.settings.setValue("startDirLeft", self.configW.leftStartDir.text())
             self.settings.setValue("startDirRight", self.configW.rightStartDir.text())
-        self.formatTime12h = int(self.configW.time12h.checkState())
-        self.settings.setValue("formatTime12h", self.formatTime12h)
-        if self.configW.date_yymmdd.isChecked():
-            self.formatDate = 0
-            timedate = "%y%m%d" 
-        elif self.configW.date_ddmmyy.isChecked():
-            self.formatDate = 1
-            timedate = "%d%m%y" 
-        elif self.configW.date_mmddyy.isChecked():
-            self.formatDate = 2
-            timedate = "%m%d%y" 
-        self.settings.setValue("formatDate", int(self.formatDate))
-        self.formatDateSep = self.configW.date_sep.text()
-        self.settings.setValue("formatDateSep", self.formatDateSep)
 
         self.showHidden = int(self.configW.showHidden.checkState())
         self.settings.setValue("showHidden", self.showHidden)
         self.showThumbs = int(self.configW.showThumbs.checkState())
         self.settings.setValue("showThumbs", self.showThumbs)
-        self.useInternalFileCopy = int(self.configW.useInternalFileCopy.checkState())
-        self.settings.setValue("useInternalFileCopy", self.useInternalFileCopy)
-        self.showIcons = int(self.configW.showIcons.checkState())
-        self.settings.setValue("showIcons", self.showIcons)
         self.confirmDelete = int(self.configW.confirmDelete.checkState())
         self.settings.setValue("confirmDelete", self.confirmDelete)
         
-        timedate = timedate[0:2] + self.formatDateSep + timedate[2:4] + self.formatDateSep + timedate[4:6]
-        if self.formatTime12h:
-            timedate = timedate + " %I:%M:%S %p"
-        else:
-            timedate = timedate + " %H:%M:%S"
-        
-        self.formatTimeDate = timedate
         self.settings.sync()
                  
     def useCurrentLeft(self):

@@ -44,16 +44,17 @@ class PanelItem(QtWidgets.QTreeWidgetItem):
 def PanelIconQueueTask(dummy):
     while True:
         (pi, i) = Df.d.panelIconQueue.get(True)
+        #if True: 
         try:
             pi.setIcon(0, i.icon(fast=True)) # If panel item has been deleted, this will raise an exception and we won't spend time on jpeg thumb loading
             pi.setIcon(0, i.icon(fast=False))
         except:
-            return
+            pass
 
 
 
 class Panel(object):
-    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW, terminalW, reloadW, mkdirW):
+    def __init__(self, mainW, treeW, pathW, statusW, upW, actionButtons, index, mirrorW, historyW, bookmarksW, backW, findW, terminalW, reloadW, mkdirW, textPreviewW):
         treeW.df_panel = self
         self.mainW = mainW
         self.treeW = treeW
@@ -64,6 +65,7 @@ class Panel(object):
         self.terminalW = terminalW
         self.reloadW = reloadW
         self.mkdirW = mkdirW
+        self.textPreviewW = textPreviewW
         self.other = None # Pointer to the other panel filled in by the builder
         self.treeW.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.actionButtons = actionButtons

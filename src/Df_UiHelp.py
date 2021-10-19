@@ -15,7 +15,7 @@ class Ui_Help(object):
     def setupUi(self, Help):
         Help.setObjectName("Help")
         Help.setWindowModality(QtCore.Qt.ApplicationModal)
-        Help.resize(581, 557)
+        Help.resize(1024, 768)
         Help.setModal(True)
         self.gridLayout = QtWidgets.QGridLayout(Help)
         self.gridLayout.setObjectName("gridLayout")

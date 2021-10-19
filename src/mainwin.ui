@@ -147,6 +147,18 @@
             </property>
            </widget>
           </item>
+          <item row="9" column="0">
+           <widget class="QTreeWidget" name="left_tree">
+            <property name="rootIsDecorated">
+             <bool>false</bool>
+            </property>
+            <column>
+             <property name="text">
+              <string notr="true">1</string>
+             </property>
+            </column>
+           </widget>
+          </item>
           <item row="7" column="0">
            <widget class="QWidget" name="left_preview_container" native="true">
             <layout class="QGridLayout" name="gridLayout_2">
@@ -192,17 +204,8 @@
             </item>
            </layout>
           </item>
-          <item row="9" column="0">
-           <widget class="QTreeWidget" name="left_tree">
-            <property name="rootIsDecorated">
-             <bool>false</bool>
-            </property>
-            <column>
-             <property name="text">
-              <string notr="true">1</string>
-             </property>
-            </column>
-           </widget>
+          <item row="6" column="0">
+           <widget class="QTextBrowser" name="left_text"/>
           </item>
          </layout>
         </item>
@@ -301,7 +304,17 @@
           <property name="verticalSpacing">
            <number>4</number>
           </property>
-          <item row="6" column="0">
+          <item row="2" column="0" colspan="2">
+           <widget class="QLabel" name="right_status">
+            <property name="text">
+             <string>status</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
            <widget class="QWidget" name="right_preview_container" native="true">
             <layout class="QGridLayout" name="gridLayout_3">
              <property name="leftMargin">
@@ -319,9 +332,6 @@
              <property name="spacing">
               <number>0</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QGraphicsView" name="right_preview_gv"/>
-             </item>
              <item row="1" column="0">
               <widget class="QLabel" name="right_preview_text">
                <property name="text">
@@ -329,17 +339,10 @@
                </property>
               </widget>
              </item>
+             <item row="0" column="0">
+              <widget class="QGraphicsView" name="right_preview_gv"/>
+             </item>
             </layout>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="2">
-           <widget class="QLabel" name="right_status">
-            <property name="text">
-             <string>status</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
            </widget>
           </item>
           <item row="4" column="0" colspan="2">
@@ -457,7 +460,7 @@
             </item>
            </layout>
           </item>
-          <item row="7" column="0">
+          <item row="9" column="0">
            <widget class="QTreeWidget" name="right_tree">
             <property name="rootIsDecorated">
              <bool>false</bool>
@@ -468,6 +471,9 @@
              </property>
             </column>
            </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QTextBrowser" name="right_text"/>
           </item>
          </layout>
         </item>

@@ -1,0 +1,254 @@
+Metadata-Version: 2.1
+Name: cykooz.heif
+Version: 0.11
+Summary: A decoder of HEIF format of images
+Home-page: https://github.com/Cykooz/cykooz.heif
+Author: Kirill Kuzminykh
+Author-email: cykooz@gmail.com
+License: UNKNOWN
+Keywords: heif,heic,libheif,pil,pillow
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Multimedia :: Graphics :: Graphics Conversion
+Classifier: License :: OSI Approved :: MIT License
+Description-Content-Type: text/x-rst
+Provides-Extra: test
+Requires-Dist: pytest ; extra == 'test'
+Requires-Dist: Pillow ; extra == 'test'
+Requires-Dist: piexif ; extra == 'test'
+
+***********
+cykooz.heif
+***********
+
+``cykooz.heif`` is simple python wrapper for the library `libheif-rs <https://crates.io/crates/libheif-rs>`_.
+
+``RawHeifImage`` is a simple wrapper around low level HEIF-decoder.
+
+Usage Examples
+==============
+
+Read HEIF-image from file:
+
+.. code-block:: python
+
+    from cykooz.heif.image import RawHeifImage
+
+    img = RawHeifImage.from_path('data/test.heif')
+    assert img.width == 3024
+    assert img.height == 4032
+    assert img.mode == 'RGB'
+    assert len(img.data) == 36578304
+    assert img.stride == 9072
+    assert len(img.exif) == 2026
+
+Read HEIF-image from file-like object:
+
+.. code-block:: python
+
+    from cykooz.heif.image import RawHeifImage
+
+    with open('data/test.heif') as fp
+        img = RawHeifImage.from_stream(fp)
+        assert img.width == 3024
+        assert img.height == 4032
+
+Also package provides an opener plugin for ``PIL`` (``Pillow``):
+
+.. code-block:: python
+
+    from PIL import Image
+    from cykooz.heif.pil import register_heif_opener
+
+    register_heif_opener()
+    img = Image.open('data/test.heif')
+    assert isinstance(img, Image.Image)
+    assert img.size == (3024, 4032)
+    assert img.mode == 'RGB'
+    assert img.getpixel((100, 100)) == (73, 74, 69)
+    img.save('test.jpg', 'JPEG')
+
+Installation from source
+========================
+
+System requirements:
+
+- libheif-dev >= 1.10 (https://github.com/strukturag/libheif)
+- python3-dev
+- Rust 1.39+ (https://www.rust-lang.org/)
+
+Ubuntu 18.04
+------------
+
+.. code-block:: console
+
+    $ sudo add-apt-repository ppa:strukturag/libheif
+    $ sudo add-apt-repository ppa:strukturag/libde265
+    $ sudo apt-get install build-essential python3.7-dev libheif-dev curl
+    $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    $ source $HOME/.cargo/env
+    $ pip3 install -U setuptools setuptools-rust
+    $ PYTHON_SYS_EXECUTABLE=python3 pip3 install cykooz.heif
+
+
+..  Changelog format guide.
+    - Before make new release of egg you MUST add here a header for new version with name "Next release".
+    - After all headers and paragraphs you MUST add only ONE empty line.
+    - At the end of sentence which describes some changes SHOULD be identifier of task from our task manager.
+      This identifier MUST be placed in brackets. If a hot fix has not the task identifier then you
+      can use the word "HOTFIX" instead of it.
+    - At the end of sentence MUST stand a point.
+    - List of changes in the one version MUST be grouped in the next sections:
+        - Features
+        - Changes
+        - Bug Fixes
+        - Docs
+
+CHANGELOG
+*********
+
+0.11 (2021-05-12)
+=================
+
+Changes
+-------
+
+- Updated version of ``libheif-rs`` to 0.14.
+
+Wheels
+------
+
+- Fixed building of ``libheif`` with ``dav1d`` and ``rav1e`` libraries.
+
+0.10 (2021-01-14)
+=================
+
+Changes
+-------
+
+- Updated version of ``libheif-rs`` to 0.12.
+- Updated version of ``pyo3`` to 0.13.1 (dropped support of Python 3.5).
+
+0.9 (2020-09-26)
+================
+
+Changes
+-------
+
+- Updated version of ``libheif-rs`` to 0.11.
+- Updated version of ``pyo3`` to 0.12.1.
+
+Wheels
+------
+
+- Updated version of ``libheif`` to 1.9.1.
+- Added ``dav1d`` decoder for faster decoding of AVIF images.
+
+0.8.3 (2020-08-30)
+==================
+
+Bug Fixes
+---------
+
+- Fixed building of wheels:
+    - added ``libaom``;
+    - added ``rav1e`` encoder for AV1;
+    - added stripping of libraries to reduce size of wheels.
+
+0.8 (2020-08-29)
+================
+
+Changes
+-------
+
+- Updated version of ``libheif-rs`` to 0.10:
+    - updated version of ``libheif-sys`` to 1.8.1;
+    - added support of new compression format AV1.
+- Updated version of ``pyo3`` to 0.11.1.
+
+0.7.2 (2020-03-20)
+==================
+
+Changes
+-------
+
+- Updated version of ``pyo3`` to 0.9.
+
+Bug Fixes
+---------
+
+- Fixed namespace declaration.
+
+0.7 (2020-03-01)
+================
+
+Changes
+-------
+
+- Updated version of ``libheif-rs`` to 0.9.
+
+0.6 (2019-10-03)
+================
+
+Changes
+-------
+
+- Updated version of ``pyo3`` to 0.8.
+- Updated version of ``libheif-rs`` to 0.8.
+
+0.5 (2019-08-28)
+================
+
+Changes
+-------
+
+- Updated version of ``libheif-rs`` to 0.6.
+
+0.4.2 (2019-07-17)
+==================
+
+Bug Fixes
+---------
+
+- Added checking of image type inside of ``HeifImageFile._open()``.
+
+0.4 (2019-07-17)
+================
+
+Features
+--------
+
+- Added ``RawHeifImage.check_file_type`` to check by first bytes of file
+  what it file is supported by ``libheif``.
+- Added opener plugin for ``Pillow``.
+
+0.3 (2019-06-28)
+================
+
+Features
+--------
+
+- Added method for creating ``HeifImage`` from any file-like object.
+
+0.2 (2019-06-25)
+================
+
+Changes
+-------
+
+- Added exception ``HeifError``.
+
+0.1 (2019-06-25)
+================
+
+- Initial version.
+
+

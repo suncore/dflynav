@@ -28,7 +28,7 @@ unpackCmds = [
     ['rar', '001' ] ]
 ]
 
-pictureTypes = [ 'jpg', 'png', 'gif', 'tif', 'heic' ]
+pictureTypes = [ 'jpg', 'png', 'gif', 'tif', 'heic', 'heif', 'avif' ]
 
 def path_join(a,b):
     if a[-1] == '/':
@@ -412,6 +412,9 @@ class File(Fs):
         super(File, self).__init__(parent, name, fsname, stats, linkTarget)
         #self.actionButtonCallbacks.insert(0,( 'Open', False, self.cb_open ))
         self.actionButtonCallbacks.append(( 'Open With...', False, self.cb_openwith ))
+
+    def preview(self):
+        return TextToPreview(self.fspath)
 
     def icon(self, fast):
         return Df.d.iconFactory.getFileIcon(self.fspath)

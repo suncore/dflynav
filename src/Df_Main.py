@@ -28,6 +28,8 @@ import sys, traceback, Df_Bugreport
 from utils import *
 from queue import Queue
 import _thread
+from PIL import Image
+from cykooz.heif.pil import register_heif_opener
 
 # sys.path = [
 #     '/usr/lib/python39.zip',
@@ -40,7 +42,9 @@ import _thread
 def main():
 
 #if __name__=="__main__":
-    
+
+    register_heif_opener()
+
     iconFile = 'icons/dragonfly.png'
 
     # d is the only global variable, the base object that contains the entire application state
@@ -99,9 +103,11 @@ def main():
     d.g.mw.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.mw.show()
     
-    d.preview = Df_Preview.Preview(d.g.mw.left_preview_container, d.g.mw.right_preview_container, d.g.mw.left_preview_gv, d.g.mw.right_preview_gv, d.g.mw.left_preview_text, d.g.mw.right_preview_text, d.g.mw.left_tree, d.g.mw.right_tree)
+    d.preview = Df_Preview.Preview(d.g.mw.left_preview_container, d.g.mw.right_preview_container, d.g.mw.left_preview_gv, d.g.mw.right_preview_gv, d.g.mw.left_preview_text, d.g.mw.right_preview_text, d.g.mw.left_tree, d.g.mw.right_tree, d.g.mw.left_text, d.g.mw.right_text)
     d.g.mw.right_preview_container.hide()
     d.g.mw.left_preview_container.hide()
+    d.g.mw.right_text.hide()
+    d.g.mw.left_text.hide()
     d.ab = Df_ActionButtons.ActionButtons(d.g.mw.actionButtonsLayout, d.g.mw.centralwidget)
     d.gb = Df_GlobalButtons.GlobalButtons(d.g.mw, d.g.config, d.g.help)
     
@@ -109,8 +115,8 @@ def main():
     d.bookmarks = [ ]
     d.panelIconQueue = Queue()
     _thread.start_new_thread(Df_Panel.PanelIconQueueTask,("",))
-    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back, d.g.mw.left_find, d.g.mw.left_terminal, d.g.mw.left_reload, d.g.mw.left_mkdir)
-    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back, d.g.mw.right_find, d.g.mw.right_terminal, d.g.mw.right_reload, d.g.mw.right_mkdir)
+    d.lp = Df_Panel.Panel(d.g.mw, d.g.mw.left_tree, d.g.mw.left_path, d.g.mw.left_status, d.g.mw.left_up, d.ab, 0, d.g.mw.toleft, d.g.mw.left_history, d.g.mw.left_bookmarks, d.g.mw.left_back, d.g.mw.left_find, d.g.mw.left_terminal, d.g.mw.left_reload, d.g.mw.left_mkdir, d.g.mw.right_text)
+    d.rp = Df_Panel.Panel(d.g.mw, d.g.mw.right_tree, d.g.mw.right_path, d.g.mw.right_status, d.g.mw.right_up, d.ab, 1, d.g.mw.toright, d.g.mw.right_history, d.g.mw.right_bookmarks, d.g.mw.right_back, d.g.mw.right_find, d.g.mw.right_terminal, d.g.mw.right_reload, d.g.mw.right_mkdir, d.g.mw.left_text)
     d.lp.other = d.rp
     d.rp.other = d.lp
     #d.mainw = Df_Mainwin.Mainwin(d.g.mw, d.lp, d.rp)
@@ -134,7 +140,10 @@ def main():
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
 
     d.config.load(d.g.config)
-
+    if sys.argv[1] != "":
+        Df.d.lp.setPathByString(sys.argv[1])
+    if sys.argv[2] != "":
+        Df.d.rp.setPathByString(sys.argv[2])
     d.rp.start()
     d.lp.start()
     style = d.g.mw.style()
@@ -170,7 +179,8 @@ def main():
     d.g.mw.right_find.setToolTip("Search...")
     
     Df_Bugreport.CheckForCrashReport()
-
+    if d.startCount == 1:
+        d.gb.help()
     r = d.qtapp.exec_()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()

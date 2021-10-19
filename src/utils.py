@@ -6,76 +6,43 @@ from PIL import Image
 from PIL.ExifTags import TAGS
 from PyQt5.QtCore import *
 from PyQt5 import QtGui, QtWidgets
-import exifread, pyheif
+import exifread
 import Df, traceback
+
+
+def TextToPreview(fn):
+    try:
+        file=open(fn, 'r')
+        data = file.read()
+        file.close()
+        return 'text', data
+    except:
+        return None
 
 def ImageToPreview(fn):
     try:
         im = Image.open(fn)
     except:
         im = None
-    if not im:
-        try:
-            heifimage = pyheif.read_heif(fn)
-            im = Image.frombytes(
-                heifimage.mode, 
-                heifimage.size, 
-                heifimage.data,
-                "raw",
-                heifimage.mode,
-                heifimage.stride,
-                )
-        except:
-            im = None
+    # if not im:
+    #     try:
+    #         heifimage = pyheif.read_heif(fn)
+    #         im = Image.frombytes(
+    #             heifimage.mode, 
+    #             heifimage.size, 
+    #             heifimage.data,
+    #             "raw",
+    #             heifimage.mode,
+    #             heifimage.stride,
+    #             )
+    #     except:
+    #         im = None
     if not im:
         return None
-    exif = {}
-    try:
-        info = im._getexif()
-    except:
-        info = None
-    if info:
-        for tag, value in list(info.items()):
-            decoded = TAGS.get(tag, tag)
-            exif[decoded] = value
-    date = ''
-    if 'DateTimeOriginal' in exif:
-        # Date example: 2011:02:26 16:29:49
-        try:
-            date2 = exif['DateTimeOriginal']
-            t = time.strptime(date2,"%Y:%m:%d %H:%M:%S")
-            date = 'Photo taken at: '+ time2str(t) + '  '
-        except:
-            pass
-    if 'Orientation' in exif:
-        if exif['Orientation'] == 6:
-            im = im.rotate(-90,expand=1)
-        elif exif['Orientation'] == 3:
-            im = im.rotate(180,expand=1)
-        elif exif['Orientation'] == 8:
-            im = im.rotate(90,expand=1)
-    data = im.convert('RGBA').tobytes('raw', 'BGRA')
-    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-    w,h = im.size
-    size = str(w) + 'x' + str(h)
-    return ((data, QtGui.QPixmap(image)), date + 'Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6))
-
-def ImageToIcon(fn):
-    # print(fn)
-    heifimage = None
     file=open(fn, 'rb')
-    if fsPathExt(fn) == 'heic':
-        heifimage = pyheif.read_heif(file)
-        for metadata in heifimage.metadata or []:
-            if metadata['type'] == 'Exif':
-                file.close()
-                file = io.BytesIO(metadata['data'][6:]) 
     exif = exifread.process_file(file)
     file.close()
     date = ''
-    dateSecs = 0
-    thumb = None
-    # print(fn,exif)
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])
@@ -85,6 +52,42 @@ def ImageToIcon(fn):
             date = time2str(t)
         except:
             date = ''
+    if 'Image Orientation' in exif:
+        o = str(exif['Image Orientation'])
+        if o == '6' or o == "Rotated 90 CW":
+            im = im.rotate(-90,expand=1)
+        elif o == '3':
+            im = im.rotate(180,expand=1)
+        elif o == '8' or o == "Rotated 90 CCW":
+            im = im.rotate(90,expand=1)
+    try:
+        data = im.convert('RGBA').tobytes('raw', 'BGRA')
+    except:
+        return None
+    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+    w,h = im.size
+    size = str(w) + 'x' + str(h)
+    return 'image', (data, QtGui.QPixmap(image)), date + '  Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6)
+
+def ImageToIcon(fn):
+
+    file=open(fn, 'rb')
+    exif = exifread.process_file(file)
+    file.close()
+    date = ''
+    dateSecs = 0
+    thumb = None
+
+    if 'EXIF DateTimeOriginal' in exif:
+        # Date example: 2011:02:26 16:29:49
+        date = str(exif['EXIF DateTimeOriginal'])
+        try:
+            t = time.strptime(date,"%Y:%m:%d %H:%M:%S")
+            dateSecs = time.mktime(t)
+            date = time2str(t)
+        except:
+            date = ''
+
     if 'JPEGThumbnail' in exif:
         f = Df.d.tempfile
         f.truncate(0)
@@ -116,19 +119,32 @@ def ImageToIcon(fn):
         data = im.convert('RGBA').tobytes('raw', 'BGRA')
         image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
         thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
-    elif heifimage:
-        im = Image.frombytes(
-            heifimage.mode, 
-            heifimage.size, 
-            heifimage.data,
-            "raw",
-            heifimage.mode,
-            heifimage.stride,
-            )
-        im.thumbnail((128,128), Image.ANTIALIAS)
-        data = im.convert('RGBA').tobytes('raw', 'BGRA')
-        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
-        thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
+    else:
+        try:
+            im = Image.open(fn)
+        except:
+            im = None
+        # if not im and fsPathExt(fn) == 'heic':
+        #     file=open(fn, 'rb')
+        #     heifimage = pyheif.read_heif(file)
+        #     file.close()
+        #     im = Image.frombytes(
+        #         heifimage.mode, 
+        #         heifimage.size, 
+        #         heifimage.data,
+        #         "raw",
+        #         heifimage.mode,
+        #         heifimage.stride,
+        #         )
+        if im:
+            try:
+                im.thumbnail((128,128), Image.ANTIALIAS)
+                data = im.convert('RGBA').tobytes('raw', 'BGRA')
+            except:
+                return (None, date, dateSecs)
+            image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+            thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
+
     return (thumb, date, dateSecs)
 
 def iff(test_, then_, else_):

@@ -1,4 +1,10 @@
 #!/bin/sh
+if [ ! -z "$1" ]; then 
+  L=`readlink -f $1`
+fi
+if [ ! -z "$2" ]; then 
+  R=`readlink -f $2`
+fi
 D=`readlink -f $0`
 cd `dirname $D`
 if [ ! -f Df_Main.py ]
@@ -6,5 +12,5 @@ then
     cd /usr/share/dragonfly
 fi
 export RELEASE=True
-python3 -E Df_Main.py 1>&2
+python3 -E Df_Main.py "$L" "$R" 1>&2
 #python -m cProfile -s time Df_Main.py 2>&1
