@@ -50,8 +50,8 @@ class JobManager(object):
         if self.runningJob == self.jobStatusWindowJob:
             self.runningJob.runCmd.stop()
 
-    def addJob(self, executer, args, cmd, showStatusNow=False):
-        job = Job(args, executer, cmd, self)
+    def addJob(self, executer, args, cmd, showStatusNow=False, ignoreError=False):
+        job = Job(args, executer, cmd, self, ignoreError)
         job.setStatus("Queued")
         self.jobs.append(job)
         self.q.put(1)
@@ -91,7 +91,7 @@ class JobManager(object):
                         status = job.runCmd.finish()
                         self.runningJob = None
                         job.output = job.output.rstrip()
-                        if status != 0:
+                        if status != 0 and not job.ignoreError:
                             job.setStatus("Failed")
                         else:
                             job.setStatus("Done")
@@ -164,12 +164,13 @@ class Entry(object):
         
 
 class Job(Entry):
-    def __init__(self, args, executer, cmd, jobsW):
+    def __init__(self, args, executer, cmd, jobsW, ignoreError):
         super(Job, self).__init__(cmd, jobsW)
         self.args = args
         self.executer = executer
         self.processed = False
         self.runCmd = None
+        self.ignoreError = ignoreError
 
 class JobDone(Entry):
     def __init__(self, cmd, error, jobsW):

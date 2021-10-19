@@ -13,3 +13,22 @@ cd openwith/build
 cmake ..
 make
 mv openwith ..
+cd ../..
+
+V=dragonfly_21.0-1_amd64
+
+# Build .deb Debian package
+R=rel/$V
+A=$R/usr/share/dragonfly
+rm -r $R
+mkdir -p $R/usr/bin $R/DEBIAN $A $A/openwith $R/usr/share/applications
+cp dragonfly.desktop $R/usr/share/applications
+ln -s /usr/share/dragonfly/dragonfly $R/usr/bin
+cp control $R/DEBIAN
+cp -r 3pp vfs icons dragonfly *.py helptext.html $A
+cp openwith/openwith $A/openwith
+dpkg-deb --build --root-owner-group $R
+
+# Build the tarball
+cd rel
+tar czf $V.tar.gz $V 

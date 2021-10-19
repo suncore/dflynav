@@ -28,6 +28,12 @@ class Config():
         Df.d.lp.updateBookmarksMenu()
         Df.d.rp.updateBookmarksMenu()
 
+        Df.d.history = self.settings.value("history", [ "None" ])
+        if Df.d.history == [ "None" ]:
+            Df.d.history = [ ]
+        Df.d.lp.updateHistoryMenu()
+        Df.d.rp.updateHistoryMenu()
+
         self.rememberStartDirs = bool(int(self.settings.value("rememberStartDirs", 1)))
         if self.rememberStartDirs:
             self.configW.rememberStartFolders.setChecked(True)
@@ -101,6 +107,7 @@ class Config():
         self.save()
         Df.d.lp.setPathByString(self.startDirLeft)
         Df.d.rp.setPathByString(self.startDirRight)
+        self.save()
 
     def accepted(self):
         self.save()
@@ -117,6 +124,10 @@ class Config():
             self.settings.setValue("bookmarks", [ "None" ])
         else:
             self.settings.setValue("bookmarks", Df.d.bookmarks)
+        if Df.d.history == []:
+            self.settings.setValue("history", [ "None" ])
+        else:
+            self.settings.setValue("history", Df.d.history)
         self.rememberStartDirs = self.configW.rememberStartFolders.isChecked()
         self.settings.setValue("rememberStartDirs", int(self.rememberStartDirs))
         if self.rememberStartDirs:

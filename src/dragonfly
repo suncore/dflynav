@@ -1,14 +1,10 @@
 #!/bin/sh
-#cd style
-# styles plastique "default" motif gtk cleanlooks
-cd `dirname $0`
+D=`readlink -f $0`
+cd `dirname $D`
+if [ ! -f Df_Main.py ]
+then
+    cd /usr/share/dragonfly
+fi
 export RELEASE=True
 python3 -E Df_Main.py 1>&2
 #python -m cProfile -s time Df_Main.py 2>&1
-# | grep -v "Unable to retrieve Watch object"
-#-style cleanlooks 
-#-stylesheet dragonfly.qss
-
-
-#python Df_Main.py -style plastique
-#pyside-uic mainwin.ui  > apa.py ; python pysidetest2.py -style qmc2-black-0.10.qss

@@ -18,6 +18,7 @@
 
     
 import sys
+sys.path.insert(0, "3pp")
 #, os
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
@@ -28,6 +29,13 @@ from utils import *
 from queue import Queue
 import _thread
 
+# sys.path = [
+#     '/usr/lib/python39.zip',
+#     '/usr/lib/python3.9',
+#     '/usr/lib/python3.9/lib-dynload',
+#     '/usr/lib/python3/dist-packages',
+# ]
+
 
 def main():
 
@@ -37,7 +45,7 @@ def main():
 
     # d is the only global variable, the base object that contains the entire application state
     d = Df_Dragonfly.DragonFly()
-    d.version = "1.0.4"
+    d.version = "21.0"
     d.appdata = None
     d.previousLog = ""
     d.logfile = None

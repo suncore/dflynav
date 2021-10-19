@@ -15,5 +15,5 @@ class GlobalButtons(object):
         self.configW.show()
         
     def help(self):
-        Df_Dialog.TextDialog("Help", None, "res/helptext.html")
+        Df_Dialog.TextDialog("Help", None, "helptext.html")
         

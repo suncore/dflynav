@@ -46,9 +46,9 @@ def PanelIconQueueTask(dummy):
         (pi, i) = Df.d.panelIconQueue.get(True)
         try:
             pi.setIcon(0, i.icon(fast=True)) # If panel item has been deleted, this will raise an exception and we won't spend time on jpeg thumb loading
+            pi.setIcon(0, i.icon(fast=False))
         except:
             return
-        pi.setIcon(0, i.icon(fast=False))
 
 
 
@@ -81,7 +81,7 @@ class Panel(object):
         self.bookmarksW = bookmarksW
         self.historyMenu = QtWidgets.QMenu(self.mainW)
         self.bookmarksMenu = QtWidgets.QMenu(self.mainW)
-        self.cd = vfs.vfs_fs.Directory(None, '/', '/') # vfs.vfs_root.VfsRoot()
+        self.cd = self.newcd = vfs.vfs_fs.Directory(None, '/', '/') # vfs.vfs_root.VfsRoot()
         self.historyW.setMenu(self.historyMenu)
         self.bookmarksW.setMenu(self.bookmarksMenu)
         self.bookmarksMenu.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -107,6 +107,7 @@ class Panel(object):
         # self.treeW.header().setClickable(True)
         # self.treeW.header().clicked.connect(self.treeWheaderClicked)
         self.treeW.sortItems(0,Qt.AscendingOrder)
+        self.oldSelected = []
 
     def start(self):
         self.refresh()
@@ -314,6 +315,7 @@ class Panel(object):
         self.refreshLocked = False
         changed = False
         self.verticalPosition = None
+        self.newcd = node
         if node != self.cd:
             self.updateHistoryMenuBoth()
             self.cd.childrenStop()
@@ -460,6 +462,9 @@ class Panel(object):
                     
     def treeW_selectionChanged(self):
         self.treeW_noClear = True
+        sel = [x.df_node for x in self.other.treeW.selectedItems()]
+        if sel != []:
+            self.other.oldSelected = sel
         self.other.treeW_clearSelection()
         self.treeW_noClear = False
         s = self.treeW.selectedItems()
@@ -522,6 +527,18 @@ class Panel(object):
         s = [x.df_node for x in s1+s2]
         return s, dest
 
+    def getSelectionAndDestinationDiff(self):
+        s1 = self.treeW.selectedItems()
+        self.treeW.clearSelection()
+        s2 = self.other.treeW.selectedItems()
+        self.other.treeW.clearSelection()
+        if s1:
+            dest = self.other.oldSelected
+        else:
+            dest = self.oldSelected
+        s = [x.df_node for x in s1+s2]
+        return dest, s
+
     def setStatus(self, selectedItems, totalItems, selectedSize = None, freeFileSystemSize = None):
         self.statusdata = (selectedItems, totalItems, selectedSize, freeFileSystemSize)
         self.updateStatus()
@@ -541,7 +558,7 @@ class Panel(object):
         self.other.updateHistoryMenu(False)
 
     def updateHistoryMenu(self, rebuildHistory = True):
-        path = self.cd.path()
+        path = self.newcd.path()
         h = Df.d.history
         if rebuildHistory:
             for i in range(0,len(h)):

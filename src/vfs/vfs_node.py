@@ -59,7 +59,10 @@ class Node(object):
         return False
 
     def getSelectionAndDestination(self):
-        return Df.d.lp.getSelectionAndDestination()
+        return Df.d.lp.getSelectionAndDestination() # TODO ugly...
+
+    def getSelectionAndDestinationDiff(self):
+        return Df.d.lp.getSelectionAndDestinationDiff()
 
     def startMonitor(self, index):
         return

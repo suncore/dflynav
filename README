@@ -1,33 +1,49 @@
 Dragonfly Navigator
-
-A two pane file manager for Linux/KDE. Licensed under GPLv3.
-
-How to run on Linux
 -------------------
+A simple and efficient file manager for Linux/KDE.
 
+Installing and running on Kubuntu
+---------------------------------
+Download .deb file from the release page. Then install like this:
+$ sudo dpkg -i dragonfly_xxx.deb
+$ sudo apt install -f
+
+Run:
+$ dragonfly 
+(or find it via the application menu)
+
+
+Non-debian/ubuntu based setups:
+Download the .tar.gz binary release from the release page. Then install like this:
+
+If you get an error on loading HEIC/HEIF image files, make sure you install libheif from your distribution.
+
+Make sure you read the help text (press help button) since Dragonfly Navigator has some caveats and tricks you need to know in order to use it efficiently.
+
+Building and running from sources
+---------------------------------
 Prerequisites (ubuntu/debian):
-apt install python3-pyinotify python3-exifread
-pip3 install pyheif
-Running: (prerequisite is that the openwith binary has been built)
-src/dragonfly
 
-How to develop for Linux
-------------------------
-Prerequisites (ubuntu/debian):
-apt install:
-pyqt5-dev-tools qtcreator libkf5-dev libkdeframeworks5-dev
-libkf5widgetsaddons-dev libkf5xmlgui-dev libkf5textwidgets-dev libkf5kio-dev
-build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev
-qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev
-libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext
-libffi libheif-dev libde265-dev
+1. Install basic prerequisites for running
+$ sudo apt install libheif1
 
-Install qt-creator and use that to edit the UI (.ui files). Use src/buildrc to rebuild python files from .ui files.
+2. Install prerequisites for building the openwith binary
+$ sudo apt install pyqt5-dev-tools qtcreator libkf5-dev libkdeframeworks5-dev libkf5widgetsaddons-dev libkf5xmlgui-dev libkf5textwidgets-dev libkf5kio-dev build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext
 
-Building:
-Install pyinstaller and UPX
-Edit buildlinux so the paths work for you
-Go to source directory. Run buildlinux
-Create .tar.gz package of the pyinstaller DragonflyNavigator/dist/DragonflyNavigator directory
-To Run: cd to installation directory and run DragonflyNavigator
+3.Building:
+$ cd src
+$ ./build
 
+4. Run:
+$ ./dragonfly
+
+To edit the GUI files: Install qtcreator and use that to edit the UI (.ui files). 
+$ sudo apt install pyqt5-dev-tools qtcreator
+$ qtcreator mainwin.ui (for example)
+
+Third party packages included with this software
+------------------------------------------------
+
+1. pyheif https://github.com/carsales/pyheif
+2. inotify_simple https://github.com/chrisjbillington/inotify_simple
+3. exifread https://github.com/ianare/exif-py

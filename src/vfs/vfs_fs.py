@@ -89,8 +89,8 @@ class Fs(vfs_node.Node):
                      ( 'Move', True, self.cb_move ),
                      ( 'Rename...', False, self.cb_rename ),
                      ( 'Delete', False, self.cb_delete ),
-                     ( 'Link', True, self.cb_link ),
-                     #( 'Compare', True, self.cb_compare ),
+                     ( 'Softlink', True, self.cb_link ),
+                     ( 'Diff', True, self.cb_compare ),
                      ( 'Size of', True, self.cb_properties ),
                      ]
         self.wm = None
@@ -133,9 +133,6 @@ class Fs(vfs_node.Node):
         if error:
             error = str(error)
         Df.d.jobm.addJobDone("$ xdg-open " + self.fspath, error)
-
-    def ops_compare(self, src, dst):
-        pass
     
     def jobExecuter(self, args):
         return Cmd(args)
@@ -197,7 +194,6 @@ class Fs(vfs_node.Node):
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
-
     def cb_delete(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
         if not srcNodeList:
@@ -241,7 +237,7 @@ class Fs(vfs_node.Node):
         wd = srcNodeList[0].parent.fspath
         cmdString = '%s $ size of %s' % (wd, srcs)
         args = cmd, wd
-        Df.d.jobm.addJob(self.jobExecuter, args, cmdString, True)
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString, showStatusNow=True)
 
     def cb_pack(self):
         srcNodeList, x_ = self.getSelectionAndDestination()
@@ -267,8 +263,17 @@ class Fs(vfs_node.Node):
                         Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
 
     def cb_compare(self):
-        srcList, dst = self.getSelectionAndDestination()
-        Df.d.jobm.addJobs(srcList[0].ops_compare, srcList, dst)
+        src, dst = self.getSelectionAndDestinationDiff()
+        if len(src) != 1 or len(dst) != 1:
+            Df_Dialog.MessageInfo("Diff","Please select only one item in each pane, then click the Diff button.")
+            return
+        wd = src[0].parent.fspath
+        src = src[0].fspath
+        dst = dst[0].fspath
+        cmd = [ '/usr/bin/diff', '-r', src, dst ]
+        cmdString = '%s $ diff %s %s' % (wd, src, dst)
+        args = cmd, wd
+        Df.d.jobm.addJob(self.jobExecuter, args, cmdString, showStatusNow=True, ignoreError=True)
         
     def cb_openwith(self):
         srcList, dst = self.getSelectionAndDestination()

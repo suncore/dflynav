@@ -1,0 +1,7 @@
+Package: dragonfly
+Version: 21.0
+Architecture: amd64
+Maintainer: Henrik Harmsen <henrik@harmsen.se>
+Depends: libheif1
+Description: File manager for KDE
+ A simple and efficient file manager for KDE.
