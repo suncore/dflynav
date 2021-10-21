@@ -146,6 +146,7 @@ class Panel(object):
 
     def mkdirW_clicked(self):
         self.cd.mkdirDialog()
+        self.refresh()
 
     def terminalW_clicked(self):
         error = None
@@ -177,8 +178,7 @@ class Panel(object):
                     self.refresh()
                     return
                 c.mkdir(tail)
-            else:
-                self.refresh()
+            self.refresh()
 
     def mirrorW_clicked(self):
         self.setPathByString(self.other.cd.path())
@@ -241,6 +241,7 @@ class Panel(object):
         n = i.df_node
         if i and i is not self.hoverItem:
             if not n.leaf():
+                Df.d.preview.hide()
                 if n.linkTarget:
                     self.other.setPathByString(n.linkTarget)
                 else:

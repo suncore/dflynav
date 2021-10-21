@@ -400,7 +400,11 @@ class Directory(Fs):
         #print "change"
         self.changed = True
         Df.d.refresh.refreshSig.emit()
-        time.sleep(1)
+        # time.sleep(1)
+
+    def icon(self, fast):
+        return Df.d.iconFactory.getFolderIcon(softlink=(self.linkTarget != None))
+
 
 class RootDirectory(Directory):
     def __init__(self, parent, name, fsname):
@@ -417,7 +421,7 @@ class File(Fs):
         return TextToPreview(self.fspath)
 
     def icon(self, fast):
-        return Df.d.iconFactory.getFileIcon(self.fspath)
+        return Df.d.iconFactory.getFileIcon(self.fspath, softlink=(self.linkTarget != None))
 
     def leaf(self):
         return True

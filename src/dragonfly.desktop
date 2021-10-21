@@ -1,5 +1,6 @@
 [Desktop Entry]
 Comment=Dragonfly Navigator
+TryExec=/usr/bin/dragonfly
 Exec=/usr/bin/dragonfly
 Icon=/usr/share/dragonfly/icons/dragonfly.png
 Name=Dragonfly

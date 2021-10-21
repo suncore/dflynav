@@ -76,12 +76,11 @@ class Preview():
         qvtype, qvd = qv
         self.previewType = qvtype
         if qvtype == 'image':
-            pm, text = qvd
             if index == 0:
                 i = 1
             else:
                 i = 0
-            (self.data[i], self.pixmap[i]) = pm
+            self.data[i], self.pixmap[i], text = qvd
             #self.containerW[index].hide()
             self.treeW[i].hide()
             self.containerW[i].show()

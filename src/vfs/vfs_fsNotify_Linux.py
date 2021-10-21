@@ -1,6 +1,6 @@
 
 from inotify_simple import INotify, flags
-import _thread
+import _thread, time
 
 class Notify():
     def __init__(self):
@@ -25,12 +25,16 @@ class Notify():
 
     def notifyThread(self, dummy):
         while 1:
-            for event in self.inotify.read():
-                # print(event)
+            evs1 = self.inotify.read() # blocking
+            time.sleep(1)
+            evs2 = self.inotify.read(timeout=0) # non-blocking to flush queue
+            signal = False
+            for event in evs1+evs2:
                 for flag in flags.from_mask(event.mask):
-                    # print('    ' + str(flag))
                     if flag != flags.IGNORED:
-                        self.cbfun()
+                        signal = True
+            if signal:
+                self.cbfun()
 
 # import pyinotify
 # from pyinotify import WatchManager, Notifier, ProcessEvent, ThreadedNotifier

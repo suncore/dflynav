@@ -13,11 +13,11 @@ import Df, traceback
 def TextToPreview(fn):
     try:
         file=open(fn, 'r')
-        data = file.read()
+        data = file.read(1024*10)
         file.close()
         return 'text', data
     except:
-        return None
+        return 'text', "No preview available"
 
 def ImageToPreview(fn):
     try:
@@ -67,7 +67,7 @@ def ImageToPreview(fn):
     image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
     w,h = im.size
     size = str(w) + 'x' + str(h)
-    return 'image', (data, QtGui.QPixmap(image)), date + '  Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6)
+    return 'image', (data, QtGui.QPixmap(image), date + '  Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6))
 
 def ImageToIcon(fn):
 

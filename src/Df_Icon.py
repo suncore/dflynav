@@ -47,27 +47,47 @@ class IconFactory(object):
         hs = 42 # hs = half of the total crop size
         letterSize = int((76*self.size[0])/100)
         im = self.allLettersIm.crop((x-hs,y-hs,x+hs,y+hs))
-        im = im.resize((letterSize, letterSize))
+        im = im.resize((letterSize, letterSize), Image.BICUBIC)
         bgim = self.drawRectangle(self.size, (255,241,19), (255,204,1))
         offs = int((self.size[0]-letterSize)/2)
         bgim.paste(im, (offs,offs), im)
         self.folderImageData, self.folderIcon = PILImageToIcon(bgim)
 
+        arrow = Image.open('icons/arrow.png')
+        scale = 0.55
+        arrow = arrow.resize((int(scale*128*.8),int(scale*68)), Image.BICUBIC)
+        bgim.paste(arrow, (10,33), arrow)
+        self.folderLinkImageData, self.folderLinkIcon = PILImageToIcon(bgim)
+        self.arrow = arrow
+
         im = self.drawRectangle(self.size, self.bgimcols[13][0], self.bgimcols[13][1])
         #self.bgimnum -= 1
         self.fileImageData, self.fileIcon = PILImageToIcon(im)
+        im.paste(arrow, (10,33), arrow)
+        self.fileImageDataLink, self.fileIconLink = PILImageToIcon(im)
         self.icons = {}
+        self.iconsLink = {}
 
-    def getFolderIcon(self):
+    def getFolderIcon(self, softlink=False):
+        if softlink:
+            return self.folderLinkIcon
         return self.folderIcon
     
-    def getFileIcon(self, path):
+    def getFileIcon(self, path, softlink=False):
         ext = fsPathExt(path)
         if ext == '':
-            return self.fileIcon
-        if ext in self.icons:
-            (_, icon) = self.icons[ext]
-            return icon
+            if softlink:
+                return self.fileIconLink
+            else:
+                return self.fileIcon
+        if softlink:
+            if ext in self.iconsLink:
+                (_, icon) = self.iconsLink[ext]
+                return icon
+        else:
+            if ext in self.icons:
+                (_, icon) = self.icons[ext]
+                return icon
         e = ext[0]
         c1 = 'abcdefghijklmn'
         c2 = 'opqrstuvwxyz'
@@ -92,7 +112,7 @@ class IconFactory(object):
         y = ix*deltay+y
         yi = int(y)
         im = self.allLettersIm.crop((x-hs,yi-hs,x+hs,yi+hs))
-        im = im.resize((letterSize, letterSize))
+        im = im.resize((letterSize, letterSize), Image.BICUBIC)
         h = hashlib.md5(ext.encode()).hexdigest()
         h = int(h[28:32], 16)
         coff = h/65536.0
@@ -102,6 +122,9 @@ class IconFactory(object):
         bgim.paste(im, (offs,offs), im)
         (data, icon) = PILImageToIcon(bgim)
         self.icons[ext] = (data, icon)
+        bgim.paste(self.arrow, (10,33), self.arrow)
+        (data, icon) = PILImageToIcon(bgim)
+        self.iconsLink[ext] = (data, icon)
         return icon
 
     def channel(self, i, c, size, startFill, stopFill):
