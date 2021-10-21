@@ -19,7 +19,7 @@ $ cd dragonfly
 $ ./setup
 Run:
 $ dragonfly 
-If dragonfly can not be found you may need to log out and in again, otherwise add ~/.local/bin to your path. Dragonfly Navigator should also be possible to find in the application menu but for some reason the icon is not always found. 
+If dragonfly can not be found you may need to log out and in again, otherwise add ~/.local/bin to your path. Dragonfly Navigator should also be possible to find in the application menu.
 
 Building and running from sources
 ---------------------------------

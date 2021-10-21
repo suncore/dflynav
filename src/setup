@@ -4,7 +4,8 @@ mkdir -p ~/.local/share/applications ~/.local/bin
 cp -r . ~/.local/share/dragonfly
 rm  ~/.local/bin/dragonfly
 ln -s ~/.local/share/dragonfly/dragonfly ~/.local/bin/dragonfly
-mv dragonfly.desktop.home dragonfly.desktop
+sed -e "s@HOMEDIR@$HOME@g" < dragonfly.desktop.home > dragonfly.desktop
+chmod a+x dragonfly.desktop
 desktop-file-install --dir=$HOME/.local/share/applications dragonfly.desktop
 update-desktop-database ~/.local/share/applications
 echo "You may have to log out and in again before the dragonfly command is available in your path."
