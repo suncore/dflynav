@@ -1,0 +1,13 @@
+[Desktop Entry]
+Comment=Dragonfly Navigator
+Exec=~/.local/bin/dragonfly
+Icon=~/.local/share/dragonfly/icons/dragonfly.png
+Name=Dragonfly
+Categories=Qt;System;FileTools;FileManager
+NoDisplay=false
+StartupNotify=false
+Terminal=0
+TerminalOptions=
+Type=Application
+X-KDE-SubstituteUID=false
+X-KDE-Username=

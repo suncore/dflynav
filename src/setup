@@ -1,0 +1,7 @@
+#!/bin/sh -x  
+# This script is to set up Dragonfly Navigator in the home directory
+mkdir -p ~/.local/share/applications ~/.local/bin
+cp -r . ~/.local/share/dragonfly
+rm  ~/.local/bin/dragonfly
+ln -s ~/.local/share/dragonfly/dragonfly ~/.local/bin/dragonfly
+cp ~/.local/share/dragonfly/dragonfly.desktop.home ~/.local/share/applications/dragonfly.desktop
