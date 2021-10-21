@@ -14,7 +14,7 @@ cmake ..
 make
 mv openwith ..
 cd ../..
-exit 0
+
 V=dragonfly_21.0-1_amd64
 
 # Build .deb Debian package
