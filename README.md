@@ -39,6 +39,9 @@ $ dragonfly
 ```
 If dragonfly can not be found you may need to log out and in again, otherwise add ~/.local/bin to your path. Dragonfly Navigator should now also be possible to find in the desktop application menu.
 
+If you have problems, contact me at henrik@harmsen.se. Dragonfly Navigator has only been tested on kubuntu 21.04, 21.10 and latest Manjaro KDE.
+
+
 ## Building and running from sources 
 These instructions are for ubuntu.
 1. Clone from github
