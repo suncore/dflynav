@@ -12,7 +12,7 @@ Dragonfly Navigator has:
 - AVIF, HEIF, JPG etc. image preview and icons
 - Not a lot of bells and whistles, the strategy is to leave that to terminal/cli for advanced operations. Not trying to replace cli.
 
-## Installing and running on Ubuntu
+## Installing and running on Ubuntu / Debian
 Download .deb file from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 ```
 $ sudo dpkg -i dragonfly_xxx.deb
@@ -24,7 +24,7 @@ $ dragonfly
 ```
 Dragonfly Navigator should now also be possible to find in the desktop application menu.
 
-## Installing and running on other distributions than Ubuntu
+## Installing and running on other distributions than Ubuntu / Debian
 Download the .tar.gz package from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 
 ```
@@ -39,7 +39,7 @@ $ dragonfly
 ```
 If dragonfly can not be found you may need to log out and in again, otherwise add ~/.local/bin to your path. Dragonfly Navigator should now also be possible to find in the desktop application menu.
 
-If you have problems, contact me at henrik@harmsen.se. Dragonfly Navigator has only been tested on kubuntu 21.04, 21.10 and latest Manjaro KDE.
+If you have problems, contact me at henrik@harmsen.se. Dragonfly Navigator has only been tested on kubuntu 21.04, 21.10, latest Manjaro KDE and Debian Sid.
 
 
 ## Building and running from sources 
