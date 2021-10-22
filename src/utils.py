@@ -24,19 +24,6 @@ def ImageToPreview(fn):
         im = Image.open(fn)
     except:
         im = None
-    # if not im:
-    #     try:
-    #         heifimage = pyheif.read_heif(fn)
-    #         im = Image.frombytes(
-    #             heifimage.mode, 
-    #             heifimage.size, 
-    #             heifimage.data,
-    #             "raw",
-    #             heifimage.mode,
-    #             heifimage.stride,
-    #             )
-    #     except:
-    #         im = None
     if not im:
         return None
     file=open(fn, 'rb')
@@ -112,8 +99,7 @@ def ImageToIcon(fn):
             s = h
             b = (int((h-w)/2),0)
         c = 0
-        im2 = Image.new('RGBA', (s,s), (c,c,c,0))
-        #print(im.size,b)
+        im2 = Image.new('RGBA', (s,s), (c,c,c,1))
         im2.paste(im, b)
         im=im2
         data = im.convert('RGBA').tobytes('raw', 'BGRA')
@@ -124,21 +110,20 @@ def ImageToIcon(fn):
             im = Image.open(fn)
         except:
             im = None
-        # if not im and fsPathExt(fn) == 'heic':
-        #     file=open(fn, 'rb')
-        #     heifimage = pyheif.read_heif(file)
-        #     file.close()
-        #     im = Image.frombytes(
-        #         heifimage.mode, 
-        #         heifimage.size, 
-        #         heifimage.data,
-        #         "raw",
-        #         heifimage.mode,
-        #         heifimage.stride,
-        #         )
         if im:
             try:
                 im.thumbnail((128,128), Image.ANTIALIAS)
+                w,h = im.size
+                if w > h:
+                    s = w
+                    b = (0,int((w-h)/2))
+                else:
+                    s = h
+                    b = (int((h-w)/2),0)
+                c = 0
+                im2 = Image.new('RGBA', (s,s), (c,c,c,1))
+                im2.paste(im, b)
+                im=im2
                 data = im.convert('RGBA').tobytes('raw', 'BGRA')
             except:
                 return (None, date, dateSecs)

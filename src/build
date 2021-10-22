@@ -25,7 +25,8 @@ mkdir -p $R/usr/bin $R/DEBIAN $A $A/openwith $R/usr/share/applications
 cp dragonfly.desktop $R/usr/share/applications
 ln -s /usr/share/dragonfly/dragonfly $R/usr/bin
 cp control $R/DEBIAN
-cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE ../README $A
+pandoc --to=plain ../README.md > $A/README
+cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE $A
 cp openwith/openwith $A/openwith
 dpkg-deb --build --root-owner-group $R
 

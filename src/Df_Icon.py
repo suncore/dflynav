@@ -119,13 +119,19 @@ class IconFactory(object):
         idx = int(coff*(self.bgimnum-0.0001))
         bgim = self.drawRectangle(self.size, self.bgimcols[idx][0], self.bgimcols[idx][1])
         offs = int((self.size[0]-letterSize)/2)
+
         bgim.paste(im, (offs,offs), im)
         (data, icon) = PILImageToIcon(bgim)
         self.icons[ext] = (data, icon)
+
         bgim.paste(self.arrow, (10,33), self.arrow)
-        (data, icon) = PILImageToIcon(bgim)
-        self.iconsLink[ext] = (data, icon)
-        return icon
+        (data, iconLink) = PILImageToIcon(bgim)
+        self.iconsLink[ext] = (data, iconLink)
+        if softlink:
+            return iconLink
+        else:
+            return icon
+
 
     def channel(self, i, c, size, startFill, stopFill):
         return startFill[c] + int((i * 1.0 / size) * (stopFill[c] - startFill[c]))
