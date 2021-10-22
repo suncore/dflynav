@@ -4,6 +4,7 @@ A simple and efficient file manager for Linux/KDE.
 ![Screen shot](images/screenshot.png)
 
 Dragonfly Navigator has:
+
 - Fast folder navigation
 - Predictable file and folder operations without relying on fiddly drag-n-drop
 - Asynchronous jobs with job control
@@ -12,7 +13,6 @@ Dragonfly Navigator has:
 - Not a lot of bells and whistles, the strategy is to leave that to terminal/cli for advanced operations. Not trying to replace cli.
 
 ## Installing and running on Ubuntu
----
 Download .deb file from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 ```
 $ sudo dpkg -i dragonfly_xxx.deb
@@ -25,8 +25,6 @@ $ dragonfly
 Dragonfly Navigator should now also be possible to find in the desktop application menu.
 
 ## Installing and running on other distributions than Ubuntu
----
-
 Download the .tar.gz package from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 
 ```
@@ -42,7 +40,6 @@ $ dragonfly
 If dragonfly can not be found you may need to log out and in again, otherwise add ~/.local/bin to your path. Dragonfly Navigator should now also be possible to find in the desktop application menu.
 
 ## Building and running from sources 
----
 These instructions are for ubuntu.
 1. Clone from github
 ```
@@ -63,3 +60,4 @@ $ ./dragonfly
 ```
 
 Use qtcreator to edit the GUI .ui files.
+
