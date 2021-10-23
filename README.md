@@ -7,7 +7,7 @@ Dragonfly Navigator has:
 
 - Fast folder navigation
 - Predictable file and folder operations without relying on fiddly drag-n-drop
-- Asynchronous file operations with job control
+- Asynchronous file operations with job control and a log of performed operations
 - Quick preview (Alt key + mouse hover) for text and images
 - AVIF, HEIF, JPG etc. image preview and icons
 - Not a lot of bells and whistles, the strategy is to leave that to terminal/cli for advanced operations.
