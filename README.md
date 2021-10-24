@@ -10,7 +10,6 @@ Dragonfly Navigator has:
 - Asynchronous file operations with job control and a log of performed operations
 - Quick preview (Alt key + mouse hover) for text and images
 - AVIF, HEIF, JPG etc. image preview and icons
-- Not a lot of bells and whistles, the strategy is to leave that to terminal/cli for advanced operations.
 
 ## Installing and running on Ubuntu / Debian
 Download .deb file from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
