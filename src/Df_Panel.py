@@ -72,7 +72,7 @@ class Panel(object):
         self.panelIdx = index
         f = self.treeW.font()
         ps = self.treeW.font().pointSize()
-        f.setPointSize(ps * 1.1)
+        f.setPointSize(int(ps * 1.1))
         ##print("pointsize",self.statusW.height())
         ##f.setBold(True)
         self.treeW.setFont(f)
@@ -421,12 +421,12 @@ class Panel(object):
                 pass
         self.treeW.clearSelection()
         self.treeW.clear()
-        if bigIcons > smallIcons:
+        if bigIcons > smallIcons and Df.d.config.showThumbs:
             self.treeW.setIconSize(QSize(64,64)) # was 40,40
         else:
             # print(self.defaultIconSize)
             # self.treeW.setIconSize(self.defaultIconSize)
-            self.treeW.setIconSize(QSize(20,20)) 
+            self.treeW.setIconSize(QSize(22,22)) 
         self.setActionButtons(items)
         self.treeW.insertTopLevelItems(0, items)
         self.treeW.sortItems(self.sortColumn,self.sortOrder) #Qt.AscendingOrder)
@@ -445,7 +445,7 @@ class Panel(object):
         self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch) 
         firstSectionWidth = self.treeW.header().sectionSize(0)
         self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive) 
-        self.treeW.header().resizeSection(0, firstSectionWidth*.96)
+        self.treeW.header().resizeSection(0, int(firstSectionWidth*.96))
         for i in range(len(keys)):
             if i > 2:
                 self.treeW.header().showSection(i)

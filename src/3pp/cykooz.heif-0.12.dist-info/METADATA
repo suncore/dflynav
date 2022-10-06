@@ -1,0 +1,103 @@
+Metadata-Version: 2.1
+Name: cykooz.heif
+Version: 0.12
+Classifier: Development Status :: 4 - Beta
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Rust
+Classifier: Topic :: Multimedia :: Graphics
+Classifier: Topic :: Multimedia :: Graphics :: Graphics Conversion
+Classifier: License :: OSI Approved :: MIT License
+Requires-Dist: wheel; extra == 'dev'
+Requires-Dist: maturin; extra == 'dev'
+Requires-Dist: pytest; extra == 'dev'
+Requires-Dist: Pillow; extra == 'dev'
+Requires-Dist: piexif; extra == 'dev'
+Provides-Extra: dev
+License-File: LICENSE
+Summary: A decoder of HEIF format of images
+Keywords: heif,heic,libheif,pil,pillow
+Author: Kirill Kuzminykh <cykooz@gmail.com>
+Author-email: Kirill Kuzminykh <cykooz@gmail.com>
+Requires-Python: >=3.7
+Description-Content-Type: text/x-rst; charset=UTF-8
+
+***********
+cykooz.heif
+***********
+
+``cykooz.heif`` is simple python wrapper for the library `libheif-rs <https://crates.io/crates/libheif-rs>`_.
+
+``RawHeifImage`` is a simple wrapper around low level HEIF-decoder.
+
+`CHANGELOG <https://github.com/Cykooz/cykooz.heif/blob/main/CHANGES.rst>`_
+
+Usage Examples
+==============
+
+Read HEIF-image from file:
+
+.. code-block:: python
+
+    from cykooz.heif.image import RawHeifImage
+
+    img = RawHeifImage.from_path('data/test.heif')
+    assert img.width == 3024
+    assert img.height == 4032
+    assert img.mode == 'RGB'
+    assert len(img.data) == 36578304
+    assert img.stride == 9072
+    assert len(img.exif) == 2026
+
+Read HEIF-image from file-like object:
+
+.. code-block:: python
+
+    from cykooz.heif.image import RawHeifImage
+
+    with open('data/test.heif') as fp
+        img = RawHeifImage.from_stream(fp)
+        assert img.width == 3024
+        assert img.height == 4032
+
+Also package provides an opener plugin for ``PIL`` (``Pillow``):
+
+.. code-block:: python
+
+    from PIL import Image
+    from cykooz.heif.pil import register_heif_opener
+
+    register_heif_opener()
+    img = Image.open('data/test.heif')
+    assert isinstance(img, Image.Image)
+    assert img.size == (3024, 4032)
+    assert img.mode == 'RGB'
+    assert img.getpixel((100, 100)) == (73, 74, 69)
+    img.save('test.jpg', 'JPEG')
+
+Installation from source
+========================
+
+System requirements:
+
+- libheif-dev >= 1.12 (https://github.com/strukturag/libheif)
+- python3-dev
+- Rust 1.56+ (https://www.rust-lang.org/)
+
+Ubuntu 22.04
+------------
+
+.. code-block:: console
+
+    $ sudo add-apt-repository ppa:strukturag/libheif
+    $ sudo add-apt-repository ppa:strukturag/libde265
+    $ sudo apt-get install build-essential python3-dev libheif-dev curl
+    $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    $ source $HOME/.cargo/env
+    $ pip3 install .
+
