@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
+  ./openwith/openwith.qt $*
+else
+  ./openwith/openwith.gtk $*
+fi

@@ -2,7 +2,7 @@
 Comment=Dragonfly Navigator
 Exec=HOMEDIR/.local/bin/dragonfly
 Icon=HOMEDIR/.local/share/dragonfly/icons/dragonfly.png
-Name=Dragonfly
+Name=Dragonfly Navigator
 Categories=Qt;System;FileTools;FileManager
 NoDisplay=false
 StartupNotify=false
@@ -11,3 +11,4 @@ TerminalOptions=
 Type=Application
 X-KDE-SubstituteUID=false
 X-KDE-Username=
+StartupWMClass=Dragonfly Navigator

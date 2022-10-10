@@ -1,0 +1,8 @@
+#!/bin/sh -x
+if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
+    konsole --workdir "$1"
+else
+    cd "$1"
+    gnome-terminal
+fi
+

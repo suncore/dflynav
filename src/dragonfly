@@ -1,4 +1,10 @@
 #!/bin/sh
+
+if [ "$XDG_CURRENT_DESKTOP" != "KDE" ]; then
+  export QT_STYLE_OVERRIDE=adwaita-dark
+  #export QT_QPA_PLATFORMTHEME=gnome
+fi
+
 if [ ! -z "$1" ]; then 
   L=`readlink -f $1`
 fi
@@ -8,5 +14,5 @@ fi
 D=`readlink -f $0`
 cd `dirname $D`
 export RELEASE=True
-python3 -E Df_Main.py "$L" "$R" 1>&2
+exec python3 -E Df_Main.py -name "Dragonfly Navigator" "$L" "$R" 1>&2
 #python -m cProfile -s time Df_Main.py 2>&1

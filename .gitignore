@@ -2,4 +2,14 @@
 *~
 *.old*
 *.new*
+*.orig*
+Df_Ui*.py
 __pycache__
+attic
+control
+helptext.html
+Letters.png.slash.png
+openwith.gtk
+openwith.qt
+rel/
+res/

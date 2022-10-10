@@ -49,7 +49,7 @@ $ git clone https://github.com/suncore/dflynav.git
 ```
 2. Install prerequisites
 ```
-$ sudo apt install pyqt5-dev-tools qtcreator libkf5-dev libkdeframeworks5-dev libkf5widgetsaddons-dev libkf5xmlgui-dev libkf5textwidgets-dev libkf5kio-dev build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext
+$ sudo apt install pyqt5-dev-tools qtcreator libkf5-dev libkdeframeworks5-dev libkf5widgetsaddons-dev libkf5xmlgui-dev libkf5textwidgets-dev libkf5kio-dev build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext libgtkmm-3.0-dev python3-pil adwaita-qt python3-pyqt5
 ```
 3. Building:
 ```

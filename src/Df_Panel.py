@@ -1,5 +1,5 @@
 
-import vfs, Df_Dialog
+import vfs, Df_Dialog, sys
 from PyQt5.QtCore import *
 from PyQt5 import QtGui, QtWidgets
 from utils import *
@@ -151,12 +151,12 @@ class Panel(object):
     def terminalW_clicked(self):
         error = None
         try:
-            subprocess.Popen(["konsole","--workdir",self.cd.fspath]) 
+            subprocess.Popen(["./terminal",self.cd.fspath]) 
         except:
             t,error,tb = sys.exc_info()
         if error:
             error = str(error)
-        Df.d.jobm.addJobDone("$ konsole --workdir "+self.cd.fspath, error)
+        Df.d.jobm.addJobDone("$ terminal "+self.cd.fspath, error)
       
     def pathW_returnPressed(self):
         self.unlockRefresh()

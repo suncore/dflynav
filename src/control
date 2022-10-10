@@ -1,7 +1,0 @@
-Package: dragonfly
-Version: 21.0.2
-Architecture: amd64
-Maintainer: Henrik Harmsen <henrik@harmsen.se>
-Depends: python3-pil
-Description: File manager for KDE
- A simple and efficient file manager for KDE.

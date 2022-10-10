@@ -1,4 +1,10 @@
 #!/bin/sh -x
+
+VERSION=`date +"%Y%m%d.%H%M%S"`
+V=dragonfly_$VERSION-1_amd64
+sed "s/VERSION/$VERSION/g" < control.pre > control
+sed "s/VERSION/$VERSION/g" < helptext.html.pre > helptext.html
+
 pyuic5 mainwin.ui  > Df_UiMainwin.py
 #pyuic5 dialog.ui  > Df_UiDialog.py
 pyuic5 config.ui  > Df_UiConfig.py
@@ -8,14 +14,14 @@ pyuic5 help.ui  > Df_UiHelp.py
 pyuic5 find.ui  > Df_UiFind.py
 #pyside-rcc dragonfly.qrc  > dragonfly_rc.py
 
-mkdir -p openwith/build
-cd openwith/build
-cmake ..
-make
-mv openwith ..
-cd ../..
-
-V=dragonfly_21.0-1_amd64
+TD="$PWD"
+cd "$TD"/openwith/qt
+rm -rf build; mkdir build; cd build; cmake ..; make
+mv openwith "$TD"/openwith/openwith.qt
+cd "$TD"/openwith/gtk
+rm -rf build; mkdir build; cd build; cmake ..; make
+mv gtk-open-with "$TD"/openwith/openwith.gtk
+cd "$TD"
 
 # Build .deb Debian package
 R=rel/$V
@@ -26,8 +32,8 @@ cp dragonfly.desktop $R/usr/share/applications
 ln -s /usr/share/dragonfly/dragonfly $R/usr/bin
 cp control $R/DEBIAN
 pandoc --to=plain ../README.md > $A/README
-cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE $A
-cp openwith/openwith $A/openwith
+cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE terminal $A
+cp openwith/openwith openwith/openwith.qt openwith/openwith.gtk $A/openwith
 dpkg-deb --build --root-owner-group $R
 
 # Build the tarball
