@@ -11,5 +11,7 @@ helptext.html
 Letters.png.slash.png
 openwith.gtk
 openwith.qt
-rel/
-res/
+rel
+res
+build
+.vscode

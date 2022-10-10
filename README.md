@@ -1,13 +1,13 @@
 # Dragonfly Navigator
-A simple and efficient file manager for Linux/KDE.
+A simple and efficient dual pane file manager for Linux.
 
 ![Screen shot](images/screenshot.png)
 
-Dragonfly Navigator has:
+Notable features:
 
 - Fast folder navigation
-- Predictable file and folder operations without relying on fiddly drag-n-drop
-- Asynchronous file operations with job control and a log of performed operations
+- Predictable file and folder operations without relying on drag-n-drop or copy/paste.
+- Asynchronous file operations with queue management
 - Quick preview (Alt key + mouse hover) for text and images
 - AVIF, HEIF, JPG etc. image preview and icons
 
@@ -15,7 +15,7 @@ Dragonfly Navigator has:
 Download .deb file from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 ```
 $ sudo dpkg -i dragonfly_xxx.deb
-$ sudo apt install -f (this may not be necessary)
+$ sudo apt install -f
 ```
 Run:
 ```
@@ -27,6 +27,7 @@ Dragonfly Navigator should now also be possible to find in the desktop applicati
 Download the .tar.gz package from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 
 ```
+Install the following dependencies: python3-pil adwaita-qt python3-pyqt5
 $ tar xzf dragonfly_xxx.tar.gz
 $ cd dragonfly
 $ ./setup 
@@ -38,7 +39,7 @@ $ dragonfly
 ```
 If dragonfly can not be found you may need to log out and in again, otherwise add ~/.local/bin to your path. Dragonfly Navigator should now also be possible to find in the desktop application menu.
 
-If you have problems, contact me at henrik@harmsen.se. Dragonfly Navigator has only been tested on kubuntu 21.04, 21.10, latest Manjaro KDE and Debian Sid.
+If you have problems, contact me at henrik@harmsen.se. 
 
 
 ## Building and running from sources 
