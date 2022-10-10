@@ -1,7 +1,10 @@
 # Dragonfly Navigator
 A simple and efficient dual pane file manager for Linux.
 
+On KDE:
 ![Screen shot](images/kde.png)
+
+On Gnome:
 ![Screen shot](images/gnome.png)
 
 Notable features:
