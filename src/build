@@ -1,6 +1,8 @@
 #!/bin/sh -x
 
-VERSION=`date +"%Y%m%d.%H%M%S"`
+#VERSION=`date +"%Y%m%d.%H%M%S"`
+VERSION=`cat version`
+
 V=dragonfly_$VERSION-1_amd64
 sed "s/VERSION/$VERSION/g" < control.pre > control
 sed "s/VERSION/$VERSION/g" < helptext.html.pre > helptext.html
