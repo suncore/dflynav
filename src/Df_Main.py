@@ -20,7 +20,7 @@
 import sys
 sys.path.insert(0, "3pp")
 #, os
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 import Df_Gui, Df_Dragonfly, Df_Panel, Df_StatusList, Df_ActionButtons, Df_Dialog
 import Df, Df_Job, vfs, Df_GlobalButtons, Df_Mainwin, Df_Find
 import platform, Df_Config, Df_Icon, Df_Preview, tempfile, os
@@ -29,7 +29,7 @@ from utils import *
 from queue import Queue
 import _thread
 from PIL import Image
-from cykooz.heif.pil import register_heif_opener
+#from cykooz.heif.pil import register_heif_opener
 
 # sys.path = [
 #     '/usr/lib/python39.zip',
@@ -43,7 +43,7 @@ def main():
 
 #if __name__=="__main__":
 
-    register_heif_opener()
+    #register_heif_opener()
 
     iconFile = 'icons/dragonfly.png'
 
@@ -140,24 +140,25 @@ def main():
     d.vfsJobm = vfs.vfs_asyncJobs.JobManager()
 
     d.config.load(d.g.config)
-    if sys.argv[1] != "":
-        Df.d.lp.setPathByString(sys.argv[1])
-    if sys.argv[2] != "":
-        Df.d.rp.setPathByString(sys.argv[2])
+    #print(sys.argv, sys.argv[-2], sys.argv[-1])
+    if sys.argv[-2] != "":
+        Df.d.lp.setPathByString(sys.argv[-2])
+    if sys.argv[-1] != "":
+        Df.d.rp.setPathByString(sys.argv[-1])
     d.rp.start()
     d.lp.start()
     style = d.g.mw.style()
-    d.g.mw.left_up.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ArrowUp))
-    d.g.mw.right_up.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ArrowUp))
-    d.g.mw.toright.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ArrowForward))
-    d.g.mw.toleft.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ArrowBack))
-    #d.g.mw.help.setIcon(style.standardIcon(QtWidgets.QStyle.SP_DialogHelpButton))
-    d.g.mw.left_back.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ArrowBack))
-    d.g.mw.right_back.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ArrowBack))
-    d.g.mw.left_reload.setIcon(style.standardIcon(QtWidgets.QStyle.SP_BrowserReload))
-    d.g.mw.right_reload.setIcon(style.standardIcon(QtWidgets.QStyle.SP_BrowserReload))
-    d.g.mw.left_terminal.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ComputerIcon))
-    d.g.mw.right_terminal.setIcon(style.standardIcon(QtWidgets.QStyle.SP_ComputerIcon))
+    d.g.mw.left_up.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ArrowUp))
+    d.g.mw.right_up.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ArrowUp))
+    d.g.mw.toright.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ArrowForward))
+    d.g.mw.toleft.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ArrowBack))
+    #d.g.mw.help.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DialogHelpButton))
+    d.g.mw.left_back.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ArrowBack))
+    d.g.mw.right_back.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ArrowBack))
+    d.g.mw.left_reload.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_BrowserReload))
+    d.g.mw.right_reload.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_BrowserReload))
+    d.g.mw.left_terminal.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ComputerIcon))
+    d.g.mw.right_terminal.setIcon(style.standardIcon(QtWidgets.QStyle.StandardPixmap.SP_ComputerIcon))
     d.g.mw.left_find.setIcon(QtGui.QIcon.fromTheme("search"))
     d.g.mw.right_find.setIcon(QtGui.QIcon.fromTheme("search"))
 
@@ -181,7 +182,7 @@ def main():
     Df_Bugreport.CheckForCrashReport()
     if d.startCount == 1:
         d.gb.help()
-    r = d.qtapp.exec_()
+    r = d.qtapp.exec()
     d.fsNotify[0].stop()
     d.fsNotify[1].stop()
     d.config.save()
@@ -218,8 +219,8 @@ if __name__=="__main__":
 #import sys
 #import win32ui
 #import win32gui
-#from PyQt5 import QtCore
-#from PyQt5 import QtGui
+#from PyQt6 import QtCore
+#from PyQt6 import QtGui
 #
 #class testWindow(QtWidgets.QMainWindow):
 #    def __init__(self):

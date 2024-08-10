@@ -3,7 +3,7 @@
 
 import sys
 
-from PyQt5.QtWidgets import QApplication, QGridLayout, QPushButton, QStyle, QWidget
+from PyQt6.QtWidgets import QApplication, QGridLayout, QPushButton, QStyle, QWidget
 
 
 class Window(QWidget):

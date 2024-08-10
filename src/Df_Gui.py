@@ -1,5 +1,5 @@
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets
 
 from Df_UiMainwin import Ui_MainWindow
 #from Df_UiDialog import Ui_Dialog

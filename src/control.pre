@@ -2,6 +2,6 @@ Package: dragonfly
 Version: VERSION
 Architecture: amd64
 Maintainer: Henrik Harmsen <henrik@harmsen.se>
-Depends: python3-pil, adwaita-qt, python3-pyqt5
+Depends: python3-pil, adwaita-qt, python3-pyqt6
 Description: File manager with dual panes
  A simple and efficient file manager with dual panes.

@@ -13,7 +13,10 @@ class Notify():
     def setNotify(self, path, cbfun):
         self.stop()
         watch_flags = flags.CREATE | flags.DELETE | flags.MODIFY | flags.MOVED_TO | flags.MOVED_FROM
-        self.wd = self.inotify.add_watch(path, watch_flags)
+        try:
+            self.wd = self.inotify.add_watch(path, watch_flags)
+        except:
+            self.wd = None
         self.path = path
         self.cbfun = cbfun
 

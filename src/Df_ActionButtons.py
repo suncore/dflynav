@@ -1,8 +1,8 @@
 
 # Actionbuttons are those buttons in the middle column that are dynamic, changing with selection
 
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 
 class ActionButton(QtWidgets.QPushButton):
     # self.df_
@@ -21,7 +21,7 @@ class ActionButtons():
         if name == "Delete":
             #button.setStyleSheet('QPushButton {background-color: #700000; color: white;}')
             #button.setStyleSheet('QPushButton {color: #700000;}')
-            button.setIcon(button.style().standardIcon(QtWidgets.QStyle.SP_DialogDiscardButton))
+            button.setIcon(button.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_DialogDiscardButton))
         button.clicked.connect(callback)
         self.buttons.append(button)
 

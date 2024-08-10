@@ -1,6 +1,6 @@
 
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 from utils import *
 from PIL import Image, ImageDraw
 import hashlib, random
@@ -8,7 +8,7 @@ import colorsys
 
 def PILImageToIcon(im):
     data = im.convert('RGBA').tobytes('raw', 'BGRA')
-    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format.Format_ARGB32)
     return (data, QtGui.QIcon(QtGui.QPixmap(image)))
 
 class IconFactory(object):

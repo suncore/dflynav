@@ -1,6 +1,6 @@
 import os, stat, time
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 import _thread
 from utils import *
 from queue import Queue
@@ -27,9 +27,9 @@ class JobManager(object):
         self.jobsW.setHeaderLabels( [ "Time", "Command", "Status" ] )
         self.jobsW.header().setStretchLastSection(False)
         self.jobsW.header().hide()
-        self.jobsW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
-        self.jobsW.header().setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
-        self.jobsW.header().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        self.jobsW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        self.jobsW.header().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
+        self.jobsW.header().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         self.jobsW.itemPressed.connect(self.mouseButtonPressed)
         self.jobstatusW.close.clicked.connect(self.closeClicked)
         self.jobstatusW.stop.clicked.connect(self.stopClicked)
@@ -135,13 +135,13 @@ class Entry(object):
         self.item.setText(2, self.statusString)
         if self.statusString == "Failed":
             self.item.setBackground(2, QtGui.QColor('#700000'))
-            self.item.setForeground(2, Qt.white)
+            self.item.setForeground(2, Qt.GlobalColor.white)
         elif self.statusString == "Done":
             self.item.setBackground(2, QtGui.QColor('#005000'))
-            self.item.setForeground(2, Qt.white)
+            self.item.setForeground(2, Qt.GlobalColor.white)
         elif self.statusString == "Running":
             self.item.setBackground(2, QtGui.QColor('#505000'))
-            self.item.setForeground(2, Qt.white)
+            self.item.setForeground(2, Qt.GlobalColor.white)
 
 
         if self.jobManager.jobStatusWindowActive and self == self.jobManager.jobStatusWindowJob:

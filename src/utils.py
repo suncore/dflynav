@@ -4,8 +4,8 @@ import os, time, io
 from subprocess import *
 from PIL import Image
 from PIL.ExifTags import TAGS
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 import exifread
 import Df, traceback
 
@@ -20,6 +20,7 @@ def TextToPreview(fn):
         return 'text', "No preview available"
 
 def ImageToPreview(fn):
+    print("ImageToPreview",fn)
     try:
         im = Image.open(fn)
     except:
@@ -51,13 +52,12 @@ def ImageToPreview(fn):
         data = im.convert('RGBA').tobytes('raw', 'BGRA')
     except:
         return None
-    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+    image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format.Format_ARGB32)
     w,h = im.size
     size = str(w) + 'x' + str(h)
     return 'image', (data, QtGui.QPixmap(image), date + '  Size: ' + size + '  (%.1f Mpixels)' % ((w*h)/1.0e6))
 
 def ImageToIcon(fn):
-
     file=open(fn, 'rb')
     exif = exifread.process_file(file)
     file.close()
@@ -84,7 +84,6 @@ def ImageToIcon(fn):
         im = Image.open(f)
         if 'Image Orientation' in exif:
             o = str(exif['Image Orientation'])
-            # print(o)
             if o == '6' or o == "Rotated 90 CW":
                 im = im.rotate(-90,expand=1)
             elif o == '3':
@@ -103,7 +102,7 @@ def ImageToIcon(fn):
         im2.paste(im, b)
         im=im2
         data = im.convert('RGBA').tobytes('raw', 'BGRA')
-        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+        image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format.Format_ARGB32)
         thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
     else:
         try:
@@ -111,8 +110,8 @@ def ImageToIcon(fn):
         except:
             im = None
         if im:
-            try:
-                im.thumbnail((128,128), Image.ANTIALIAS)
+            if True:
+                im.thumbnail((128,128), Image.LANCZOS)
                 w,h = im.size
                 if w > h:
                     s = w
@@ -125,9 +124,9 @@ def ImageToIcon(fn):
                 im2.paste(im, b)
                 im=im2
                 data = im.convert('RGBA').tobytes('raw', 'BGRA')
-            except:
-                return (None, date, dateSecs)
-            image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format_ARGB32)
+            #except:
+            #    return (None, date, dateSecs)
+            image = QtGui.QImage(data, im.size[0], im.size[1], QtGui.QImage.Format.Format_ARGB32)
             thumb = (data, QtGui.QIcon(QtGui.QPixmap(image)))
 
     return (thumb, date, dateSecs)

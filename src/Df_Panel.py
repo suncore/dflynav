@@ -1,7 +1,7 @@
 
 import vfs, Df_Dialog, sys
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 from utils import *
 import Df
 import os, subprocess, platform
@@ -44,12 +44,12 @@ class PanelItem(QtWidgets.QTreeWidgetItem):
 def PanelIconQueueTask(dummy):
     while True:
         (pi, i) = Df.d.panelIconQueue.get(True)
-        #if True: 
-        try:
+        if True: 
+        #try:
             pi.setIcon(0, i.icon(fast=True)) # If panel item has been deleted, this will raise an exception and we won't spend time on jpeg thumb loading
             pi.setIcon(0, i.icon(fast=False))
-        except:
-            pass
+        #except:
+        #    pass
 
 
 
@@ -67,7 +67,7 @@ class Panel(object):
         self.mkdirW = mkdirW
         self.textPreviewW = textPreviewW
         self.other = None # Pointer to the other panel filled in by the builder
-        self.treeW.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+        self.treeW.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.ExtendedSelection)
         self.actionButtons = actionButtons
         self.panelIdx = index
         f = self.treeW.font()
@@ -86,10 +86,10 @@ class Panel(object):
         self.cd = self.newcd = vfs.vfs_fs.Directory(None, '/', '/') # vfs.vfs_root.VfsRoot()
         self.historyW.setMenu(self.historyMenu)
         self.bookmarksW.setMenu(self.bookmarksMenu)
-        self.bookmarksMenu.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.bookmarksMenu.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.bookmarksMenu.customContextMenuRequested.connect(self.bookmarksContextMenuPopup)
         self.bookmarksContextMenu = QtWidgets.QMenu(self.mainW)
-        self.bookmarksContextMenu.addAction(QtWidgets.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
+        self.bookmarksContextMenu.addAction(QtGui.QAction('Delete', self.mainW, triggered = self.bookmarksContextMenuDelete))
         self.bookmarksMenuHoverPath = None
         self.refreshLocked = False
         self.backHistory = ['/']
@@ -108,7 +108,7 @@ class Panel(object):
         self.sortColumn = 0
         # self.treeW.header().setClickable(True)
         # self.treeW.header().clicked.connect(self.treeWheaderClicked)
-        self.treeW.sortItems(0,Qt.AscendingOrder)
+        self.treeW.sortItems(0,Qt.SortOrder.AscendingOrder)
         self.oldSelected = []
 
     def start(self):
@@ -185,7 +185,7 @@ class Panel(object):
     
     def treeW_pressed(self, item):
         buttons = QtWidgets.QApplication.mouseButtons()        # buttons can be Left-,Right-,Mid-Button
-        if buttons == Qt.RightButton:
+        if buttons == Qt.MouseButton.RightButton:
             self.openItem(item)
 
     def treeW_doubleClicked(self, item):
@@ -203,11 +203,11 @@ class Panel(object):
         #self.treeW_leaveEventOrig(e)
             
     def treeW_keyPressEvent(self, e):
-        if e.key() == Qt.Key_Alt:
+        if e.key() == Qt.Key.Key_Alt:
             self.hovering = True
             self.hoverOldOppositeFolder = self.other.cd
             self.preview()
-        elif e.key() == Qt.Key_Control:
+        elif e.key() == Qt.Key.Key_Control:
             self.controlMod = True
         self.treeW_keyPressEventOrig(e)
             
@@ -399,7 +399,7 @@ class Panel(object):
             col = 1
             for k,s,v in i.meta:
                 if type(1) == type(v):
-                    pi.setTextAlignment(col, Qt.AlignCenter | Qt.AlignRight)
+                    pi.setTextAlignment(col, Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignRight)
                 col += 1
             pi.setIcon(0, i.icon(fast=True))
             if type(i).__name__ == "PictureFile":
@@ -436,15 +436,15 @@ class Panel(object):
         self.highestCol = len(keys)
         for col in range(1,self.highestCol):
             #self.treeW.header().setSectionResizeMode(col, QtWidgets.QHeaderView.Interactive)
-            self.treeW.header().setSectionResizeMode(col, QtWidgets.QHeaderView.ResizeToContents) # TODO problematic
+            self.treeW.header().setSectionResizeMode(col, QtWidgets.QHeaderView.ResizeMode.ResizeToContents) # TODO problematic
         self.setStatus(0, self.nrItems, 0, self.cd.fsFree())
         
         for i in range(len(keys)):
             if i > 2:
                 self.treeW.header().hideSection(i)
-        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch) 
+        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.Stretch) 
         firstSectionWidth = self.treeW.header().sectionSize(0)
-        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.Interactive) 
+        self.treeW.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.Interactive) 
         self.treeW.header().resizeSection(0, int(firstSectionWidth*.96))
         for i in range(len(keys)):
             if i > 2:
@@ -574,7 +574,7 @@ class Panel(object):
         self.historyMenu.clear()
         actions = []
         for path in h:
-            action = QtWidgets.QAction(path, self.mainW)
+            action = QtGui.QAction(path, self.mainW)
             #receiver = lambda path=path: self.gotoPath(path)
             receiver = functools.partial(self.gotoPath, path=path)
             action.triggered.connect(receiver)
@@ -601,14 +601,14 @@ class Panel(object):
     def updateBookmarksMenu(self):
         self.bookmarksMenu.clear()
         actions = []
-        action = QtWidgets.QAction('Add bookmark (right click on item to remove)', self.mainW)
+        action = QtGui.QAction('Add bookmark (right click on item to remove)', self.mainW)
         action.triggered.connect(self.addBookmark)
         actions.append(action)
-        action = QtWidgets.QAction('', self.mainW)
+        action = QtGui.QAction('', self.mainW)
         action.setSeparator(True)
         actions.append(action)
         for path in Df.d.bookmarks:
-            action = QtWidgets.QAction(path, self.mainW)
+            action = QtGui.QAction(path, self.mainW)
             #receiver = lambda path=path: self.gotoPath(path)
             receiver = functools.partial(self.gotoPath, path=path)
             action.triggered.connect(receiver)

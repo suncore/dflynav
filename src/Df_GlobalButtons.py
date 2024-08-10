@@ -1,5 +1,5 @@
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 import Df, os, platform, subprocess, sys
 from utils import *
 import Df_Dialog

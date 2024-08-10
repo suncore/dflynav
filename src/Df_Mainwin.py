@@ -1,6 +1,6 @@
 
-from PyQt5.QtCore import *
-from PyQt5 import QtGui
+from PyQt6.QtCore import *
+from PyQt6 import QtGui
 from utils import *
 import Df
         

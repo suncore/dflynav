@@ -1,10 +1,10 @@
-from PyQt5.QtCore import *
-from PyQt5 import QtCore, QtGui, QtWidgets, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtCore, QtGui, QtWidgets, QtWidgets
 import Df, os, platform, subprocess, sys
 from utils import *
 
 def Dialog(title, instruction, prefill):    
-    result, ok = QtWidgets.QInputDialog.getText(Df.d.g.mw, title, instruction, QtWidgets.QLineEdit.Normal, prefill)
+    result, ok = QtWidgets.QInputDialog.getText(Df.d.g.mw, title, instruction, QtWidgets.QLineEdit.EchoMode.Normal, prefill)
     if ok and result != '':
         return result
     return None

@@ -1,8 +1,12 @@
-from PyQt5.QtCore import *
-from PyQt5 import QtGui
+from PyQt6.QtCore import *
+from PyQt6 import QtGui
 from utils import *
 import Df, time, hashlib, sys, Df_Dialog, os, locale
 
+def checkstate2int(cs):
+    if cs == Qt.CheckState.Checked:
+        return 1
+    return 0
 
 class Config():
     def __init__(self):
@@ -18,7 +22,7 @@ class Config():
         size = self.settings.value("size", QSize(1024, 768))
         maximized = self.settings.value("maximized", 1)
         if maximized == 1:
-            Df.d.g.mw.setWindowState(Qt.WindowMaximized)
+            Df.d.g.mw.setWindowState(Qt.WindowState.WindowMaximized)
         else:
             Df.d.g.mw.resize(size)
         Df.d.g.mw.move(pos)
@@ -43,23 +47,23 @@ class Config():
             self.configW.rememberStartFolders.setChecked(False)
             self.configW.startAtSpecifiedFolders.setChecked(True)
 
-        self.showHidden = int(self.settings.value("showHidden", int(Qt.Unchecked)))
-        if self.showHidden == int(Qt.Checked):
-            self.configW.showHidden.setCheckState(Qt.Checked)
+        self.showHidden = int(self.settings.value("showHidden", checkstate2int(Qt.CheckState.Unchecked)))
+        if self.showHidden == checkstate2int(Qt.CheckState.Checked):
+            self.configW.showHidden.setCheckState(Qt.CheckState.Checked)
         else:
-            self.configW.showHidden.setCheckState(Qt.Unchecked)
+            self.configW.showHidden.setCheckState(Qt.CheckState.Unchecked)
 
-        self.showThumbs = int(self.settings.value("showThumbs", int(Qt.Checked)))
-        if self.showThumbs == int(Qt.Checked):
-            self.configW.showThumbs.setCheckState(Qt.Checked)
+        self.showThumbs = int(self.settings.value("showThumbs", checkstate2int(Qt.CheckState.Checked)))
+        if self.showThumbs == checkstate2int(Qt.CheckState.Checked):
+            self.configW.showThumbs.setCheckState(Qt.CheckState.Checked)
         else:
-            self.configW.showThumbs.setCheckState(Qt.Unchecked)
+            self.configW.showThumbs.setCheckState(Qt.CheckState.Unchecked)
 
-        self.confirmDelete = int(self.settings.value("confirmDelete", int(Qt.Checked)))
-        if self.confirmDelete == int(Qt.Checked):
-            self.configW.confirmDelete.setCheckState(Qt.Checked)
+        self.confirmDelete = int(self.settings.value("confirmDelete", checkstate2int(Qt.CheckState.Checked)))
+        if self.confirmDelete == checkstate2int(Qt.CheckState.Checked):
+            self.configW.confirmDelete.setCheckState(Qt.CheckState.Checked)
         else:
-            self.configW.confirmDelete.setCheckState(Qt.Unchecked)
+            self.configW.confirmDelete.setCheckState(Qt.CheckState.Unchecked)
 
         self.configW.useCurrentLeft.clicked.connect(self.useCurrentLeft)
         self.configW.useCurrentRight.clicked.connect(self.useCurrentRight)
@@ -88,7 +92,7 @@ class Config():
         self.settings.setValue("size", Df.d.g.mw.size())
         self.settings.setValue("startCount", Df.d.startCount)
         state = Df.d.g.mw.windowState()
-        maximized = Df.d.g.mw.windowState() == Qt.WindowMaximized
+        maximized = Df.d.g.mw.windowState() == Qt.WindowState.WindowMaximized
         self.settings.setValue("maximized", int(maximized))
         if Df.d.bookmarks == []:
             self.settings.setValue("bookmarks", [ "None" ])
@@ -108,11 +112,11 @@ class Config():
             self.settings.setValue("startDirLeft", self.configW.leftStartDir.text())
             self.settings.setValue("startDirRight", self.configW.rightStartDir.text())
 
-        self.showHidden = int(self.configW.showHidden.checkState())
+        self.showHidden = checkstate2int(self.configW.showHidden.checkState())
         self.settings.setValue("showHidden", self.showHidden)
-        self.showThumbs = int(self.configW.showThumbs.checkState())
+        self.showThumbs = checkstate2int(self.configW.showThumbs.checkState())
         self.settings.setValue("showThumbs", self.showThumbs)
-        self.confirmDelete = int(self.configW.confirmDelete.checkState())
+        self.confirmDelete = checkstate2int(self.configW.confirmDelete.checkState())
         self.settings.setValue("confirmDelete", self.confirmDelete)
         
         self.settings.sync()

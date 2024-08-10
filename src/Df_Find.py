@@ -1,5 +1,5 @@
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 from utils import *
 import Df, time, hashlib, sys, string, _thread
 from queue import Queue
@@ -17,7 +17,7 @@ class Find():
         self.findW.close.clicked.connect(self.close)
         self.findW.stop.clicked.connect(self.stopNow)
         self.findW.start.clicked.connect(self.startFind)
-        self.findW.recursive.setCheckState(Qt.Checked)
+        self.findW.recursive.setCheckState(Qt.CheckState.Checked)
         self.q = Queue()
         self.q_sf = Queue()
         self.q_st = Queue()

@@ -383,7 +383,7 @@ class Directory(Fs):
                     if not hide or Df.d.config.showHidden:
                         c.append(self.buildChild(f, stats))
             except Exception as e:
-                print("Exception trying to list " + str(self.fspath))
+                #print("Exception trying to list " + str(self.fspath))
                 print(e)
                 pass
         self.children_ = c

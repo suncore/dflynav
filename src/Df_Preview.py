@@ -1,5 +1,5 @@
-from PyQt5.QtCore import *
-from PyQt5 import QtGui, QtWidgets
+from PyQt6.QtCore import *
+from PyQt6 import QtGui, QtWidgets
 from utils import *
 import Df
 
@@ -57,7 +57,7 @@ class Preview():
             size = self.gvW[i].viewport().size() # TODO wrong when just exposed?
             vw = size.width()
             vh = size.height()
-            pixmap = self.pixmap[i].scaled(QSize(vw,vh), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            pixmap = self.pixmap[i].scaled(QSize(vw,vh), Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
             size = pixmap.size()
             pw = size.width()
             ph = size.height()
