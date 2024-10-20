@@ -15,6 +15,8 @@
 #sys.exit(0)
 
 # Builder/main module
+#import time
+#print(time.strftime("%x %X",time.localtime(time.time())))
 
     
 import sys
@@ -83,7 +85,9 @@ def main():
     d.fsNotify[0] = vfs.Notify()
     d.fsNotify[1] = vfs.Notify()
     
+    #print(time.strftime("%x %X",time.localtime(time.time())))
     d.qtapp = QtWidgets.QApplication(sys.argv)
+    #print(time.strftime("%x %X",time.localtime(time.time())))
     #d.qtapp.setStyle("plastique")
     #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
     d.g = Df_Gui.Gui()
@@ -191,6 +195,7 @@ def main():
 
 
 if __name__=="__main__":
+    
     #print("Hello world")
     #print("\n")
     sys.stdout.flush()

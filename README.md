@@ -31,7 +31,7 @@ Dragonfly Navigator should now also be possible to find in the desktop applicati
 Download the .tar.gz package from the [github release page](https://github.com/suncore/dflynav/releases). Then install like this:
 
 ```
-Install the following dependencies: python3-pil adwaita-qt python3-pyqt5
+Install the following dependencies: python3-pil adwaita-qt python3-pyqt6
 $ tar xzf dragonfly_xxx.tar.gz
 $ cd dragonfly
 $ ./setup 
@@ -47,14 +47,15 @@ If you have problems, contact me at henrik@harmsen.se.
 
 
 ## Building and running from sources 
-These instructions are for ubuntu.
+These instructions are for ubuntu 24.10 or later.
 1. Clone from github
 ```
 $ git clone https://github.com/suncore/dflynav.git
 ```
 2. Install prerequisites
 ```
-$ sudo apt install pyqt5-dev-tools qtcreator libkf5-dev libkdeframeworks5-dev libkf5widgetsaddons-dev libkf5xmlgui-dev libkf5textwidgets-dev libkf5kio-dev build-essential libkf5config-dev libkdecorations2-dev libqt5x11extras5-dev qtdeclarative5-dev extra-cmake-modules libkf5guiaddons-dev libkf5configwidgets-dev libkf5windowsystem-dev libkf5coreaddons-dev gettext libgtkmm-3.0-dev python3-pil adwaita-qt python3-pyqt5
+$ sudo apt install pyqt6-dev-tools qtcreator libkf6widgetsaddons-dev libkf6xmlgui-dev libkf6textwidgets-dev libkf6kio-dev build-essential libkf6config-dev libkdecorations2-dev extra-cmake-modules libkf6guiaddons-dev libkf6configwidgets-dev libkf6windowsystem-dev libkf6coreaddons-dev gettext libgtkmm-3.0-dev python3-pil adwaita-qt python3-pyqt6 extra-cmake-modules kdevelop qt6-base-dev qtbase5-private-dev qt6-tools-dev libgcrypt20-dev qt6-l10n-tools
+
 ```
 3. Building:
 ```

@@ -6,7 +6,7 @@
 #include <KTextEdit>
 #include <KXmlGuiWindow>
 #include <KIO/ApplicationLauncherJob>
-#include <KIO/JobUiDelegate>
+#include <KIO/JobUiDelegateFactory>
 
 class KTextEdit;
  
@@ -69,7 +69,7 @@ int main (int argc, char *argv[])
     auto *job = new KIO::ApplicationLauncherJob();
     auto url = argv[1];
     job->setUrls({QUrl(url)});
-    job->setUiDelegate(new KIO::JobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, window));
+    job->setUiDelegate(KIO::createDefaultJobUiDelegate(KJobUiDelegate::AutoHandlingEnabled, window));
     //window->show();
     job->start();
     window->close();

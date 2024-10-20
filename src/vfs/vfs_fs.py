@@ -68,11 +68,21 @@ class Fs(vfs_node.Node):
             sizestr = size2str(self.stat.st_size)
             flags = mode2str(stats)
             uidgid = str(self.stat.st_uid) + "." + str(self.stat.st_gid)
+            #import time
+            #print(time.strftime("%x %X",time.localtime(time.time())))
             try:
                 self.owner = Df.d.uidgrpCache[uidgid]
                 # print("cache hit: " + uidgid + ":" + self.owner)
             except:
-                Df.d.uidgrpCache[uidgid] = self.owner = pwd.getpwuid(self.stat.st_uid).pw_name + "." + grp.getgrgid(self.stat.st_gid).gr_name
+                try:
+                    gidname = grp.getgrgid(self.stat.st_gid).gr_name
+                except:
+                    gidname = str(self.stat.st_gid)
+                try:
+                    uidname = pwd.getpwuid(self.stat.st_uid).pw_name
+                except:
+                    uidname = str(self.stat.st_uid)
+                Df.d.uidgrpCache[uidgid] = self.owner = uidname + "." + gidname
                 # print("cache miss: " + uidgid + ":" + self.owner)
             self.meta = [ ('Size', sizestr, self.size), 
                       ('Time', time2str(time.localtime(self.stat.st_mtime)), self.stat.st_mtime), 
@@ -280,7 +290,8 @@ class Fs(vfs_node.Node):
         if not srcList:
             return
         p = "file://"+srcList[0].fspath
-        subprocess.call(["./openwith/openwith", p])
+        #print(p)
+        subprocess.Popen(["./openwith/openwith", p])
 
 #    def cb_open(self):
 #        srcList, dst = self.getSelectionAndDestination()
