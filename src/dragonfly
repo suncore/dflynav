@@ -14,5 +14,8 @@ fi
 D=`readlink -f $0`
 cd `dirname $D`
 export RELEASE=True
-exec python3 -E Df_Main.py -name "Dragonfly Navigator" "$L" "$R" 1>&2
+exec python3 -E Df_Main.py "$L" "$R" 1>&2
+#exec -a dragonfly python3 -E Df_Main.py -name "Dragonfly Navigator" "$L" "$R" 1>&2
+#exec -a dragonfly ./Df_Main.py "$L" "$R" 1>&2
 #python -m cProfile -s time Df_Main.py 2>&1
+

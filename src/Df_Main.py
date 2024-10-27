@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 #import win32con, sys
 #from win32com.shell import shell, shellcon
 #
@@ -18,8 +18,12 @@
 #import time
 #print(time.strftime("%x %X",time.localtime(time.time())))
 
+#import setproctitle
+#setproctitle.setthreadtitle('dragonfly')
+#setproctitle.setproctitle('dragonfly')
     
 import sys
+#print(sys.argv[0])
 sys.path.insert(0, "3pp")
 #, os
 from PyQt6 import QtCore, QtGui, QtWidgets
@@ -31,6 +35,8 @@ from utils import *
 from queue import Queue
 import _thread
 from PIL import Image
+
+
 #from cykooz.heif.pil import register_heif_opener
 
 # sys.path = [
@@ -74,7 +80,6 @@ def main():
     except:
         pass
             
-    
     Df.d = d
 
     d.tempfile = tempfile.TemporaryFile()
@@ -84,16 +89,12 @@ def main():
     d.fsNotify = [ None, None ]
     d.fsNotify[0] = vfs.Notify()
     d.fsNotify[1] = vfs.Notify()
-    
-    #print(time.strftime("%x %X",time.localtime(time.time())))
+
     d.qtapp = QtWidgets.QApplication(sys.argv)
-    #print(time.strftime("%x %X",time.localtime(time.time())))
-    #d.qtapp.setStyle("plastique")
-    #d.qtapp.setStyle("/a/dd/zz/qmc2-black-0.10/qmc2-black-0.10.qss")
+    d.qtapp.setDesktopFileName("dragonfly")
     d.g = Df_Gui.Gui()
     d.g.mw = Df_Gui.MainWindow()
     d.iconFactory = Df_Icon.IconFactory(d.g.mw.help.height())
-    #d.g.dia = Df_Gui.Dialog()
     d.g.config = Df_Gui.Config()
     d.g.config.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.jobstatus = Df_Gui.Jobstatus()
@@ -102,7 +103,6 @@ def main():
     d.g.help.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.find = Df_Gui.Find()
     d.g.find.setWindowIcon(QtGui.QIcon(iconFile))
-    #d.g.preview = Df_Gui.Preview()
     #d.g.mw.showMaximized()
     d.g.mw.setWindowIcon(QtGui.QIcon(iconFile))
     d.g.mw.show()
