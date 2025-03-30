@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
     konsole --workdir "$1"
 else

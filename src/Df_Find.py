@@ -37,7 +37,7 @@ class Find():
         self.findW.hitlist.clear()
         cd = self.panel.cd
         t = self.findW.input.text()
-        recurse = int(self.findW.recursive.checkState()) != 0
+        recurse = self.findW.recursive.isChecked()
         self.q.put((self.panel.cd, t, recurse))
 
     def setSearchingFor(self, text):
