@@ -152,7 +152,7 @@ class Fs(vfs_node.Node):
         if not srcNodeList:
             return
         srcList = [x.fspath for x in srcNodeList]
-        cmd = [ '/bin/cp', '-drx' ] + srcList + [ dstNode.fspath ]
+        cmd = [ '/bin/cp', '-r' ] + srcList + [ dstNode.fspath ]
         srcList2 = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList2)
         wd = srcNodeList[0].parent.fspath
@@ -170,7 +170,7 @@ class Fs(vfs_node.Node):
                 return
             newname = path_join(dst.fspath, newname)
             wd = src.parent.fspath
-            cmd = [ '/bin/cp', '-drx', src.fspath, newname ]
+            cmd = [ '/bin/cp', '-r', src.fspath, newname ]
             cmdString = '%s $ copyas %s to %s' % (wd, src.fsname, newname)
             args = cmd, wd
             Df.d.jobm.addJob(self.jobExecuter, args, cmdString)
