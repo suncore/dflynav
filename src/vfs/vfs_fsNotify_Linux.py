@@ -22,7 +22,10 @@ class Notify():
 
     def stop(self):
         if self.wd:
-            self.inotify.rm_watch(self.wd)
+            try:
+                self.inotify.rm_watch(self.wd)
+            except:
+                pass
         self.wd = None
         self.path = None
 

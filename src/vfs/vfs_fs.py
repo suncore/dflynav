@@ -152,7 +152,7 @@ class Fs(vfs_node.Node):
         if not srcNodeList:
             return
         srcList = [x.fspath for x in srcNodeList]
-        cmd = [ '/bin/cp', '-r' ] + srcList + [ dstNode.fspath ]
+        cmd = [ '/bin/cp', '-rL' ] + srcList + [ dstNode.fspath ]
         srcList2 = [x.fsname for x in srcNodeList]
         srcs = ', '.join(srcList2)
         wd = srcNodeList[0].parent.fspath

@@ -100,7 +100,8 @@ class Find():
         self.findW.input.clear()
         self.findW.hitlist.clear()
         self.findW.show()
-        
+        self.findW.input.setFocus()
+
     def close(self):
         self.stop = True
         self.findW.hide()
