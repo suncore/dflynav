@@ -20,7 +20,7 @@ def TextToPreview(fn):
         return 'text', "No preview available"
 
 def ImageToPreview(fn):
-    print("ImageToPreview",fn)
+    #print("ImageToPreview",fn)
     try:
         im = Image.open(fn)
     except:
@@ -31,6 +31,7 @@ def ImageToPreview(fn):
     exif = exifread.process_file(file)
     file.close()
     date = ''
+    #print("ImageToPreview2",fn)
     if 'EXIF DateTimeOriginal' in exif:
         # Date example: 2011:02:26 16:29:49
         date = str(exif['EXIF DateTimeOriginal'])

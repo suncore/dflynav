@@ -35,7 +35,7 @@ from utils import *
 from queue import Queue
 import _thread
 from PIL import Image
-
+from pillow_heif import register_heif_opener
 
 #from cykooz.heif.pil import register_heif_opener
 
@@ -51,7 +51,7 @@ def main():
 
 #if __name__=="__main__":
 
-    #register_heif_opener()
+    register_heif_opener()
 
     iconFile = 'icons/dragonfly.png'
 
