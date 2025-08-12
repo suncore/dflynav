@@ -1,7 +1,12 @@
 #!/bin/sh -x
-
-#VERSION=`date +"%Y%m%d.%H%M%S"`
+#VERSION=`date +"%Y%m%d.%H%M%S-git"`
 VERSION=`cat version`
+if [ "$1" = "arch" ]
+then
+    echo arch
+    # TODO: This code needs to change when/if dragonfly navigator is not built from git in AUR. Currently, it is always from git.
+    VERSION=`printf "r%s.%s" "$(git rev-list --count HEAD)" "$(git rev-parse --short HEAD)"`
+fi
 
 V=dragonfly_$VERSION-1_amd64
 sed "s/VERSION/$VERSION/g" < control.pre > control
@@ -15,6 +20,21 @@ pyuic6 jobstatus.ui  > Df_UiJobstatus.py
 pyuic6 help.ui  > Df_UiHelp.py
 pyuic6 find.ui  > Df_UiFind.py
 #pyside-rcc dragonfly.qrc  > dragonfly_rc.py
+
+if [ "$1" = "arch" ]
+then
+    echo arch
+    # Packaging for Arch Linux
+    R=$DESTDIR
+    A=$R/usr/share/dragonfly
+    mkdir -p $R/usr/bin $A $A/openwith $R/usr/share/applications
+    cp dragonfly.desktop $R/usr/share/applications
+    ln -s /usr/share/dragonfly/dragonfly $R/usr/bin
+    #pandoc --to=plain ../README.md > $A/README
+    cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE terminal $A
+    cp openwith/openwith openwith/openwith.qt openwith/openwith.gtk $A/openwith
+    exit 0
+fi
 
 TD="$PWD"
 cd "$TD"/openwith/qt
@@ -33,7 +53,7 @@ mkdir -p $R/usr/bin $R/DEBIAN $A $A/openwith $R/usr/share/applications
 cp dragonfly.desktop $R/usr/share/applications
 ln -s /usr/share/dragonfly/dragonfly $R/usr/bin
 cp control $R/DEBIAN
-pandoc --to=plain ../README.md > $A/README
+#pandoc --to=plain ../README.md > $A/README
 cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE terminal $A
 cp openwith/openwith openwith/openwith.qt openwith/openwith.gtk $A/openwith
 dpkg-deb --build --root-owner-group $R
