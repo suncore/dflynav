@@ -15,13 +15,6 @@ pyuic6 help.ui  > Df_UiHelp.py
 pyuic6 find.ui  > Df_UiFind.py
 #pyside-rcc dragonfly.qrc  > dragonfly_rc.py
 
-if [ "$1" = "arch" ]
-then
-    echo "Built for Arch Linux"
-    # The "package" script takes care of creating a package for Arch Linux
-    exit 0
-fi
-
 TD="$PWD"
 cd "$TD"/openwith/qt
 rm -rf build; mkdir build; cd build; cmake -DQT_MAJOR_VERSION=6 ..; make
@@ -30,6 +23,13 @@ cd "$TD"/openwith/gtk
 rm -rf build; mkdir build; cd build; cmake ..; make
 mv gtk-open-with "$TD"/openwith/openwith.gtk
 cd "$TD"
+
+if [ "$1" = "arch" ]
+then
+    echo "Built for Arch Linux"
+    # The "package" script takes care of creating a package for Arch Linux
+    exit 0
+fi
 
 # Build .deb Debian package
 R=rel/$V

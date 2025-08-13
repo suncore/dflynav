@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.30)
 project(gtk-open-with C CXX)
 
 # Use the package PkgConfig to detect GTK+ headers/library files
