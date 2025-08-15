@@ -9,7 +9,7 @@ then
     cp dragonfly.desktop $R/usr/share/applications
     ln -s /usr/share/dragonfly/dragonfly $R/usr/bin
     #pandoc --to=plain ../README.md > $A/README
-    cp -r 3pp vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE terminal $A
+    cp -r vfs icons dragonfly *.py helptext.html setup dragonfly.desktop dragonfly.desktop.home ../LICENSE terminal $A
     cp openwith/openwith openwith/openwith.qt openwith/openwith.gtk $A/openwith
     exit 0
 fi
