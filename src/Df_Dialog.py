@@ -10,14 +10,14 @@ def Dialog(title, instruction, prefill):
     return None
 
 def YesNo(title, text):    
-    r = QtWidgets.QMessageBox.question(Df.d.g.mw, title, text, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Cancel)
-    return r == int(QtWidgets.QMessageBox.Ok)
+    r = QtWidgets.QMessageBox.question(Df.d.g.mw, title, text, QtWidgets.QMessageBox.StandardButton.Ok, QtWidgets.QMessageBox.StandardButton.Cancel)
+    return r == int(QtWidgets.QMessageBox.StandardButton.Ok)
 
 def MessageWarn(title, text):
-    QtWidgets.QMessageBox.warning(Df.d.g.mw, title, text, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.NoButton)
+    QtWidgets.QMessageBox.warning(Df.d.g.mw, title, text, QtWidgets.QMessageBox.StandardButton.Ok, QtWidgets.QMessageBox.NoButton)
     
 def MessageInfo(title, text):
-    QtWidgets.QMessageBox.information(Df.d.g.mw, title, text, QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.NoButton)
+    QtWidgets.QMessageBox.information(Df.d.g.mw, title, text, QtWidgets.QMessageBox.StandardButton.Ok, QtWidgets.QMessageBox.NoButton)
 
 def TextDialog(title, text=None, file=None): 
     w = Df.d.g.help

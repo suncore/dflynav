@@ -1,9 +1,10 @@
 #!/bin/sh
 
-if [ "$XDG_CURRENT_DESKTOP" != "KDE" ]; then
-  export QT_STYLE_OVERRIDE=adwaita-dark
-  #export QT_QPA_PLATFORMTHEME=gnome
-fi
+# Use qt6ct to modify appearance of dragonfly navigator if needed. The below code is a bit too heavy handed.
+#if [ "$XDG_CURRENT_DESKTOP" != "KDE" ]; then
+#  export QT_STYLE_OVERRIDE=Breeze
+#  #export QT_QPA_PLATFORMTHEME=gnome
+#fi
 
 if [ ! -z "$1" ]; then 
   L=`readlink -f $1`
